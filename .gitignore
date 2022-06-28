@@ -1,0 +1,11 @@
+*-debug.log
+*-error.log
+/.DS_Store
+/.history
+/.nyc_output
+/dist
+/bin
+/lib
+/tmp
+node_modules
+oclif.manifest.json
