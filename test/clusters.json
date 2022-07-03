@@ -1,0 +1,123 @@
+{
+  "DBClusters": [
+    {
+      "AllocatedStorage": 100,
+      "AvailabilityZones": ["us-east-1a", "us-east-1b", "us-east-1c"],
+      "BackupRetentionPeriod": 7,
+      "DatabaseName": "",
+      "DBClusterIdentifier": "test-multi-az-cluster",
+      "DBClusterParameterGroup": "default.postgres13",
+      "DBSubnetGroup": "default-vpc-0b69f5ff83059719d",
+      "Status": "available",
+      "EarliestRestorableTime": "2022-07-03T08:53:36.892Z",
+      "Endpoint": "test-multi-az-cluster.cluster-cvro9sjkux21.us-east-1.rds.amazonaws.com",
+      "ReaderEndpoint": "test-multi-az-cluster.cluster-ro-cvro9sjkux21.us-east-1.rds.amazonaws.com",
+      "MultiAZ": true,
+      "Engine": "postgres",
+      "EngineVersion": "13.4",
+      "LatestRestorableTime": "2022-07-03T09:16:34.000Z",
+      "Port": 5432,
+      "MasterUsername": "postgres",
+      "PreferredBackupWindow": "05:10-05:40",
+      "PreferredMaintenanceWindow": "thu:09:47-thu:10:17",
+      "ReadReplicaIdentifiers": [],
+      "DBClusterMembers": [
+        {
+          "DBInstanceIdentifier": "test-multi-az-cluster-instance-3",
+          "IsClusterWriter": false,
+          "DBClusterParameterGroupStatus": "in-sync",
+          "PromotionTier": 1
+        },
+        {
+          "DBInstanceIdentifier": "test-multi-az-cluster-instance-2",
+          "IsClusterWriter": false,
+          "DBClusterParameterGroupStatus": "in-sync",
+          "PromotionTier": 1
+        },
+        {
+          "DBInstanceIdentifier": "test-multi-az-cluster-instance-1",
+          "IsClusterWriter": true,
+          "DBClusterParameterGroupStatus": "in-sync",
+          "PromotionTier": 1
+        }
+      ],
+      "VpcSecurityGroups": [
+        { "VpcSecurityGroupId": "sg-0cf2606240bc0eb0d", "Status": "active" }
+      ],
+      "HostedZoneId": "Z2R2ITUGPM61AM",
+      "StorageEncrypted": true,
+      "KmsKeyId": "arn:aws:kms:us-east-1:507082836245:key/cd32726c-38ff-442a-bd49-889cc3385728",
+      "DbClusterResourceId": "cluster-U26Y4N7SCTNAKYDWHLGQ2G5UZU",
+      "DBClusterArn": "arn:aws:rds:us-east-1:507082836245:cluster:test-multi-az-cluster",
+      "AssociatedRoles": [],
+      "IAMDatabaseAuthenticationEnabled": false,
+      "ClusterCreateTime": "2022-07-03T08:40:52.318Z",
+      "EngineMode": "provisioned",
+      "DeletionProtection": false,
+      "HttpEndpointEnabled": false,
+      "ActivityStreamStatus": "stopped",
+      "CopyTagsToSnapshot": false,
+      "CrossAccountClone": false,
+      "DomainMemberships": [],
+      "TagList": [],
+      "DBClusterInstanceClass": "db.m5d.large",
+      "StorageType": "io1",
+      "Iops": 1000,
+      "PubliclyAccessible": false,
+      "AutoMinorVersionUpgrade": true,
+      "MonitoringInterval": 0,
+      "PerformanceInsightsEnabled": false
+    },
+    {
+      "AllocatedStorage": 1,
+      "AvailabilityZones": ["us-east-1a", "us-east-1b", "us-east-1c"],
+      "BackupRetentionPeriod": 1,
+      "DatabaseName": "syncer",
+      "DBClusterIdentifier": "tf-20220312113340880800000001",
+      "DBClusterParameterGroup": "default.aurora-postgresql10",
+      "DBSubnetGroup": "main",
+      "Status": "available",
+      "EarliestRestorableTime": "2022-07-02T08:40:00.467Z",
+      "Endpoint": "tf-20220312113340880800000001.cluster-cvro9sjkux21.us-east-1.rds.amazonaws.com",
+      "MultiAZ": false,
+      "Engine": "aurora-postgresql",
+      "EngineVersion": "10.18",
+      "LatestRestorableTime": "2022-07-03T07:40:25.709Z",
+      "Port": 5432,
+      "MasterUsername": "master",
+      "PreferredBackupWindow": "08:31-09:01",
+      "PreferredMaintenanceWindow": "wed:06:07-wed:06:37",
+      "ReadReplicaIdentifiers": [],
+      "DBClusterMembers": [],
+      "VpcSecurityGroups": [
+        { "VpcSecurityGroupId": "sg-0f5c12c3de286b7f8", "Status": "active" }
+      ],
+      "HostedZoneId": "Z2R2ITUGPM61AM",
+      "StorageEncrypted": true,
+      "KmsKeyId": "arn:aws:kms:us-east-1:507082836245:key/cd32726c-38ff-442a-bd49-889cc3385728",
+      "DbClusterResourceId": "cluster-F2Z6BVTHMXLDW7UF5FKKWDHENM",
+      "DBClusterArn": "arn:aws:rds:us-east-1:507082836245:cluster:tf-20220312113340880800000001",
+      "AssociatedRoles": [],
+      "IAMDatabaseAuthenticationEnabled": false,
+      "ClusterCreateTime": "2022-03-12T11:33:42.141Z",
+      "Capacity": 0,
+      "EngineMode": "serverless",
+      "ScalingConfigurationInfo": {
+        "MinCapacity": 2,
+        "MaxCapacity": 2,
+        "AutoPause": true,
+        "SecondsUntilAutoPause": 300,
+        "TimeoutAction": "RollbackCapacityChange",
+        "SecondsBeforeTimeout": 300
+      },
+      "DeletionProtection": false,
+      "HttpEndpointEnabled": true,
+      "ActivityStreamStatus": "stopped",
+      "CopyTagsToSnapshot": false,
+      "CrossAccountClone": false,
+      "DomainMemberships": [],
+      "TagList": [{ "Key": "Name", "Value": "main" }],
+      "AutoMinorVersionUpgrade": false
+    }
+  ]
+}

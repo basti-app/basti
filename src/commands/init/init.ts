@@ -1,19 +1,8 @@
-import inquirer from "inquirer";
-
-import { getDbClusters } from "../../aws/rds.js";
+import { selectInitTarget } from "./select-init-target.js";
 
 export async function handleInit(...args: any): Promise<void> {
-  const clusters = await getDbClusters();
+  const target = await selectInitTarget();
 
-  const selectedCluster = await inquirer.prompt({
-    type: "list",
-    name: "cluster",
-    message: "What DB cluster to connect to?",
-    choices: clusters.map((cluster) => ({
-      name: cluster.DBClusterIdentifier,
-      value: cluster.DBClusterIdentifier,
-    })),
-  });
-
-  console.log(selectedCluster);
+  console.log(target);
+  console.log(await target.getVpcId());
 }
