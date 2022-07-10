@@ -1,8 +1,9 @@
-import inquirer, { DistinctChoice, Separator } from "inquirer";
+import inquirer, { DistinctChoice } from "inquirer";
 import { getVpcs } from "../../aws/ec2/get-vpcs.js";
 import { getDbClusters } from "../../aws/rds/get-db-clusters.js";
 import { getDbInstances } from "../../aws/rds/get-db-instances.js";
 import { AwsDbCluster, AwsDbInstance } from "../../aws/rds/rds-types.js";
+import { formatName } from "../../common/format-name.js";
 import { CustomInitTarget } from "../../target/custom/custom-init-target.js";
 import { DbClusterInitTarget } from "../../target/db-cluster/db-cluster-init-target.js";
 import { DbInstanceInitTarget } from "../../target/db-instance/db-instance-init-target.js";
@@ -72,7 +73,7 @@ async function promptForCustomInitTarget(): Promise<CustomInitTarget> {
     name: "vpcId",
     message: "Select target VPC",
     choices: vpcs.map((vpc) => ({
-      name: vpc.id,
+      name: formatName(vpc),
       value: vpc.id,
     })),
   });
