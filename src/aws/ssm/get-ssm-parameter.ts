@@ -1,24 +1,42 @@
 import { GetParameterCommand, ParameterType } from "@aws-sdk/client-ssm";
+import { parseSsmParameter } from "./parse-ssm-response.js";
 import { ssmClient } from "./ssm-client.js";
+import { AwsSsmParameter } from "./types.js";
 
-export async function getSsmStringParameter(
-  name: string
-): Promise<string | undefined> {
+export interface GetSsmParameterInput {
+  name: string;
+}
+
+export async function getSsmParameter({
+  name,
+}: GetSsmParameterInput): Promise<AwsSsmParameter | undefined> {
   const { Parameter } = await ssmClient.send(
     new GetParameterCommand({
       Name: name,
     })
   );
 
-  if (!Parameter || !Parameter.Value) {
-    throw new Error(`Invalid response from AWS.`);
+  if (!Parameter) {
+    return;
   }
 
-  if (Parameter.Type != ParameterType.STRING) {
+  return parseSsmParameter(Parameter);
+}
+
+export async function getStringSsmParameter(
+  input: GetSsmParameterInput
+): Promise<string | undefined> {
+  const parameter = await getSsmParameter(input);
+
+  if (!parameter) {
+    return;
+  }
+
+  if (parameter.type !== "string") {
     throw new Error(
-      `Requested parameter "${name}" is of type "${Parameter.Type}". Expected "${ParameterType.STRING}".`
+      `Expecting SSM parameter "${parameter.name}" to be of type "string" but got "${parameter.type}."`
     );
   }
 
-  return Parameter.Value;
+  return parameter.value;
 }

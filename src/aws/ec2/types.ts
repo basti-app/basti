@@ -4,6 +4,11 @@ export interface AwsEc2Instance {
   id: string;
 }
 
+export interface AwsSecurityGroup {
+  id: string;
+  name: string;
+}
+
 export interface AwsVpc {
   id: string;
   name?: string;

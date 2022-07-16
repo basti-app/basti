@@ -1,5 +1,5 @@
 export interface AwsTag {
-  name: string;
+  key: string;
   value: string;
 }
 

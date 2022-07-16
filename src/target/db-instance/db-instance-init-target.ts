@@ -1,11 +1,12 @@
 import { modifyDbInstance } from "../../aws/rds/modify-db-instance.js";
 import { AwsDbInstance } from "../../aws/rds/rds-types.js";
-import { InitTarget } from "../init-target.js";
+import { SecurityGroupInitTarget } from "../init-target.js";
 
-export class DbInstanceInitTarget implements InitTarget {
+export class DbInstanceInitTarget extends SecurityGroupInitTarget {
   private dbInstance: AwsDbInstance;
 
   constructor({ dbInstance }: { dbInstance: AwsDbInstance }) {
+    super();
     this.dbInstance = dbInstance;
   }
 
@@ -13,7 +14,11 @@ export class DbInstanceInitTarget implements InitTarget {
     return this.dbInstance.vpcId;
   }
 
-  async attachSecurityGroup(securityGroupId: string): Promise<void> {
+  protected getTargetPort(): number {
+    return this.dbInstance.port;
+  }
+
+  protected async attachSecurityGroup(securityGroupId: string): Promise<void> {
     this.dbInstance = await modifyDbInstance({
       identifier: this.dbInstance.identifier,
       securityGroupIds: [...this.dbInstance.securityGroupIds, securityGroupId],

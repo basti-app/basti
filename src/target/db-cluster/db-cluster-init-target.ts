@@ -1,12 +1,13 @@
 import { getDbSubnetGroup } from "../../aws/rds/get-db-subnet-group.js";
 import { modifyDBCluster } from "../../aws/rds/modify-db-cluster.js";
 import { AwsDbCluster } from "../../aws/rds/rds-types.js";
-import { InitTarget } from "../init-target.js";
+import { SecurityGroupInitTarget } from "../init-target.js";
 
-export class DbClusterInitTarget implements InitTarget {
+export class DbClusterInitTarget extends SecurityGroupInitTarget {
   private dbCluster: AwsDbCluster;
 
   constructor({ dbCluster }: { dbCluster: AwsDbCluster }) {
+    super();
     this.dbCluster = dbCluster;
   }
 
@@ -24,7 +25,11 @@ export class DbClusterInitTarget implements InitTarget {
     return optionalDbSubnetGroup.vpcId;
   }
 
-  async attachSecurityGroup(securityGroupId: string): Promise<void> {
+  protected getTargetPort(): number {
+    return this.dbCluster.port;
+  }
+
+  protected async attachSecurityGroup(securityGroupId: string): Promise<void> {
     this.dbCluster = await modifyDBCluster({
       identifier: this.dbCluster.identifier,
       securityGroupIds: [...this.dbCluster.securityGroupIds, securityGroupId],

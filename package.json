@@ -34,6 +34,7 @@
     "@types/inquirer": "^8.2.1",
     "@types/yargs": "^17.0.10",
     "inquirer": "^9.0.0",
+    "ora": "^6.1.2",
     "yargs": "^17.5.1",
     "zod": "^3.17.3"
   }

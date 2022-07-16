@@ -15,35 +15,38 @@ export const parseDbInstanceResponse: (response?: DBInstance) => AwsDbInstance =
           VpcSecurityGroupId: z.string(),
         })
       ),
+      Endpoint: z.object({
+        Port: z.number(),
+      }),
     })
     .transform((response) => ({
       identifier: response.DBInstanceIdentifier,
       clusterIdentifier: response.DBClusterIdentifier,
-
       vpcId: response.DBSubnetGroup.VpcId,
       securityGroupIds: response.VpcSecurityGroups.map(
         (sg) => sg.VpcSecurityGroupId
       ),
+      port: response.Endpoint.Port,
     })).parse;
 
 export const parseDbClusterResponse: (response?: DBCluster) => AwsDbCluster = z
   .object({
     DBClusterIdentifier: z.string(),
-
     DBSubnetGroup: z.string(),
     VpcSecurityGroups: z.array(
       z.object({
         VpcSecurityGroupId: z.string(),
       })
     ),
+    Port: z.number(),
   })
   .transform((response) => ({
     identifier: response.DBClusterIdentifier,
-
     dbSubnetGroupName: response.DBSubnetGroup,
     securityGroupIds: response.VpcSecurityGroups.map(
       (sg) => sg.VpcSecurityGroupId
     ),
+    port: response.Port,
   })).parse;
 
 export const parseDbSubnetGroup: (

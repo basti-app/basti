@@ -1,23 +1,50 @@
-import { CreateInstanceProfileCommand } from "@aws-sdk/client-iam";
+import {
+  AddRoleToInstanceProfileCommand,
+  CreateInstanceProfileCommand,
+  waitUntilInstanceProfileExists,
+} from "@aws-sdk/client-iam";
+import { COMMON_WAITER_CONFIG } from "../common/waiter-config.js";
 import { iamClient } from "./iam-client.js";
-import { AwsInstanceProfile } from "./types.js";
+import { parseIamInstanceProfile } from "./parse-iam-response.js";
+import { AwsIamInstanceProfile } from "./types.js";
 
 export interface CreateInstanceProfileInput {
   name: string;
+  roleNames: string[];
 }
 
-export async function createInstanceProfile({
+export async function createIamInstanceProfile({
   name,
-}: CreateInstanceProfileInput): Promise<AwsInstanceProfile> {
+  roleNames,
+}: CreateInstanceProfileInput): Promise<AwsIamInstanceProfile> {
   const { InstanceProfile } = await iamClient.send(
     new CreateInstanceProfileCommand({ InstanceProfileName: name })
   );
 
-  if (!InstanceProfile || !InstanceProfile.InstanceProfileName) {
+  if (!InstanceProfile) {
     throw new Error(`Invalid response from AWS.`);
   }
 
-  return {
-    name: InstanceProfile.InstanceProfileName,
-  };
+  const instanceProfile = parseIamInstanceProfile(InstanceProfile);
+
+  await waitUntilInstanceProfileExists(
+    { ...COMMON_WAITER_CONFIG, client: iamClient },
+    { InstanceProfileName: instanceProfile.name }
+  );
+
+  // Aws need extra wait before the instance profile can be used
+  await new Promise((resolve) => setTimeout(resolve, 10_000));
+
+  await Promise.all(
+    roleNames.map((roleName) =>
+      iamClient.send(
+        new AddRoleToInstanceProfileCommand({
+          InstanceProfileName: instanceProfile.name,
+          RoleName: roleName,
+        })
+      )
+    )
+  );
+
+  return instanceProfile;
 }

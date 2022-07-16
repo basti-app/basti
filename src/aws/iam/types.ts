@@ -2,6 +2,8 @@ export interface AwsRole {
   name: string;
 }
 
-export interface AwsInstanceProfile {
+export interface AwsIamInstanceProfile {
   name: string;
+
+  arn: string;
 }
