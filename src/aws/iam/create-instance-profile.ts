@@ -32,9 +32,6 @@ export async function createIamInstanceProfile({
     { InstanceProfileName: instanceProfile.name }
   );
 
-  // Aws need extra wait before the instance profile can be used
-  await new Promise((resolve) => setTimeout(resolve, 10_000));
-
   await Promise.all(
     roleNames.map((roleName) =>
       iamClient.send(
