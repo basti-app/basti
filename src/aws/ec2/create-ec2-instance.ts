@@ -1,6 +1,6 @@
 import {
   RunInstancesCommand,
-  waitUntilInstanceExists,
+  waitUntilInstanceRunning,
 } from "@aws-sdk/client-ec2";
 import { COMMON_WAITER_CONFIG } from "../common/waiter-config.js";
 import { createIamInstanceProfile } from "../iam/create-instance-profile.js";
@@ -13,9 +13,15 @@ export interface CreateEc2InstanceInput {
   imageId: string;
   name: string;
   instanceType: string;
-  subnetId: string;
+
   roleNames: string[];
+
+  subnetId: string;
+  assignPublicIp: boolean;
   securityGroupIds: string[];
+
+  userData?: string;
+
   tags: AwsTag[];
 }
 
@@ -23,9 +29,11 @@ export async function createEc2Instance({
   imageId,
   name,
   instanceType,
-  subnetId,
   roleNames,
+  subnetId,
+  assignPublicIp,
   securityGroupIds,
+  userData,
   tags,
 }: CreateEc2InstanceInput): Promise<AwsEc2Instance> {
   const instanceProfile = await createIamInstanceProfile({
@@ -37,11 +45,22 @@ export async function createEc2Instance({
     new RunInstancesCommand({
       ImageId: imageId,
       InstanceType: instanceType,
-      SubnetId: subnetId,
+
       IamInstanceProfile: {
         Name: instanceProfile.name,
       },
-      SecurityGroupIds: securityGroupIds,
+
+      NetworkInterfaces: [
+        {
+          DeviceIndex: 0,
+          AssociatePublicIpAddress: assignPublicIp,
+          Groups: securityGroupIds,
+          SubnetId: subnetId,
+        },
+      ],
+
+      UserData: userData && Buffer.from(userData).toString("base64"),
+
       TagSpecifications: [
         {
           ResourceType: "instance",
@@ -60,7 +79,7 @@ export async function createEc2Instance({
   }
   const instance = parseEc2InstanceResponse(Instances[0]);
 
-  await waitUntilInstanceExists(
+  await waitUntilInstanceRunning(
     { ...COMMON_WAITER_CONFIG, client: ec2Client },
     { InstanceIds: [instance.id] }
   );

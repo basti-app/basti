@@ -4,6 +4,7 @@ import { createEc2Instance } from "../aws/ec2/create-ec2-instance.js";
 import { createSecurityGroup } from "../aws/ec2/create-security-group.js";
 import { createIamRole } from "../aws/iam/create-iam-role.js";
 import { getStringSsmParameter } from "../aws/ssm/get-ssm-parameter.js";
+import { BASTION_INSTANCE_CLOUD_INIT } from "./bastion-cloudinit.js";
 import { BastionInstance } from "./bastion-instance.js";
 
 export interface CreateBastionInstanceInput {
@@ -62,9 +63,11 @@ export async function createBastionInstance({
     name: `basti-instance-${bastionId}`,
     imageId: bastionImageId,
     instanceType: "t2.micro",
-    subnetId,
     roleNames: [bastionRole.name],
+    subnetId,
+    assignPublicIp: true,
     securityGroupIds: [bastionSecurityGroup.id],
+    userData: BASTION_INSTANCE_CLOUD_INIT,
     tags: [
       {
         key: "basti:id",
