@@ -1,8 +1,8 @@
 import { modifyDbInstance } from "../../aws/rds/modify-db-instance.js";
 import { AwsDbInstance } from "../../aws/rds/rds-types.js";
-import { SecurityGroupInitTarget } from "../init-target.js";
+import { InitTargetBase } from "../init-target.js";
 
-export class DbInstanceInitTarget extends SecurityGroupInitTarget {
+export class DbInstanceInitTarget extends InitTargetBase {
   private dbInstance: AwsDbInstance;
 
   constructor({ dbInstance }: { dbInstance: AwsDbInstance }) {

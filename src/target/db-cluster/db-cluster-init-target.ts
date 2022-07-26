@@ -1,9 +1,9 @@
 import { getDbSubnetGroup } from "../../aws/rds/get-db-subnet-group.js";
 import { modifyDBCluster } from "../../aws/rds/modify-db-cluster.js";
 import { AwsDbCluster } from "../../aws/rds/rds-types.js";
-import { SecurityGroupInitTarget } from "../init-target.js";
+import { InitTargetBase } from "../init-target.js";
 
-export class DbClusterInitTarget extends SecurityGroupInitTarget {
+export class DbClusterInitTarget extends InitTargetBase {
   private dbCluster: AwsDbCluster;
 
   constructor({ dbCluster }: { dbCluster: AwsDbCluster }) {
