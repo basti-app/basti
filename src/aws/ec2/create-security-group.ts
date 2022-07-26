@@ -6,38 +6,18 @@ import {
 } from "@aws-sdk/client-ec2";
 import { COMMON_WAITER_CONFIG } from "../common/waiter-config.js";
 import { ec2Client } from "./ec2-client.js";
-import { AwsSecurityGroup } from "./types.js";
+import {
+  AwsSecurityGroup,
+  SecurityGroupIngressRule,
+} from "./types/aws-security-group.js";
 
-export type SecurityGroupIngressSource =
-  | {
-      cidrIp: string;
-    }
-  | {
-      securityGroupId: string;
-    };
-
-export interface SecurityGroupIngressPortRange {
-  from: number;
-  to: number;
-}
-
-export interface SecurityGroupIngressRule {
-  source: SecurityGroupIngressSource;
-  ports: SecurityGroupIngressPortRange;
-}
-
-export interface CreateSecurityGroupInput {
-  name: string;
-  description: string;
-  vpcId: string;
-  ingressRules?: SecurityGroupIngressRule[];
-}
+export type CreateSecurityGroupInput = Omit<AwsSecurityGroup, "id">;
 
 export async function createSecurityGroup({
   name,
   description,
   vpcId,
-  ingressRules = [],
+  ingressRules,
 }: CreateSecurityGroupInput): Promise<AwsSecurityGroup> {
   const { GroupId } = await ec2Client.send(
     new CreateSecurityGroupCommand({
@@ -68,22 +48,33 @@ export async function createSecurityGroup({
   return {
     id: GroupId,
     name,
+    description,
+    vpcId,
+    ingressRules,
   };
 }
 
 function toIpPermission(rule: SecurityGroupIngressRule): IpPermission {
-  const source =
-    "cidrIp" in rule.source
-      ? {
-          IpRanges: [{ CidrIp: rule.source.cidrIp }],
-        }
-      : {
-          UserIdGroupPairs: [{ GroupId: rule.source.securityGroupId }],
-        };
+  const sources = rule.sources.reduce<
+    Required<Pick<IpPermission, "IpRanges" | "UserIdGroupPairs">>
+  >(
+    (acc, source) => {
+      "cidrIp" in source
+        ? acc.IpRanges.push({ CidrIp: source.cidrIp })
+        : acc.UserIdGroupPairs.push({ GroupId: source.securityGroupId });
+      return acc;
+    },
+    {
+      IpRanges: [],
+      UserIdGroupPairs: [],
+    }
+  );
+
   return {
-    FromPort: rule.ports.from,
-    ToPort: rule.ports.to,
-    IpProtocol: "tcp",
-    ...source,
+    FromPort: rule?.ports?.from,
+    ToPort: rule?.ports?.to,
+
+    IpProtocol: rule.ipProtocol,
+    ...sources,
   };
 }

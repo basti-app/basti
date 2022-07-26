@@ -55,6 +55,7 @@ export async function createBastionInstance({
     description:
       "Identifies basti instance and allows connection to the Internet.",
     vpcId,
+    ingressRules: [],
   });
   hooks?.onSecurityGroupCreated?.(bastionSecurityGroup.id);
 

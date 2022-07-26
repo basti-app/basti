@@ -1,7 +1,7 @@
 import { DescribeSubnetsCommand } from "@aws-sdk/client-ec2";
 import { ec2Client } from "./ec2-client.js";
 import { parseSubnetResponse } from "./parse-ec2-response.js";
-import { AwsSubnet } from "./types.js";
+import { AwsSubnet } from "./types/aws-vpc.js";
 
 export interface GetSubnetsInput {
   vpcId: string;

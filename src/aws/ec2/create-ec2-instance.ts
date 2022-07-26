@@ -9,7 +9,7 @@ import { createIamInstanceProfile } from "../iam/create-instance-profile.js";
 import { AwsTag } from "../types.js";
 import { ec2Client } from "./ec2-client.js";
 import { parseEc2InstanceResponse } from "./parse-ec2-response.js";
-import { AwsEc2Instance } from "./types.js";
+import { AwsEc2Instance } from "./types/aws-ec2-instance.js";
 
 export interface CreateEc2InstanceInput {
   imageId: string;

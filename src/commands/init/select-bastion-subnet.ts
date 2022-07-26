@@ -1,6 +1,6 @@
 import inquirer from "inquirer";
 import { getSubnets } from "../../aws/ec2/get-subnets.js";
-import { AwsSubnet } from "../../aws/ec2/types.js";
+import { AwsSubnet } from "../../aws/ec2/types/aws-vpc.js";
 import { formatName } from "../../common/format-name.js";
 
 export async function selectBastionSubnet(vpcId: string): Promise<AwsSubnet> {
