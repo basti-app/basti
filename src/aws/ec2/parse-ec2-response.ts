@@ -15,8 +15,26 @@ export const parseEc2InstanceResponse: (response: Instance) => AwsEc2Instance =
   z
     .object({
       InstanceId: z.string(),
+      Tags: z.array(AwsTagParser).optional(),
+      SecurityGroups: z.array(
+        z.object({
+          GroupId: z.string(),
+          GroupName: z.string(),
+        })
+      ),
     })
-    .transform((response) => ({ id: response.InstanceId })).parse;
+    .transform((response) => {
+      const tags = transformTags(response.Tags);
+      return {
+        id: response.InstanceId,
+        tags,
+        name: tags["Name"],
+        securityGroups: response.SecurityGroups.map((group) => ({
+          id: group.GroupId,
+          name: group.GroupName,
+        })),
+      };
+    }).parse;
 
 export const parseVpcResponse: (response: Vpc) => AwsVpc = z
   .object({

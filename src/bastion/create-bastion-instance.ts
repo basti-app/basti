@@ -5,7 +5,14 @@ import { createSecurityGroup } from "../aws/ec2/create-security-group.js";
 import { createIamRole } from "../aws/iam/create-iam-role.js";
 import { getStringSsmParameter } from "../aws/ssm/get-ssm-parameter.js";
 import { BASTION_INSTANCE_CLOUD_INIT } from "./bastion-cloudinit.js";
-import { BastionInstance } from "./bastion-instance.js";
+import {
+  BastionInstance,
+  BASTION_INSTANCE_ID_TAG_NAME,
+  BASTION_INSTANCE_IN_USE_TAG_NAME,
+  BASTION_INSTANCE_NAME_PREFIX,
+  BASTION_INSTANCE_ROLE_NAME_PREFIX,
+  BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
+} from "./bastion-instance.js";
 
 export interface CreateBastionInstanceInput {
   vpcId: string;
@@ -40,7 +47,7 @@ export async function createBastionInstance({
 
   hooks?.onRoleCreationStarted?.();
   const bastionRole = await createIamRole({
-    name: `basti-instance-${bastionId}`,
+    name: `${BASTION_INSTANCE_ROLE_NAME_PREFIX}-${bastionId}`,
     principalService: "ec2.amazonaws.com",
     managedPolicies: [
       "AmazonSSMManagedInstanceCore",
@@ -51,7 +58,7 @@ export async function createBastionInstance({
 
   hooks?.onSecurityGroupCreationStarted?.();
   const bastionSecurityGroup = await createSecurityGroup({
-    name: `basti-instance-${bastionId}`,
+    name: `${BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX}-${bastionId}`,
     description:
       "Identifies basti instance and allows connection to the Internet.",
     vpcId,
@@ -61,7 +68,7 @@ export async function createBastionInstance({
 
   hooks?.onInstanceCreationStarted?.();
   const bastionInstance = await createEc2Instance({
-    name: `basti-instance-${bastionId}`,
+    name: `${BASTION_INSTANCE_NAME_PREFIX}-${bastionId}`,
     imageId: bastionImageId,
     instanceType: "t2.micro",
     roleNames: [bastionRole.name],
@@ -71,11 +78,11 @@ export async function createBastionInstance({
     userData: BASTION_INSTANCE_CLOUD_INIT,
     tags: [
       {
-        key: "basti:id",
+        key: BASTION_INSTANCE_ID_TAG_NAME,
         value: bastionId,
       },
       {
-        key: "basti:in-use",
+        key: BASTION_INSTANCE_IN_USE_TAG_NAME,
         value: new Date().toISOString(),
       },
     ],
