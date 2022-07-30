@@ -1,10 +1,17 @@
-export interface BastionInstance {
+import { AwsEc2Instance } from "../aws/ec2/types/aws-ec2-instance.js";
+
+export interface Bastion {
   id: string;
 
   instanceId: string;
 
   securityGroupId: string;
   securityGroupName: string;
+}
+
+export interface BastionState {
+  id: string;
+  instance: AwsEc2Instance;
 }
 
 export const BASTION_INSTANCE_NAME_PREFIX = "basti-instance";

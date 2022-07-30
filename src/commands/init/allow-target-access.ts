@@ -1,11 +1,11 @@
 import ora from "ora";
 
-import { BastionInstance } from "../../bastion/bastion-instance.js";
+import { Bastion } from "../../bastion/bastion.js";
 import { InitTarget } from "../../target/init-target.js";
 
 export interface AllowTargetAccessInput {
   target: InitTarget;
-  bastionInstance: BastionInstance;
+  bastionInstance: Bastion;
 }
 
 export async function allowTargetAccess({

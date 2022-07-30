@@ -1,7 +1,7 @@
 import ora from "ora";
 
-import { BastionInstance } from "../../bastion/bastion-instance.js";
-import { createBastionInstance } from "../../bastion/create-bastion-instance.js";
+import { Bastion } from "../../bastion/bastion.js";
+import * as bastion from "../../bastion/create-bastion.js";
 
 export interface CreateBastionInput {
   vpcId: string;
@@ -11,10 +11,10 @@ export interface CreateBastionInput {
 export async function createBastion({
   vpcId,
   subnetId,
-}: CreateBastionInput): Promise<BastionInstance> {
+}: CreateBastionInput): Promise<Bastion> {
   const spinner = ora();
 
-  return createBastionInstance({
+  return bastion.createBastion({
     vpcId,
     subnetId,
     hooks: {

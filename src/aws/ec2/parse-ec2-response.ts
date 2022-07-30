@@ -15,24 +15,35 @@ export const parseEc2InstanceResponse: (response: Instance) => AwsEc2Instance =
   z
     .object({
       InstanceId: z.string(),
-      Tags: z.array(AwsTagParser).optional(),
       SecurityGroups: z.array(
         z.object({
           GroupId: z.string(),
           GroupName: z.string(),
         })
       ),
+      State: z.object({
+        Name: z.enum([
+          "pending",
+          "running",
+          "shutting-down",
+          "stopped",
+          "stopping",
+          "terminated",
+        ] as const),
+      }),
+      Tags: z.array(AwsTagParser).optional(),
     })
     .transform((response) => {
       const tags = transformTags(response.Tags);
       return {
         id: response.InstanceId,
-        tags,
         name: tags["Name"],
         securityGroups: response.SecurityGroups.map((group) => ({
           id: group.GroupId,
           name: group.GroupName,
         })),
+        state: response.State.Name,
+        tags,
       };
     }).parse;
 

@@ -6,15 +6,15 @@ import { createIamRole } from "../aws/iam/create-iam-role.js";
 import { getStringSsmParameter } from "../aws/ssm/get-ssm-parameter.js";
 import { BASTION_INSTANCE_CLOUD_INIT } from "./bastion-cloudinit.js";
 import {
-  BastionInstance,
+  Bastion,
   BASTION_INSTANCE_ID_TAG_NAME,
   BASTION_INSTANCE_IN_USE_TAG_NAME,
   BASTION_INSTANCE_NAME_PREFIX,
   BASTION_INSTANCE_ROLE_NAME_PREFIX,
   BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
-} from "./bastion-instance.js";
+} from "./bastion.js";
 
-export interface CreateBastionInstanceInput {
+export interface CreateBastionInput {
   vpcId: string;
   subnetId: string;
   hooks?: {
@@ -29,11 +29,11 @@ export interface CreateBastionInstanceInput {
   };
 }
 
-export async function createBastionInstance({
+export async function createBastion({
   vpcId,
   subnetId,
   hooks,
-}: CreateBastionInstanceInput): Promise<BastionInstance> {
+}: CreateBastionInput): Promise<Bastion> {
   const bastionId = generateBastionInstanceId();
 
   hooks?.onImageIdRetrievalStarted?.();

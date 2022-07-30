@@ -10,7 +10,8 @@
     "basti": "bin/run.js"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test:types": "tsc --noEmit"
   },
   "repository": {
     "type": "git",

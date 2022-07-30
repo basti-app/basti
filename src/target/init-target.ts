@@ -1,5 +1,5 @@
 import { createSecurityGroup } from "../aws/ec2/create-security-group.js";
-import { BastionInstance } from "../bastion/bastion-instance.js";
+import { Bastion } from "../bastion/bastion.js";
 
 export interface InitTarget {
   getVpcId(): Promise<string>;
@@ -47,7 +47,7 @@ export abstract class InitTargetBase implements InitTarget {
 }
 
 export interface InitTargetAllowAccessInput {
-  bastionInstance: BastionInstance;
+  bastionInstance: Bastion;
   hooks?: {
     onSecurityGroupCreationStarted?: () => void;
     onSecurityGroupCreated?: (sgId: string) => void;

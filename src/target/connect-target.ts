@@ -3,7 +3,7 @@ import {
   AwsSecurityGroup,
   isGroupSecurityGroupSource,
 } from "../aws/ec2/types/aws-security-group.js";
-import { BASTION_INSTANCE_NAME_PREFIX } from "../bastion/bastion-instance.js";
+import { BASTION_INSTANCE_NAME_PREFIX } from "../bastion/bastion.js";
 import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from "./target.js";
 
 export interface ConnectTarget {

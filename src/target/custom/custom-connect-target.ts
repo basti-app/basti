@@ -1,5 +1,5 @@
 import { getEc2Instances } from "../../aws/ec2/get-ec2-instances.js";
-import { BASTION_INSTANCE_ID_TAG_NAME } from "../../bastion/bastion-instance.js";
+import { BASTION_INSTANCE_ID_TAG_NAME } from "../../bastion/bastion.js";
 import { ConnectTarget } from "../connect-target.js";
 
 export class CustomConnectTarget implements ConnectTarget {
