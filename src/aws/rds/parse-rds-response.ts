@@ -16,6 +16,7 @@ export const parseDbInstanceResponse: (response?: DBInstance) => AwsDbInstance =
         })
       ),
       Endpoint: z.object({
+        Address: z.string(),
         Port: z.number(),
       }),
     })
@@ -26,6 +27,7 @@ export const parseDbInstanceResponse: (response?: DBInstance) => AwsDbInstance =
       securityGroupIds: response.VpcSecurityGroups.map(
         (sg) => sg.VpcSecurityGroupId
       ),
+      host: response.Endpoint.Address,
       port: response.Endpoint.Port,
     })).parse;
 
@@ -38,6 +40,7 @@ export const parseDbClusterResponse: (response?: DBCluster) => AwsDbCluster = z
         VpcSecurityGroupId: z.string(),
       })
     ),
+    Endpoint: z.string(),
     Port: z.number(),
   })
   .transform((response) => ({
@@ -46,6 +49,7 @@ export const parseDbClusterResponse: (response?: DBCluster) => AwsDbCluster = z
     securityGroupIds: response.VpcSecurityGroups.map(
       (sg) => sg.VpcSecurityGroupId
     ),
+    host: response.Endpoint,
     port: response.Port,
   })).parse;
 

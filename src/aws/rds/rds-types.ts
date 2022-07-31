@@ -3,6 +3,8 @@ export interface AwsDbCluster {
 
   dbSubnetGroupName: string;
   securityGroupIds: string[];
+
+  host: string;
   port: number;
 }
 
@@ -12,6 +14,8 @@ export interface AwsDbInstance {
 
   vpcId: string;
   securityGroupIds: string[];
+
+  host: string;
   port: number;
 }
 

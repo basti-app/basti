@@ -1,12 +1,18 @@
 import inquirer, { DistinctChoice } from "inquirer";
-import { getVpcs } from "../../aws/ec2/get-vpcs.js";
 import { getDbClusters } from "../../aws/rds/get-db-clusters.js";
 import { getDbInstances } from "../../aws/rds/get-db-instances.js";
 import { AwsDbCluster, AwsDbInstance } from "../../aws/rds/rds-types.js";
-import { formatName } from "../../common/format-name.js";
-import { CustomTarget, DbInstanceTarget, Target } from "../../target/target.js";
+import {
+  DbClusterTargetInput,
+  DbInstanceTargetInput,
+} from "../../target/target-input.js";
 
-export async function selectTarget(): Promise<Target> {
+export type SelectedTargetInput =
+  | DbInstanceTargetInput
+  | DbClusterTargetInput
+  | { custom: true };
+
+export async function selectTarget(): Promise<SelectedTargetInput> {
   const instances = await getDbInstances();
   const clusters = await getDbClusters();
 
@@ -21,9 +27,6 @@ export async function selectTarget(): Promise<Target> {
     ],
   });
 
-  if (target.custom) {
-    return promptForCustomTarget();
-  }
   return target;
 }
 
@@ -59,25 +62,9 @@ function getCustomChoices(): DistinctChoice[] {
   ];
 }
 
-async function promptForCustomTarget(): Promise<CustomTarget> {
-  const vpcs = await getVpcs();
-
-  const { vpcId } = await inquirer.prompt({
-    type: "list",
-    name: "vpcId",
-    message: "Select target VPC",
-    choices: vpcs.map((vpc) => ({
-      name: formatName(vpc),
-      value: vpc.id,
-    })),
-  });
-
-  return { custom: { vpcId } };
-}
-
 function toInstanceChoice(
   dbInstance: AwsDbInstance
-): DistinctChoice<DbInstanceTarget> {
+): DistinctChoice<DbInstanceTargetInput> {
   return {
     name: dbInstance.identifier,
     value: {

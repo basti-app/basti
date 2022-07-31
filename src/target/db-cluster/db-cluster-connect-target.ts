@@ -9,6 +9,14 @@ export class DbClusterConnectTarget extends ConnectTargetBase {
     this.dbCluster = dbCluster;
   }
 
+  async getHost(): Promise<string> {
+    return this.dbCluster.host;
+  }
+
+  async getPort(): Promise<number> {
+    return this.dbCluster.port;
+  }
+
   protected async getSecurityGroupIds(): Promise<string[]> {
     return this.dbCluster.securityGroupIds;
   }

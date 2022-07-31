@@ -9,6 +9,14 @@ export class DbInstanceConnectTarget extends ConnectTargetBase {
     this.dbInstance = dbInstance;
   }
 
+  async getHost(): Promise<string> {
+    return this.dbInstance.host;
+  }
+
+  async getPort(): Promise<number> {
+    return this.dbInstance.port;
+  }
+
   protected async getSecurityGroupIds(): Promise<string[]> {
     return this.dbInstance.securityGroupIds;
   }

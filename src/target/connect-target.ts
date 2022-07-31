@@ -4,10 +4,13 @@ import {
   isGroupSecurityGroupSource,
 } from "../aws/ec2/types/aws-security-group.js";
 import { BASTION_INSTANCE_NAME_PREFIX } from "../bastion/bastion.js";
-import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from "./target.js";
+import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from "./target-input.js";
 
 export interface ConnectTarget {
   getBastionId(): Promise<string>;
+
+  getHost(): Promise<string>;
+  getPort(): Promise<number>;
 }
 
 export abstract class ConnectTargetBase implements ConnectTarget {
@@ -36,6 +39,9 @@ export abstract class ConnectTargetBase implements ConnectTarget {
 
     return bastionId;
   }
+
+  abstract getHost(): Promise<string>;
+  abstract getPort(): Promise<number>;
 
   private async getAccessSecurityGroup(): Promise<AwsSecurityGroup> {
     const securityGroupIds = await this.getSecurityGroupIds();
