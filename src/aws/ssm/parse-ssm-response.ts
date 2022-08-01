@@ -1,4 +1,4 @@
-import { Parameter } from "@aws-sdk/client-ssm";
+import { Parameter, StartSessionResponse } from "@aws-sdk/client-ssm";
 import { z } from "zod";
 import { AwsSsmParameter, AwsSsmParameterType } from "./types.js";
 
@@ -27,3 +27,11 @@ function transformParameterType(type: ParameterType): AwsSsmParameterType {
     } as const
   )[type];
 }
+
+export const parseStartSsmSessionResponse: (
+  response: StartSessionResponse
+) => Required<StartSessionResponse> = z.object({
+  SessionId: z.string(),
+  StreamUrl: z.string(),
+  TokenValue: z.string(),
+}).parse;
