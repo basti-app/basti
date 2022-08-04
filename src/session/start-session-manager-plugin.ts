@@ -1,6 +1,6 @@
 import { spawn } from "child_process";
 
-import { AwsSsmSessionDescriptor } from "../ssm/types.js";
+import { AwsSsmSessionDescriptor } from "../aws/ssm/types.js";
 
 export interface StartSessionManagerPluginInput {
   sessionDescriptor: AwsSsmSessionDescriptor;

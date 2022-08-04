@@ -1,3 +1,5 @@
+import { BASTION_INSTANCE_IN_USE_TAG_NAME } from "./bastion.js";
+
 export const BASTION_INSTANCE_CLOUD_INIT = `
 #cloud-config
 repo_update: true
@@ -18,7 +20,7 @@ write_files:
 
       lastInUse=$(aws ec2 describe-instances \
         --instance-ids $bastionInstanceId \
-        --query "Reservations[0].Instances[0].Tags[?Key=='basti:in-use'].Value" \
+        --query "Reservations[0].Instances[0].Tags[?Key=='${BASTION_INSTANCE_IN_USE_TAG_NAME}'].Value" \
         --output text
       )
       inUseThreshold=$(date -d "now - 5 minutes" -u +"%Y-%m-%dT%H:%M:%SZ")

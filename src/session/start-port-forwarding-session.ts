@@ -1,8 +1,9 @@
 import { SSMServiceException } from "@aws-sdk/client-ssm";
-import { startSessionManagerPlugin } from "../aws/session-manager/start-session-manager-plugin.js";
+import { startSessionManagerPlugin } from "./start-session-manager-plugin.js";
 import { startSsmPortForwardingSession } from "../aws/ssm/start-session.js";
 import { retry } from "../common/retry.js";
 import { ConnectTarget } from "../target/connect-target.js";
+import { startBastionUsageMarker } from "./start-bastion-usage-marker.js";
 
 export interface StartPortForwardingSessionInput {
   target: ConnectTarget;
@@ -37,11 +38,16 @@ export async function startPortForwardingSession({
     }
   );
 
+  const stopUsageMarker = startBastionUsageMarker({ bastionInstanceId });
+
   await startSessionManagerPlugin({
     sessionDescriptor,
     hooks: {
       onPortOpened: hooks?.onSessionStarted,
-      onProcessExited: hooks?.onSessionInterrupted,
+      onProcessExited: () => {
+        stopUsageMarker();
+        hooks?.onSessionInterrupted?.();
+      },
     },
   });
 }
