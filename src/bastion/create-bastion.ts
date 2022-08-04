@@ -92,7 +92,7 @@ export async function createBastion({
   return {
     id: bastionId,
 
-    instanceId: bastionInstance.id,
+    instance: bastionInstance,
 
     securityGroupId: bastionSecurityGroup.id,
     securityGroupName: bastionSecurityGroup.name,

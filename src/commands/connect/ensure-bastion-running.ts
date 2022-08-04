@@ -1,19 +1,19 @@
 import ora from "ora";
 
-import * as bastion from "../../bastion/ensure-bastion-running.js";
-import { BastionState } from "../../bastion/bastion.js";
+import * as bastionOps from "../../bastion/ensure-bastion-running.js";
+import { Bastion } from "../../bastion/bastion.js";
 
 export interface EnsureBastionRunningInput {
-  bastionState: BastionState;
+  bastion: Bastion;
 }
 
 export async function ensureBastionRunning({
-  bastionState,
+  bastion,
 }: EnsureBastionRunningInput): Promise<void> {
   const spinner = ora();
 
-  await bastion.ensureBastionRunning({
-    bastionState,
+  await bastionOps.ensureBastionRunning({
+    bastion,
     hooks: {
       onWaitingInstanceToStart: () =>
         spinner.start(

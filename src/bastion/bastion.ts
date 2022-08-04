@@ -3,7 +3,7 @@ import { AwsEc2Instance } from "../aws/ec2/types/aws-ec2-instance.js";
 export interface Bastion {
   id: string;
 
-  instanceId: string;
+  instance: AwsEc2Instance;
 
   securityGroupId: string;
   securityGroupName: string;

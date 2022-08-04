@@ -1,18 +1,18 @@
-import { BastionState } from "../../bastion/bastion.js";
-import * as bastion from "../../bastion/get-bastion-state.js";
+import { Bastion } from "../../bastion/bastion.js";
+import * as bastionOps from "../../bastion/get-bastion.js";
 
-export interface GetBastionStateInput {
+export interface GetBastionInput {
   bastionId: string;
 }
 
-export async function getBastionState({
+export async function getBastion({
   bastionId,
-}: GetBastionStateInput): Promise<BastionState> {
-  const instanceState = await bastion.getBastionState({ bastionId });
+}: GetBastionInput): Promise<Bastion> {
+  const bastion = await bastionOps.getBastion({ bastionId });
 
-  if (!instanceState) {
+  if (!bastion) {
     throw new Error(`Bastion instance not found`);
   }
 
-  return instanceState;
+  return bastion;
 }

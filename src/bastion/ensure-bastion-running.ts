@@ -3,10 +3,10 @@ import {
   waitEc2InstanceIsRunning,
   waitEc2InstanceIsStopped,
 } from "../aws/ec2/wait-ec2-instance.js";
-import { BastionState } from "./bastion.js";
+import { Bastion } from "./bastion.js";
 
 export interface EnsureBastionRunningInput {
-  bastionState: BastionState;
+  bastion: Bastion;
   hooks?: {
     onWaitingInstanceToStart?: () => void;
     onWaitingInstanceToStop?: () => void;
@@ -16,10 +16,10 @@ export interface EnsureBastionRunningInput {
 }
 
 export async function ensureBastionRunning({
-  bastionState,
+  bastion,
   hooks,
 }: EnsureBastionRunningInput): Promise<void> {
-  const { instance } = bastionState;
+  const { instance } = bastion;
 
   switch (instance.state) {
     case "running":
