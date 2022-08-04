@@ -8,6 +8,7 @@ import { startBastionUsageMarker } from "./start-bastion-usage-marker.js";
 export interface StartPortForwardingSessionInput {
   target: ConnectTarget;
   bastionInstanceId: string;
+  localPort: number;
   hooks?: {
     onStartingSession?: () => void;
     onSessionStarted?: () => void;
@@ -18,6 +19,7 @@ export interface StartPortForwardingSessionInput {
 export async function startPortForwardingSession({
   target,
   bastionInstanceId,
+  localPort,
   hooks,
 }: StartPortForwardingSessionInput): Promise<void> {
   const targetHost = await target.getHost();
@@ -30,6 +32,7 @@ export async function startPortForwardingSession({
         bastionInstanceId,
         targetHost,
         targetPort,
+        localPort,
       }),
     {
       delay: 3000,

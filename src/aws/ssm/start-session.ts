@@ -8,12 +8,15 @@ export interface StartSsmPortForwardingSession {
 
   targetHost: string;
   targetPort: number;
+
+  localPort: number;
 }
 
 export async function startSsmPortForwardingSession({
   bastionInstanceId,
   targetHost,
   targetPort,
+  localPort,
 }: StartSsmPortForwardingSession): Promise<AwsSsmSessionDescriptor> {
   const request = {
     Target: bastionInstanceId,
@@ -21,7 +24,7 @@ export async function startSsmPortForwardingSession({
     Parameters: {
       host: [targetHost],
       portNumber: [String(targetPort)],
-      localPortNumber: [String(54321)],
+      localPortNumber: [String(localPort)],
     },
   };
 
