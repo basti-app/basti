@@ -1,5 +1,5 @@
 import { ensureBastionRunning } from "./ensure-bastion-running.js";
-import { getBastion } from "./get-bastion-state.js";
+import { getBastion } from "./get-bastion.js";
 import { selectConnectTarget } from "./select-connect-target.js";
 import { selectLocalPort } from "./select-local-port.js";
 import { startPortForwarding } from "./start-port-forwarding.js";

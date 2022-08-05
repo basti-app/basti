@@ -29,6 +29,10 @@ export class DbClusterInitTarget extends InitTargetBase {
     return this.dbCluster.port;
   }
 
+  protected async getSecurityGroupIds(): Promise<string[]> {
+    return this.dbCluster.securityGroupIds;
+  }
+
   protected async attachSecurityGroup(securityGroupId: string): Promise<void> {
     this.dbCluster = await modifyDBCluster({
       identifier: this.dbCluster.identifier,

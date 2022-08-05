@@ -21,6 +21,7 @@ export async function getBastion({
         value: bastionId || "*",
       },
     ],
+    states: ["pending", "running", "stopping", "stopped"],
     vpcId,
   });
 

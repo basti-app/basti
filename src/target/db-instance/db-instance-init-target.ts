@@ -18,6 +18,10 @@ export class DbInstanceInitTarget extends InitTargetBase {
     return this.dbInstance.port;
   }
 
+  protected async getSecurityGroupIds(): Promise<string[]> {
+    return this.dbInstance.securityGroupIds;
+  }
+
   protected async attachSecurityGroup(securityGroupId: string): Promise<void> {
     this.dbInstance = await modifyDbInstance({
       identifier: this.dbInstance.identifier,

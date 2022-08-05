@@ -5,16 +5,16 @@ import { InitTarget } from "../../target/init-target.js";
 
 export interface AllowTargetAccessInput {
   target: InitTarget;
-  bastionInstance: Bastion;
+  bastion: Bastion;
 }
 
 export async function allowTargetAccess({
   target,
-  bastionInstance,
+  bastion,
 }: AllowTargetAccessInput): Promise<void> {
   if (!target.allowAccess) {
     console.log(
-      `Please, make sure that the your target is accessible from the bastion. Bastion security group: ${bastionInstance.securityGroupName}`
+      `Please, make sure your target is accessible from the bastion. Bastion security group: ${bastion.securityGroupName}`
     );
     return;
   }
@@ -22,7 +22,7 @@ export async function allowTargetAccess({
   const spinner = ora();
 
   await target.allowAccess({
-    bastionInstance,
+    bastionInstance: bastion,
     hooks: {
       onSecurityGroupCreationStarted: () =>
         spinner.start("Creating security group for your target"),

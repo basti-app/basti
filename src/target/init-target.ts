@@ -1,14 +1,26 @@
 import { createSecurityGroup } from "../aws/ec2/create-security-group.js";
+import { getSecurityGroups } from "../aws/ec2/get-security-groups.js";
 import { Bastion } from "../bastion/bastion.js";
+import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from "./target-input.js";
 
 export interface InitTarget {
   getVpcId(): Promise<string>;
 
+  hasAccessAllowed?(): Promise<boolean>;
   allowAccess?(input: InitTargetAllowAccessInput): Promise<void>;
 }
 
 export abstract class InitTargetBase implements InitTarget {
   abstract getVpcId(): Promise<string>;
+
+  async hasAccessAllowed(): Promise<boolean> {
+    const securityGroupIds = await this.getSecurityGroupIds();
+    const securityGroups = await getSecurityGroups({ securityGroupIds });
+
+    return securityGroups.some((group) =>
+      group.name.startsWith(TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX)
+    );
+  }
 
   async allowAccess({
     bastionInstance,
@@ -42,6 +54,8 @@ export abstract class InitTargetBase implements InitTarget {
   }
 
   protected abstract getTargetPort(): number;
+
+  protected abstract getSecurityGroupIds(): Promise<string[]>;
 
   protected abstract attachSecurityGroup(groupId: string): Promise<void>;
 }

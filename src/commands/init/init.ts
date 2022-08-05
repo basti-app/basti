@@ -1,21 +1,27 @@
 import { allowTargetAccess } from "./allow-target-access.js";
+import { assertTargetIsNotInitiated } from "./assert-target-is-not-initiated.js";
 import { createBastion } from "./create-bastion.js";
-import { assertBastionDoesNotExist } from "./ensure-bastion-does-not-exist.js";
+import { getBastion } from "./get-bastion.js";
 import { selectBastionSubnet } from "./select-bastion-subnet.js";
 import { selectInitTarget } from "./select-init-target.js";
 
 export async function handleInit(): Promise<void> {
   const target = await selectInitTarget();
+
+  await assertTargetIsNotInitiated({ target });
+
   const targetVpcId = await target.getVpcId();
 
-  await assertBastionDoesNotExist({ vpcId: targetVpcId });
+  let bastion = await getBastion({ vpcId: targetVpcId });
 
-  const bastionSubnet = await selectBastionSubnet(targetVpcId);
+  if (!bastion) {
+    const bastionSubnet = await selectBastionSubnet({ vpcId: targetVpcId });
 
-  const bastionInstance = await createBastion({
-    vpcId: targetVpcId,
-    subnetId: bastionSubnet.id,
-  });
+    bastion = await createBastion({
+      vpcId: targetVpcId,
+      subnetId: bastionSubnet.id,
+    });
+  }
 
-  await allowTargetAccess({ target, bastionInstance });
+  await allowTargetAccess({ target, bastion });
 }
