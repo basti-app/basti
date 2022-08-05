@@ -13,7 +13,12 @@ const pkg: {
 
 yargs(hideBin(process.argv))
   .version(pkg.version)
-  .command("init", "Initialize bastion instance", (yargs) => yargs, handleInit)
+  .command(
+    "init",
+    "Set up the aws account to use Basti",
+    (yargs) => yargs,
+    handleInit
+  )
   .command(
     "connect",
     "Start port forwarding session to the selected target",

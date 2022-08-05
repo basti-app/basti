@@ -1,5 +1,6 @@
 import { DescribeInstancesCommand, Filter } from "@aws-sdk/client-ec2";
-import { AwsTag } from "../types.js";
+import { getTagFilter } from "../tags/get-tag-filter.js";
+import { AwsTag } from "../tags/types.js";
 import { ec2Client } from "./ec2-client.js";
 import { parseEc2InstanceResponse } from "./parse-ec2-response.js";
 import { AwsEc2Instance } from "./types/aws-ec2-instance.js";
@@ -34,11 +35,4 @@ export async function getEc2Instances({
 
 function getVpcIdFilter(vpcId: string): Filter {
   return { Name: "vpc-id", Values: [vpcId] };
-}
-
-function getTagFilter(tag: AwsTag): Filter {
-  return {
-    Name: `tag:${tag.key}`,
-    Values: [tag.value],
-  };
 }
