@@ -1,8 +1,6 @@
 import ora from "ora";
-import {
-  getManagedResources,
-  ManagedResources,
-} from "../../cleanup/get-managed-resources.js";
+import { getManagedResources } from "../../cleanup/get-managed-resources.js";
+import { ManagedResources } from "../../cleanup/managed-resources.js";
 
 export async function getResourcesToCleanup(): Promise<ManagedResources> {
   const spinner = ora();

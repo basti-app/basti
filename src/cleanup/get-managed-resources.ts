@@ -9,14 +9,7 @@ import {
   BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
 } from "../bastion/bastion.js";
 import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from "../target/target-input.js";
-
-export interface ManagedResources {
-  accessSecurityGroups: string[];
-  bastionSecurityGroups: string[];
-  bastionInstances: string[];
-  bastionInstanceProfiles: string[];
-  bastionRoles: string[];
-}
+import { ManagedResources } from "./managed-resources.js";
 
 export interface GetManagedResourcesInput {
   hooks?: {

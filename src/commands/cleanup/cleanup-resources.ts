@@ -5,7 +5,7 @@ import { cleanupBastionInstances } from "../../cleanup/cleanup-bastion-instances
 import { cleanupBastionRoles } from "../../cleanup/cleanup-bastion-roles.js";
 import { cleanupBastionSecurityGroups } from "../../cleanup/cleanup-bastion-security-groups.js";
 import { SecurityGroupCleanupErrorReason } from "../../cleanup/cleanup-security-group.js";
-import { ManagedResources } from "../../cleanup/get-managed-resources.js";
+import { ManagedResources } from "../../cleanup/managed-resources.js";
 
 export interface CleanupResourcesInput {
   resources: ManagedResources;
@@ -56,7 +56,7 @@ export async function cleanupResources({
 async function cleanupAccessSecurityGroupsWithLogs(
   securityGroupIds: string[]
 ): Promise<CleanupError[]> {
-  const spinner = ora();
+  const spinner = ora({ indent: 2 });
 
   const errors: CleanupError[] = [];
 
@@ -88,7 +88,7 @@ async function cleanupAccessSecurityGroupsWithLogs(
 async function cleanupBastionInstancesWithLogs(
   instanceIds: string[]
 ): Promise<CleanupError[]> {
-  const spinner = ora();
+  const spinner = ora({ indent: 2 });
 
   const errors: CleanupError[] = [];
 
@@ -114,7 +114,7 @@ async function cleanupBastionInstancesWithLogs(
 async function cleanupBastionSecurityGroupsWithLogs(
   securityGroupIds: string[]
 ): Promise<CleanupError[]> {
-  const spinner = ora();
+  const spinner = ora({ indent: 2 });
 
   const errors: CleanupError[] = [];
 
@@ -142,7 +142,7 @@ async function cleanupBastionSecurityGroupsWithLogs(
 async function cleanupBastionRolesWithLogs(
   roleNames: string[]
 ): Promise<CleanupError[]> {
-  const spinner = ora();
+  const spinner = ora({ indent: 2 });
 
   const errors: CleanupError[] = [];
 
@@ -168,7 +168,7 @@ async function cleanupBastionRolesWithLogs(
 async function cleanupBastionInstanceProfilesWithLogs(
   instanceProfileNames: string[]
 ): Promise<CleanupError[]> {
-  const spinner = ora();
+  const spinner = ora({ indent: 2 });
 
   const errors: CleanupError[] = [];
 
