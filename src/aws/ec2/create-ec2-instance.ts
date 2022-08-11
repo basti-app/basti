@@ -17,6 +17,7 @@ export interface CreateEc2InstanceInput {
   instanceType: string;
 
   roleNames: string[];
+  profilePath: string;
 
   subnetId: string;
   assignPublicIp: boolean;
@@ -32,6 +33,7 @@ export async function createEc2Instance({
   name,
   instanceType,
   roleNames,
+  profilePath,
   subnetId,
   assignPublicIp,
   securityGroupIds,
@@ -41,6 +43,7 @@ export async function createEc2Instance({
   const instanceProfile = await createIamInstanceProfile({
     name,
     roleNames,
+    path: profilePath,
   });
 
   const { Instances } = await retry(

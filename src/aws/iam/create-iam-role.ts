@@ -10,18 +10,21 @@ import { AwsRole } from "./types.js";
 
 export interface CreateIamRoleInput {
   name: string;
+  path: string;
   principalService: string;
   managedPolicies: string[];
 }
 
 export async function createIamRole({
   name,
+  path,
   principalService,
   managedPolicies,
 }: CreateIamRoleInput): Promise<AwsRole> {
   const { Role } = await iamClient.send(
     new CreateRoleCommand({
       RoleName: name,
+      Path: path,
       AssumeRolePolicyDocument:
         formatAssumeRolePolicyDocument(principalService),
     })

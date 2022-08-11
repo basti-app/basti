@@ -10,7 +10,9 @@ import {
   BASTION_INSTANCE_ID_TAG_NAME,
   BASTION_INSTANCE_IN_USE_TAG_NAME,
   BASTION_INSTANCE_NAME_PREFIX,
+  BASTION_INSTANCE_PROFILE_PATH,
   BASTION_INSTANCE_ROLE_NAME_PREFIX,
+  BASTION_INSTANCE_ROLE_PATH,
   BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
 } from "./bastion.js";
 
@@ -48,6 +50,7 @@ export async function createBastion({
   hooks?.onRoleCreationStarted?.();
   const bastionRole = await createIamRole({
     name: `${BASTION_INSTANCE_ROLE_NAME_PREFIX}-${bastionId}`,
+    path: BASTION_INSTANCE_ROLE_PATH,
     principalService: "ec2.amazonaws.com",
     managedPolicies: [
       "AmazonSSMManagedInstanceCore",
@@ -72,6 +75,7 @@ export async function createBastion({
     imageId: bastionImageId,
     instanceType: "t2.micro",
     roleNames: [bastionRole.name],
+    profilePath: BASTION_INSTANCE_PROFILE_PATH,
     subnetId,
     assignPublicIp: true,
     securityGroupIds: [bastionSecurityGroup.id],
