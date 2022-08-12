@@ -9,42 +9,38 @@ import {
   BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
 } from "../bastion/bastion.js";
 import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from "../target/target-input.js";
-import { ManagedResources } from "./managed-resources.js";
+import { ManagedResourceGroup, ManagedResources } from "./managed-resources.js";
 
-export interface GetManagedResourcesInput {
+export interface GetResourcesToCleanupInput {
   hooks?: {
-    onRetrievingAccessSecurityGroups?: () => void;
-    onRetrievingBastionSecurityGroups?: () => void;
-    onRetrievingBastionInstances?: () => void;
-    onRetrievingBastionRoles?: () => void;
-    onRetrievingBastionInstanceProfiles?: () => void;
+    onRetrievingResources?: (resourceGroup: ManagedResourceGroup) => void;
   };
 }
 
-export async function getManagedResources({
+export async function getResourcesToCleanup({
   hooks,
-}: GetManagedResourcesInput): Promise<ManagedResources> {
-  hooks?.onRetrievingAccessSecurityGroups?.();
+}: GetResourcesToCleanupInput): Promise<ManagedResources> {
+  hooks?.onRetrievingResources?.("accessSecurityGroups");
   const accessSecurityGroups = await getAccessSecurityGroups();
 
-  hooks?.onRetrievingBastionSecurityGroups?.();
+  hooks?.onRetrievingResources?.("bastionSecurityGroups");
   const bastionSecurityGroups = await getBastionSecurityGroups();
 
-  hooks?.onRetrievingBastionInstances?.();
+  hooks?.onRetrievingResources?.("bastionInstances");
   const bastionInstances = await getBastionInstances();
 
-  hooks?.onRetrievingBastionRoles?.();
-  const bastionRoles = await getBastionRoles();
-
-  hooks?.onRetrievingBastionInstanceProfiles?.();
+  hooks?.onRetrievingResources?.("bastionInstanceProfiles");
   const bastionInstanceProfiles = await getBastionInstanceProfiles();
+
+  hooks?.onRetrievingResources?.("bastionRoles");
+  const bastionRoles = await getBastionRoles();
 
   return {
     accessSecurityGroups,
     bastionSecurityGroups,
     bastionInstances,
-    bastionRoles,
     bastionInstanceProfiles,
+    bastionRoles,
   };
 }
 
@@ -73,6 +69,7 @@ async function getBastionInstances(): Promise<string[]> {
           value: "*",
         },
       ],
+      states: ["pending", "running", "stopping", "stopped"],
     })
   ).map((instance) => instance.id);
 }
@@ -84,7 +81,7 @@ async function getBastionRoles(): Promise<string[]> {
 }
 
 async function getBastionInstanceProfiles(): Promise<string[]> {
-  return await (
+  return (
     await getInstanceProfiles({ path: BASTION_INSTANCE_PROFILE_PATH })
   ).map((profile) => profile.name);
 }

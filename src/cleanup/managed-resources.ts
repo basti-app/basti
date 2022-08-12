@@ -5,8 +5,8 @@ export const ManagedResourceGroups = [
   "bastionInstanceProfiles",
   "bastionRoles",
 ] as const;
-export type ManagedResourceGroups = typeof ManagedResourceGroups[number];
+export type ManagedResourceGroup = typeof ManagedResourceGroups[number];
 
 export type ManagedResources = {
-  [key in ManagedResourceGroups]: string[];
+  [key in ManagedResourceGroup]: string[];
 };

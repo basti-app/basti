@@ -1,4 +1,4 @@
-import { AwsTags } from "../../types.js";
+import { AwsTags } from "../../tags/types.js";
 
 export interface AwsVpc {
   id: string;

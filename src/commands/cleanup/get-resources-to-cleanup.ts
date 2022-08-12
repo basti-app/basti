@@ -1,22 +1,25 @@
 import ora from "ora";
-import { getManagedResources } from "../../cleanup/get-managed-resources.js";
-import { ManagedResources } from "../../cleanup/managed-resources.js";
+import * as cleanupOps from "../../cleanup/get-resources-to-cleanup.js";
+import {
+  ManagedResourceGroup,
+  ManagedResources,
+} from "../../cleanup/managed-resources.js";
+
+const RESOURCE_GROUP_NAMES: Record<ManagedResourceGroup, string> = {
+  accessSecurityGroups: "access security groups",
+  bastionSecurityGroups: "bastion security groups",
+  bastionInstances: "bastion EC2 instances",
+  bastionInstanceProfiles: "bastion IAM instance profiles",
+  bastionRoles: "bastion IAM roles",
+};
 
 export async function getResourcesToCleanup(): Promise<ManagedResources> {
   const spinner = ora();
 
-  const managedResources = await getManagedResources({
+  const managedResources = await cleanupOps.getResourcesToCleanup({
     hooks: {
-      onRetrievingAccessSecurityGroups: () =>
-        spinner.start("Retrieving access security groups"),
-      onRetrievingBastionSecurityGroups: () =>
-        spinner.start("Retrieving bastion security groups"),
-      onRetrievingBastionInstances: () =>
-        spinner.start("Retrieving bastion instances"),
-      onRetrievingBastionRoles: () =>
-        spinner.start("Retrieving bastion IAM roles"),
-      onRetrievingBastionInstanceProfiles: () =>
-        spinner.start("Retrieving bastion IAM instance profiles"),
+      onRetrievingResources: (group) =>
+        spinner.start(`Retrieving ${RESOURCE_GROUP_NAMES[group]}`),
     },
   });
 
