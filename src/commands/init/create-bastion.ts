@@ -1,6 +1,7 @@
 import { Bastion } from "../../bastion/bastion.js";
 import * as bastionOps from "../../bastion/create-bastion.js";
 import { cli } from "../../common/cli.js";
+import { fmt } from "../../common/fmt.js";
 
 export interface CreateBastionInput {
   vpcId: string;
@@ -22,21 +23,23 @@ export async function createBastion({
       onImageIdRetrievalStarted: () =>
         subCli.progressStart("Retrieving the latest EC2 AMI"),
       onImageIdRetrieved: (imageId) =>
-        subCli.progressSuccess(`EC2 AMI retrieved: ${imageId}`),
+        subCli.progressSuccess(`EC2 AMI retrieved: ${fmt.value(imageId)}`),
 
       onRoleCreationStarted: () => subCli.progressStart("Creating IAM role"),
       onRoleCreated: (roleName) =>
-        subCli.progressSuccess(`IAM role created: ${roleName}`),
+        subCli.progressSuccess(`IAM role created: ${fmt.value(roleName)}`),
 
       onSecurityGroupCreationStarted: () =>
         subCli.progressStart("Creating security group"),
       onSecurityGroupCreated: (sgId) =>
-        subCli.progressSuccess(`Security group created: ${sgId}`),
+        subCli.progressSuccess(`Security group created: ${fmt.value(sgId)}`),
 
       onInstanceCreationStarted: () =>
         subCli.progressStart("Creating EC2 instance"),
       onInstanceCreated: (instanceId) =>
-        subCli.progressSuccess(`EC2 instance created: ${instanceId}`),
+        subCli.progressSuccess(
+          `EC2 instance created: ${fmt.value(instanceId)}`
+        ),
     },
   });
 

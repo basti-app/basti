@@ -5,6 +5,7 @@ import {
   ManagedResources,
 } from "../../cleanup/managed-resources.js";
 import { cli } from "../../common/cli.js";
+import { fmt } from "../../common/fmt.js";
 
 export interface CleanupResourcesInput {
   resources: ManagedResources;
@@ -34,13 +35,17 @@ export async function cleanupResources({
     managedResources: resources,
     hooks: {
       onCleaningUpResource: (group, id) =>
-        cli.progressStart(`Deleting ${RESOURCE_NAMES[group]}: ${id}`),
+        cli.progressStart(
+          `Deleting ${RESOURCE_NAMES[group]}: ${fmt.value(id)}`
+        ),
       onResourceCleanedUp: (group, id) =>
         cli.progressSuccess(
-          `${capitalize(RESOURCE_NAMES[group])} deleted: ${id}`
+          `${capitalize(RESOURCE_NAMES[group])} deleted: ${fmt.value(id)}`
         ),
       onResourceCleanupFailed: (group, id) =>
-        cli.progressFailure(`Failed to delete ${RESOURCE_NAMES[group]}: ${id}`),
+        cli.progressFailure(
+          `Failed to delete ${RESOURCE_NAMES[group]}: ${fmt.value(id)}`
+        ),
     },
   });
 }

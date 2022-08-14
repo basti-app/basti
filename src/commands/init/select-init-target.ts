@@ -1,6 +1,6 @@
 import inquirer from "inquirer";
 import { getVpcs } from "../../aws/ec2/get-vpcs.js";
-import { formatName } from "../../common/format-name.js";
+import { fmt } from "../../common/fmt.js";
 import { createInitTarget } from "../../target/create-init-target.js";
 import { InitTarget } from "../../target/init-target.js";
 import { CustomInitTargetInput } from "../../target/target-input.js";
@@ -23,7 +23,7 @@ async function promptForCustomTarget(): Promise<CustomInitTargetInput> {
     name: "vpcId",
     message: "Select target VPC",
     choices: vpcs.map((vpc) => ({
-      name: formatName(vpc),
+      name: fmt.name(vpc),
       value: vpc.id,
     })),
   });

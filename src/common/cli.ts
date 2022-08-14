@@ -9,8 +9,8 @@ interface CliPrivateInput {
 export type CliInput = Omit<CliPrivateInput, "spinner">;
 
 export class Cli {
-  readonly indent: number;
-  readonly spinner: Ora;
+  private readonly indent: number;
+  private readonly spinner: Ora;
 
   private constructor({ indent, spinner }: CliPrivateInput) {
     this.indent = indent || 0;

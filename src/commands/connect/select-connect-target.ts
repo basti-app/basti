@@ -1,6 +1,6 @@
 import inquirer from "inquirer";
 import { getVpcs } from "../../aws/ec2/get-vpcs.js";
-import { formatName } from "../../common/format-name.js";
+import { fmt } from "../../common/fmt.js";
 import { ConnectTarget } from "../../target/connect-target.js";
 import { createConnectTarget } from "../../target/create-connect-target.js";
 import { CustomConnectTargetInput } from "../../target/target-input.js";
@@ -24,7 +24,7 @@ async function promptForCustomTarget(): Promise<CustomConnectTargetInput> {
       name: "vpcId",
       message: "Select target VPC",
       choices: vpcs.map((vpc) => ({
-        name: formatName(vpc),
+        name: fmt.name(vpc),
         value: vpc.id,
       })),
     },

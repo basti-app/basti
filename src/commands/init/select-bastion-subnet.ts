@@ -1,7 +1,7 @@
 import inquirer from "inquirer";
 import { getSubnets } from "../../aws/ec2/get-subnets.js";
 import { AwsSubnet } from "../../aws/ec2/types/aws-vpc.js";
-import { formatName } from "../../common/format-name.js";
+import { fmt } from "../../common/fmt.js";
 
 export interface SelectBastionSubnetInput {
   vpcId: string;
@@ -17,7 +17,7 @@ export async function selectBastionSubnet({
     name: "subnet",
     message: "Select public network for the bastion",
     choices: subnets.map((subnet) => ({
-      name: formatName(subnet),
+      name: fmt.name(subnet),
       value: subnet,
     })),
   });
