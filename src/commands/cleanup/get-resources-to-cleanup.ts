@@ -1,9 +1,9 @@
-import ora from "ora";
 import * as cleanupOps from "../../cleanup/get-resources-to-cleanup.js";
 import {
   ManagedResourceGroup,
   ManagedResources,
 } from "../../cleanup/managed-resources.js";
+import { cli } from "../../common/cli.js";
 
 const RESOURCE_GROUP_NAMES: Record<ManagedResourceGroup, string> = {
   accessSecurityGroups: "access security groups",
@@ -14,16 +14,14 @@ const RESOURCE_GROUP_NAMES: Record<ManagedResourceGroup, string> = {
 };
 
 export async function getResourcesToCleanup(): Promise<ManagedResources> {
-  const spinner = ora();
-
   const managedResources = await cleanupOps.getResourcesToCleanup({
     hooks: {
       onRetrievingResources: (group) =>
-        spinner.start(`Retrieving ${RESOURCE_GROUP_NAMES[group]}`),
+        cli.progressStart(`Retrieving ${RESOURCE_GROUP_NAMES[group]}`),
     },
   });
 
-  spinner.succeed("Managed resources retrieved");
+  cli.progressSuccess("Managed resources retrieved");
 
   return managedResources;
 }

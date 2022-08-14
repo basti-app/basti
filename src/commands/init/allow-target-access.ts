@@ -20,19 +20,18 @@ export async function allowTargetAccess({
     return;
   }
 
-  const spinner = ora();
-
   await target.allowAccess({
     bastionInstance: bastion,
     hooks: {
       onSecurityGroupCreationStarted: () =>
-        spinner.start("Creating security group for your target"),
+        cli.progressStart("Creating security group for your target"),
       onSecurityGroupCreated: (sgId) =>
-        spinner.succeed(`Security group created: ${sgId}`),
+        cli.progressSuccess(`Security group created: ${sgId}`),
 
       onSecurityGroupAttachmentStarted: () =>
-        spinner.start("Attaching security group to your target"),
-      onSecurityGroupAttached: () => spinner.succeed("Security group attached"),
+        cli.progressStart("Attaching security group to your target"),
+      onSecurityGroupAttached: () =>
+        cli.progressSuccess("Security group attached"),
     },
   });
 }

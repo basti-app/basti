@@ -15,17 +15,15 @@ export async function startPortForwarding({
   bastionInstanceId,
   localPort,
 }: StartPortForwardingInput): Promise<void> {
-  const spinner = ora();
-
   await startPortForwardingSession({
     target,
     bastionInstanceId,
     localPort,
     hooks: {
       onStartingSession: () =>
-        spinner.start("Starting port forwarding session"),
+        cli.progressStart("Starting port forwarding session"),
       onSessionStarted: () =>
-        spinner.succeed(
+        cli.progressSuccess(
           `Session started. Port ${localPort} is open for your connections 🚀`
         ),
       onSessionInterrupted: () => {

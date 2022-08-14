@@ -1,7 +1,6 @@
-import ora from "ora";
-
 import * as bastionOps from "../../bastion/ensure-bastion-running.js";
 import { Bastion } from "../../bastion/bastion.js";
+import { cli } from "../../common/cli.js";
 
 export interface EnsureBastionRunningInput {
   bastion: Bastion;
@@ -10,20 +9,23 @@ export interface EnsureBastionRunningInput {
 export async function ensureBastionRunning({
   bastion,
 }: EnsureBastionRunningInput): Promise<void> {
-  const spinner = ora();
-
   await bastionOps.ensureBastionRunning({
     bastion,
     hooks: {
       onWaitingInstanceToStart: () =>
-        spinner.start(
+        cli.progressStart(
           `Bastion instance is starting. Waiting instance to start`
         ),
       onWaitingInstanceToStop: () =>
-        spinner.start(`Bastion instance is stopping. Waiting instance to stop`),
+        cli.progressStart(
+          `Bastion instance is stopping. Waiting instance to stop`
+        ),
       onStartingInstance: () =>
-        spinner.start(`Bastion instance is stopped. Starting bastion instance`),
-      onInstanceStarted: () => spinner.succeed(`Bastion instance is running`),
+        cli.progressStart(
+          `Bastion instance is stopped. Starting bastion instance`
+        ),
+      onInstanceStarted: () =>
+        cli.progressSuccess(`Bastion instance is running`),
     },
   });
 }

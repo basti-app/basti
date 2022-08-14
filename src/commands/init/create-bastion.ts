@@ -1,5 +1,3 @@
-import ora from "ora";
-
 import { Bastion } from "../../bastion/bastion.js";
 import * as bastionOps from "../../bastion/create-bastion.js";
 import { cli } from "../../common/cli.js";
@@ -13,8 +11,7 @@ export async function createBastion({
   vpcId,
   subnetId,
 }: CreateBastionInput): Promise<Bastion> {
-  const spinner = ora();
-  const subSpinner = ora({ indent: 2 });
+  const subCli = cli.createSubInstance({ indent: 2 });
 
   cli.info(`${green("❯")} Creating bastion:`);
 
@@ -23,27 +20,27 @@ export async function createBastion({
     subnetId,
     hooks: {
       onImageIdRetrievalStarted: () =>
-        subSpinner.start("Retrieving the latest EC2 AMI"),
+        subCli.progressStart("Retrieving the latest EC2 AMI"),
       onImageIdRetrieved: (imageId) =>
-        subSpinner.succeed(`EC2 AMI retrieved: ${imageId}`),
+        subCli.progressSuccess(`EC2 AMI retrieved: ${imageId}`),
 
-      onRoleCreationStarted: () => subSpinner.start("Creating IAM role"),
+      onRoleCreationStarted: () => subCli.progressStart("Creating IAM role"),
       onRoleCreated: (roleName) =>
-        subSpinner.succeed(`IAM role created: ${roleName}`),
+        subCli.progressSuccess(`IAM role created: ${roleName}`),
 
       onSecurityGroupCreationStarted: () =>
-        subSpinner.start("Creating security group"),
+        subCli.progressStart("Creating security group"),
       onSecurityGroupCreated: (sgId) =>
-        subSpinner.succeed(`Security group created: ${sgId}`),
+        subCli.progressSuccess(`Security group created: ${sgId}`),
 
       onInstanceCreationStarted: () =>
-        subSpinner.start("Creating EC2 instance"),
+        subCli.progressStart("Creating EC2 instance"),
       onInstanceCreated: (instanceId) =>
-        subSpinner.succeed(`EC2 instance created: ${instanceId}`),
+        subCli.progressSuccess(`EC2 instance created: ${instanceId}`),
     },
   });
 
-  spinner.succeed(`Bastion created: ${bastion.id}`);
+  cli.progressSuccess(`Bastion created: ${bastion.id}`);
 
   return bastion;
 }

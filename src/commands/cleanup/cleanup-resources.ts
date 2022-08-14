@@ -1,10 +1,10 @@
-import ora, { Ora } from "ora";
 import { ManagedResourcesCleanupErrors } from "../../cleanup/cleanup-errors.js";
 import { cleanupManagedResources } from "../../cleanup/cleanup-managed-resources.js";
 import {
   ManagedResourceGroup,
   ManagedResources,
 } from "../../cleanup/managed-resources.js";
+import { cli } from "../../common/cli.js";
 
 export interface CleanupResourcesInput {
   resources: ManagedResources;
@@ -30,17 +30,17 @@ const RESOURCE_NAMES: Record<ManagedResourceGroup, string> = {
 export async function cleanupResources({
   resources,
 }: CleanupResourcesInput): Promise<ManagedResourcesCleanupErrors> {
-  const spinner = ora();
-
   return cleanupManagedResources({
     managedResources: resources,
     hooks: {
       onCleaningUpResource: (group, id) =>
-        spinner.start(`Deleting ${RESOURCE_NAMES[group]}: ${id}`),
+        cli.progressStart(`Deleting ${RESOURCE_NAMES[group]}: ${id}`),
       onResourceCleanedUp: (group, id) =>
-        spinner.succeed(`${capitalize(RESOURCE_NAMES[group])} deleted: ${id}`),
+        cli.progressSuccess(
+          `${capitalize(RESOURCE_NAMES[group])} deleted: ${id}`
+        ),
       onResourceCleanupFailed: (group, id) =>
-        spinner.fail(`Failed to delete ${RESOURCE_NAMES[group]}: ${id}`),
+        cli.progressFailure(`Failed to delete ${RESOURCE_NAMES[group]}: ${id}`),
     },
   });
 }
