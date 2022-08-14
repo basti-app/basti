@@ -1,3 +1,4 @@
+import { getErrorMessage } from "../common/get-error-message.js";
 import { bastionInstanceCleaner } from "./bastion-instance-cleaner.js";
 import { bastionInstanceProfileCleaner } from "./bastion-instance-profile-cleaner.js";
 import { bastionRoleCleaner } from "./bastion-role-cleaner.js";
@@ -118,7 +119,7 @@ export async function cleanupResources({
   } catch (error) {
     return {
       reason: "UNKNOWN",
-      message: error instanceof Error ? error.message : undefined,
+      message: getErrorMessage(error),
     };
   }
 }

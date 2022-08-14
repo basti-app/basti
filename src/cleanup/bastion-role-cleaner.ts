@@ -1,4 +1,5 @@
 import { deleteIamRole } from "../aws/iam/delete-iam-role.js";
+import { getErrorMessage } from "../common/get-error-message.js";
 import { ResourceCleaner } from "./cleanup-errors.js";
 
 export const bastionRoleCleaner: ResourceCleaner = async (roleName) => {
@@ -7,7 +8,7 @@ export const bastionRoleCleaner: ResourceCleaner = async (roleName) => {
   } catch (error) {
     return {
       reason: "UNKNOWN",
-      message: error instanceof Error ? error.message : undefined,
+      message: getErrorMessage(error),
     };
   }
 };

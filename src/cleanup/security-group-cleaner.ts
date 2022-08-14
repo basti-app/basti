@@ -4,6 +4,7 @@ import { getDbClusters } from "../aws/rds/get-db-clusters.js";
 import { getDbInstances } from "../aws/rds/get-db-instances.js";
 import { modifyDBCluster } from "../aws/rds/modify-db-cluster.js";
 import { modifyDbInstance } from "../aws/rds/modify-db-instance.js";
+import { getErrorMessage } from "../common/get-error-message.js";
 import { retry } from "../common/retry.js";
 import { BatchResourceCleaner, ResourceCleaner } from "./cleanup-errors.js";
 
@@ -16,7 +17,7 @@ export const accessSecurityGroupReferencesCleaner: BatchResourceCleaner =
     } catch (error) {
       return {
         reason: "UNKNOWN",
-        message: error instanceof Error ? error.message : undefined,
+        message: getErrorMessage(error),
       };
     }
   };
@@ -36,7 +37,7 @@ export const securityGroupCleaner: ResourceCleaner = async (groupId) => {
     } else {
       return {
         reason: "UNKNOWN",
-        message: error instanceof Error ? error.message : undefined,
+        message: getErrorMessage(error),
       };
     }
   }

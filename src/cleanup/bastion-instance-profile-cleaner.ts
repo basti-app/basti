@@ -1,4 +1,5 @@
 import { deleteInstanceProfile } from "../aws/iam/delete-instance-profile.js";
+import { getErrorMessage } from "../common/get-error-message.js";
 import { ResourceCleaner } from "./cleanup-errors.js";
 
 export const bastionInstanceProfileCleaner: ResourceCleaner = async (
@@ -9,7 +10,7 @@ export const bastionInstanceProfileCleaner: ResourceCleaner = async (
   } catch (error) {
     return {
       reason: "UNKNOWN",
-      message: error instanceof Error ? error.message : undefined,
+      message: getErrorMessage(error),
     };
   }
 };

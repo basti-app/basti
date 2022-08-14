@@ -1,4 +1,5 @@
 import { terminateEc2Instances } from "../aws/ec2/terminate-ec2-instances.js";
+import { getErrorMessage } from "../common/get-error-message.js";
 import { ResourceCleaner } from "./cleanup-errors.js";
 
 export const bastionInstanceCleaner: ResourceCleaner = async (instanceId) => {
@@ -7,7 +8,7 @@ export const bastionInstanceCleaner: ResourceCleaner = async (instanceId) => {
   } catch (error) {
     return {
       reason: "UNKNOWN",
-      message: error instanceof Error ? error.message : undefined,
+      message: getErrorMessage(error),
     };
   }
 };
