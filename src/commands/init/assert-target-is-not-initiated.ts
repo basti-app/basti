@@ -1,3 +1,4 @@
+import { cli } from "../../common/cli.js";
 import { InitTarget } from "../../target/init-target.js";
 
 export interface AssertTargetIsNotInitiatedInput {
@@ -12,7 +13,7 @@ export async function assertTargetIsNotInitiated({
   }
 
   if (await target.hasAccessAllowed()) {
-    console.log(
+    cli.info(
       `The selected target has already been initiated for use with Basti. If you need to re-initiate Basti, please, do cleanup first`
     );
     process.exit(1);

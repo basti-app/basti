@@ -1,4 +1,5 @@
 import ora from "ora";
+import { cli } from "../../common/cli.js";
 
 import { startPortForwardingSession } from "../../session/start-port-forwarding-session.js";
 import { ConnectTarget } from "../../target/connect-target.js";
@@ -28,7 +29,7 @@ export async function startPortForwarding({
           `Session started. Port ${localPort} is open for your connections 🚀`
         ),
       onSessionInterrupted: () => {
-        console.log("Session was interrupted unexpectedly");
+        cli.info("Session was interrupted unexpectedly");
         process.exit(1);
       },
     },

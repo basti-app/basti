@@ -2,6 +2,7 @@ import ora from "ora";
 
 import { Bastion } from "../../bastion/bastion.js";
 import * as bastionOps from "../../bastion/create-bastion.js";
+import { cli } from "../../common/cli.js";
 
 export interface CreateBastionInput {
   vpcId: string;
@@ -15,7 +16,7 @@ export async function createBastion({
   const spinner = ora();
   const subSpinner = ora({ indent: 2 });
 
-  console.log(`${green("❯")} Creating bastion:`);
+  cli.info(`${green("❯")} Creating bastion:`);
 
   const bastion = await bastionOps.createBastion({
     vpcId,

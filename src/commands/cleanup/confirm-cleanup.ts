@@ -5,6 +5,7 @@ import {
   ManagedResources,
 } from "../../cleanup/managed-resources.js";
 import { formatList } from "../../common/format-list.js";
+import { cli } from "../../common/cli.js";
 
 export interface ConfirmCleanupInput {
   resources: ManagedResources;
@@ -22,16 +23,16 @@ export async function confirmCleanup({
   resources,
 }: ConfirmCleanupInput): Promise<void> {
   if (isEmpty(resources)) {
-    console.log("No Basti-managed resources found in you account");
+    cli.info("No Basti-managed resources found in you account");
     process.exit(0);
   }
 
-  console.log("The following resources will be deleted:");
+  cli.info("The following resources will be deleted:");
 
   ManagedResourceGroups.filter((group) => resources[group].length > 0).forEach(
     (group) => {
-      console.log(RESOURCE_GROUP_TITLES[group]);
-      console.log(formatList(resources[group]));
+      cli.info(RESOURCE_GROUP_TITLES[group]);
+      cli.info(formatList(resources[group]));
     }
   );
 

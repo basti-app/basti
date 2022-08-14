@@ -1,6 +1,7 @@
 import ora from "ora";
 
 import { Bastion } from "../../bastion/bastion.js";
+import { cli } from "../../common/cli.js";
 import { InitTarget } from "../../target/init-target.js";
 
 export interface AllowTargetAccessInput {
@@ -13,7 +14,7 @@ export async function allowTargetAccess({
   bastion,
 }: AllowTargetAccessInput): Promise<void> {
   if (!target.allowAccess) {
-    console.log(
+    cli.info(
       `Please, make sure your target is accessible from the bastion. Bastion security group: ${bastion.securityGroupName}`
     );
     return;

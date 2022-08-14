@@ -34,6 +34,7 @@
     "@aws-sdk/client-iam": "^3.121.0",
     "@aws-sdk/client-rds": "^3.122.0",
     "@aws-sdk/client-ssm": "^3.121.0",
+    "chalk": "^5.0.1",
     "inquirer": "^9.0.0",
     "ora": "^6.1.2",
     "yargs": "^17.5.1",
