@@ -1,5 +1,5 @@
-import { Bastion } from "../../bastion/bastion.js";
-import * as bastionOps from "../../bastion/get-bastion.js";
+import { Bastion } from "../../../bastion/bastion.js";
+import * as bastionOps from "../../../bastion/get-bastion.js";
 
 export interface GetBastionInput {
   bastionId: string;

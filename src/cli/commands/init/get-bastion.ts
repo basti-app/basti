@@ -1,6 +1,6 @@
-import { Bastion } from "../../bastion/bastion.js";
-import * as bastionOps from "../../bastion/get-bastion.js";
-import { cli } from "../../common/cli.js";
+import { Bastion } from "../../../bastion/bastion.js";
+import * as bastionOps from "../../../bastion/get-bastion.js";
+import { cli } from "../../../common/cli.js";
 
 export interface GetBastionInput {
   vpcId: string;

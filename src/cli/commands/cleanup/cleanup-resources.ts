@@ -1,11 +1,11 @@
-import { ManagedResourcesCleanupErrors } from "../../cleanup/cleanup-errors.js";
-import { cleanupManagedResources } from "../../cleanup/cleanup-managed-resources.js";
+import { ManagedResourcesCleanupErrors } from "../../../cleanup/cleanup-errors.js";
+import { cleanupManagedResources } from "../../../cleanup/cleanup-managed-resources.js";
 import {
   ManagedResourceGroup,
   ManagedResources,
-} from "../../cleanup/managed-resources.js";
-import { cli } from "../../common/cli.js";
-import { fmt } from "../../common/fmt.js";
+} from "../../../cleanup/managed-resources.js";
+import { cli } from "../../../common/cli.js";
+import { fmt } from "../../../common/fmt.js";
 
 export interface CleanupResourcesInput {
   resources: ManagedResources;

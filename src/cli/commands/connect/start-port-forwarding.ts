@@ -1,8 +1,8 @@
 import ora from "ora";
-import { cli } from "../../common/cli.js";
+import { cli } from "../../../common/cli.js";
 
-import { startPortForwardingSession } from "../../session/start-port-forwarding-session.js";
-import { ConnectTarget } from "../../target/connect-target.js";
+import { startPortForwardingSession } from "../../../session/start-port-forwarding-session.js";
+import { ConnectTarget } from "../../../target/connect-target.js";
 
 export interface StartPortForwardingInput {
   target: ConnectTarget;

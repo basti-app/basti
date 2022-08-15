@@ -1,5 +1,5 @@
-import chalk from "chalk";
 import ora, { Ora } from "ora";
+import { fmt } from "./fmt.js";
 
 interface CliPrivateInput {
   spinner?: Ora;
@@ -7,6 +7,8 @@ interface CliPrivateInput {
 }
 
 export type CliInput = Omit<CliPrivateInput, "spinner">;
+
+const NEW_LINE_REGEX = /(\r\n|\r|\n)/g;
 
 export class Cli {
   private readonly indent: number;
@@ -34,33 +36,51 @@ export class Cli {
     return new Cli(subInput);
   }
 
-  info(message: string): void {
+  info(text: string): void {
     this.progressStop();
 
-    console.log(this.indentStr() + message);
+    console.log(this.indentStr() + text);
   }
 
-  error(message: string): void {
+  error(text: string): void {
     this.progressStop();
 
     console.log("\n");
-    console.log(chalk.red(this.indentStr() + message));
+    console.log(fmt.red(this.indentStr() + text));
   }
 
-  progressStart(message: string): void {
-    this.spinner.start(message);
+  progressStart(text: string): void {
+    this.spinner.start(text);
   }
 
   progressStop(): void {
     this.spinner.stop();
   }
 
-  progressSuccess(message: string): void {
-    this.spinner.succeed(message);
+  progressSuccess(text?: string): void {
+    this.spinner.succeed(text);
   }
 
-  progressFailure(message: string): void {
-    this.spinner.fail(message);
+  progressFailure(text?: string): void {
+    this.spinner.fail(text);
+  }
+
+  progressWarn(input?: { text?: string; warnText: string }): void {
+    const currentText = this.spinner.text;
+    const text =
+      input && `${input.text || currentText} - ${fmt.yellow(input.warnText)}`;
+
+    this.spinner.stopAndPersist({
+      symbol: fmt.yellow("⚠"),
+      text,
+    });
+  }
+
+  private indentNewLines(message: string): string {
+    return message.replace(
+      NEW_LINE_REGEX,
+      (newLine) => this.indentStr() + newLine
+    );
   }
 
   private indentStr(): string {

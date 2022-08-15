@@ -1,11 +1,15 @@
 import inquirer, { DistinctChoice } from "inquirer";
-import { getDbClusters } from "../../aws/rds/get-db-clusters.js";
-import { getDbInstances } from "../../aws/rds/get-db-instances.js";
-import { AwsDbCluster, AwsDbInstance } from "../../aws/rds/rds-types.js";
+import { AwsAccessDeniedError } from "../../../aws/common/AwsError.js";
+import { getDbClusters } from "../../../aws/rds/get-db-clusters.js";
+import { getDbInstances } from "../../../aws/rds/get-db-instances.js";
+import { AwsDbCluster, AwsDbInstance } from "../../../aws/rds/rds-types.js";
+import { Cli, cli } from "../../../common/cli.js";
+import { fmt } from "../../../common/fmt.js";
+import { getErrorMessage } from "../../../common/get-error-message.js";
 import {
   DbClusterTargetInput,
   DbInstanceTargetInput,
-} from "../../target/target-input.js";
+} from "../../../target/target-input.js";
 
 export type SelectedTargetInput =
   | DbInstanceTargetInput
@@ -13,8 +17,7 @@ export type SelectedTargetInput =
   | { custom: true };
 
 export async function selectTarget(): Promise<SelectedTargetInput> {
-  const instances = await getDbInstances();
-  const clusters = await getDbClusters();
+  const { instances, clusters } = await getTargets();
 
   const { target } = await inquirer.prompt({
     type: "list",
@@ -28,6 +31,29 @@ export async function selectTarget(): Promise<SelectedTargetInput> {
   });
 
   return target;
+}
+
+async function getTargets(): Promise<{
+  instances: AwsDbInstance[];
+  clusters: AwsDbCluster[];
+}> {
+  const subCli = cli.createSubInstance({ indent: 2 });
+
+  cli.info(`${fmt.green("❯")} Retrieving connection targets:`);
+
+  const instances = await getTargetResources(
+    () => getDbInstances(),
+    "DB instances",
+    subCli
+  );
+
+  const clusters = await getTargetResources(
+    () => getDbClusters(),
+    "DB clusters",
+    subCli
+  );
+
+  return { instances, clusters };
 }
 
 function toInstanceChoices(instances: AwsDbInstance[]): DistinctChoice[] {
@@ -60,6 +86,26 @@ function getCustomChoices(): DistinctChoice[] {
       },
     },
   ];
+}
+
+async function getTargetResources<T>(
+  getResources: () => Promise<T[]>,
+  resourceName: string,
+  cli: Cli
+): Promise<T[]> {
+  try {
+    cli.progressStart(resourceName);
+    const resources = await getResources();
+    cli.progressSuccess();
+    return resources;
+  } catch (error) {
+    const warnText =
+      error instanceof AwsAccessDeniedError
+        ? "Access denied by IAM"
+        : `Unexpected error: ${getErrorMessage(error)}`;
+    cli.progressWarn({ warnText });
+    return [];
+  }
 }
 
 function toInstanceChoice(

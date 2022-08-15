@@ -1,9 +1,8 @@
 import inquirer from "inquirer";
-import { getVpcs } from "../../aws/ec2/get-vpcs.js";
-import { fmt } from "../../common/fmt.js";
-import { ConnectTarget } from "../../target/connect-target.js";
-import { createConnectTarget } from "../../target/create-connect-target.js";
-import { CustomConnectTargetInput } from "../../target/target-input.js";
+import { ConnectTarget } from "../../../target/connect-target.js";
+import { createConnectTarget } from "../../../target/create-connect-target.js";
+import { CustomConnectTargetInput } from "../../../target/target-input.js";
+import { selectCustomTargetVpc } from "../common/select-custom-target-vpc.js";
 import { selectTarget } from "../common/select-target.js";
 
 export async function selectConnectTarget(): Promise<ConnectTarget> {
@@ -16,18 +15,9 @@ export async function selectConnectTarget(): Promise<ConnectTarget> {
 }
 
 async function promptForCustomTarget(): Promise<CustomConnectTargetInput> {
-  const vpcs = await getVpcs();
+  const vpcId = await selectCustomTargetVpc();
 
-  const { vpcId, host, port } = await inquirer.prompt([
-    {
-      type: "list",
-      name: "vpcId",
-      message: "Select target VPC",
-      choices: vpcs.map((vpc) => ({
-        name: fmt.name(vpc),
-        value: vpc.id,
-      })),
-    },
+  const { host, port } = await inquirer.prompt([
     {
       type: "input",
       name: "host",

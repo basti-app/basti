@@ -1,8 +1,8 @@
 import ora from "ora";
 
-import { Bastion } from "../../bastion/bastion.js";
-import { cli } from "../../common/cli.js";
-import { InitTarget } from "../../target/init-target.js";
+import { Bastion } from "../../../bastion/bastion.js";
+import { cli } from "../../../common/cli.js";
+import { InitTarget } from "../../../target/init-target.js";
 
 export interface AllowTargetAccessInput {
   target: InitTarget;

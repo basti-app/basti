@@ -1,7 +1,7 @@
-import { Bastion } from "../../bastion/bastion.js";
-import * as bastionOps from "../../bastion/create-bastion.js";
-import { cli } from "../../common/cli.js";
-import { fmt } from "../../common/fmt.js";
+import { Bastion } from "../../../bastion/bastion.js";
+import * as bastionOps from "../../../bastion/create-bastion.js";
+import { cli } from "../../../common/cli.js";
+import { fmt } from "../../../common/fmt.js";
 
 export interface CreateBastionInput {
   vpcId: string;
@@ -14,7 +14,7 @@ export async function createBastion({
 }: CreateBastionInput): Promise<Bastion> {
   const subCli = cli.createSubInstance({ indent: 2 });
 
-  cli.info(`${green("❯")} Creating bastion:`);
+  cli.info(`${fmt.green("❯")} Creating bastion:`);
 
   const bastion = await bastionOps.createBastion({
     vpcId,

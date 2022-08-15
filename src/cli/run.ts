@@ -1,15 +1,15 @@
 import { readFileSync } from "fs";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
+import { withErrorHandling } from "./error.js";
 import { handleCleanup } from "./commands/cleanup/cleanup.js";
 import { handleConnect } from "./commands/connect/connect.js";
-
 import { handleInit } from "./commands/init/init.js";
 
 const pkg: {
   version: string;
 } = JSON.parse(
-  readFileSync(new URL("../package.json", import.meta.url)).toString()
+  readFileSync(new URL("../../package.json", import.meta.url)).toString()
 );
 
 yargs(hideBin(process.argv))
@@ -17,20 +17,20 @@ yargs(hideBin(process.argv))
   .command(
     "init",
     "Set up the aws account to use Basti",
-    (yargs) => yargs,
-    handleInit
+    () => {},
+    withErrorHandling(handleInit)
   )
   .command(
     "connect",
     "Start port forwarding session to the selected target",
     (yargs) => yargs,
-    handleConnect
+    withErrorHandling(handleConnect)
   )
   .command(
     "cleanup",
     "Remove all resources created by Basti",
     (yargs) => yargs,
-    handleCleanup
+    withErrorHandling(handleCleanup)
   )
   .demandCommand(1)
   .strict()

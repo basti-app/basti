@@ -1,6 +1,6 @@
-import * as bastionOps from "../../bastion/ensure-bastion-running.js";
-import { Bastion } from "../../bastion/bastion.js";
-import { cli } from "../../common/cli.js";
+import * as bastionOps from "../../../bastion/ensure-bastion-running.js";
+import { Bastion } from "../../../bastion/bastion.js";
+import { cli } from "../../../common/cli.js";
 
 export interface EnsureBastionRunningInput {
   bastion: Bastion;

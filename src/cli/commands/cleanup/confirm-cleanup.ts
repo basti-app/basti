@@ -3,9 +3,9 @@ import {
   ManagedResourceGroup,
   ManagedResourceGroups,
   ManagedResources,
-} from "../../cleanup/managed-resources.js";
-import { cli } from "../../common/cli.js";
-import { fmt } from "../../common/fmt.js";
+} from "../../../cleanup/managed-resources.js";
+import { cli } from "../../../common/cli.js";
+import { fmt } from "../../../common/fmt.js";
 
 export interface ConfirmCleanupInput {
   resources: ManagedResources;

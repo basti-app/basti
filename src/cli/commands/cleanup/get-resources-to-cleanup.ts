@@ -1,9 +1,9 @@
-import * as cleanupOps from "../../cleanup/get-resources-to-cleanup.js";
+import * as cleanupOps from "../../../cleanup/get-resources-to-cleanup.js";
 import {
   ManagedResourceGroup,
   ManagedResources,
-} from "../../cleanup/managed-resources.js";
-import { cli } from "../../common/cli.js";
+} from "../../../cleanup/managed-resources.js";
+import { cli } from "../../../common/cli.js";
 
 const RESOURCE_GROUP_NAMES: Record<ManagedResourceGroup, string> = {
   accessSecurityGroups: "access security groups",

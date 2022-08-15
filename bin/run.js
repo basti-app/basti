@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-import "../dist/run.js";
+import "../dist/cli/run.js";
