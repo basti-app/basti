@@ -1,5 +1,5 @@
 import { allowTargetAccess } from "./allow-target-access.js";
-import { assertTargetIsNotInitiated } from "./assert-target-is-not-initiated.js";
+import { assertTargetIsNotInitialized } from "./assert-target-is-not-initiated.js";
 import { createBastion } from "./create-bastion.js";
 import { getBastion } from "./get-bastion.js";
 import { selectBastionSubnet } from "./select-bastion-subnet.js";
@@ -8,7 +8,7 @@ import { selectInitTarget } from "./select-init-target.js";
 export async function handleInit(): Promise<void> {
   const target = await selectInitTarget();
 
-  await assertTargetIsNotInitiated({ target });
+  await assertTargetIsNotInitialized({ target });
 
   const targetVpcId = await target.getVpcId();
 

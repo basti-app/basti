@@ -2,6 +2,7 @@ import { DescribeSecurityGroupsCommand, Filter } from "@aws-sdk/client-ec2";
 import { getTagFilter } from "../tags/get-tag-filter.js";
 import { AwsTag } from "../tags/types.js";
 import { ec2Client } from "./ec2-client.js";
+import { handleEc2Errors } from "./handle-ec2-errors.js";
 import { parseSecurityGroupResponse } from "./parse-ec2-response.js";
 import { AwsSecurityGroup } from "./types/aws-security-group.js";
 
@@ -16,14 +17,16 @@ export async function getSecurityGroups({
   tags,
   names,
 }: GetSecurityGroupsInput): Promise<AwsSecurityGroup[]> {
-  const { SecurityGroups } = await ec2Client.send(
-    new DescribeSecurityGroupsCommand({
-      GroupIds: securityGroupIds,
-      Filters: [
-        ...(tags ? tags.map(getTagFilter) : []),
-        ...(names ? [getNamesFilter(names)] : []),
-      ],
-    })
+  const { SecurityGroups } = await handleEc2Errors(() =>
+    ec2Client.send(
+      new DescribeSecurityGroupsCommand({
+        GroupIds: securityGroupIds,
+        Filters: [
+          ...(tags ? tags.map(getTagFilter) : []),
+          ...(names ? [getNamesFilter(names)] : []),
+        ],
+      })
+    )
   );
 
   if (!SecurityGroups) {
