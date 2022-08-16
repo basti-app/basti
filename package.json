@@ -7,7 +7,7 @@
     "node": ">=14.16"
   },
   "bin": {
-    "basti": "bin/run.js"
+    "basti": "bin/dev.js"
   },
   "scripts": {
     "build": "tsc",
