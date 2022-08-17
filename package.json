@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "test:types": "tsc --noEmit"
+    "check:types": "tsc --noEmit --skipLibCheck"
   },
   "repository": {
     "type": "git",
