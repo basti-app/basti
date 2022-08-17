@@ -12,17 +12,17 @@ export class DbClusterInitTarget extends InitTargetBase {
   }
 
   async getVpcId(): Promise<string> {
-    const optionalDbSubnetGroup = await getDbSubnetGroup({
+    const dbSubnetGroup = await getDbSubnetGroup({
       name: this.dbCluster.dbSubnetGroupName,
     });
 
-    if (!optionalDbSubnetGroup) {
+    if (!dbSubnetGroup) {
       throw new Error(
-        `Can't get DB subnet group for name "${this.dbCluster.dbSubnetGroupName}".`
+        `DB subnet group "${this.dbCluster.dbSubnetGroupName}" not found`
       );
     }
 
-    return optionalDbSubnetGroup.vpcId;
+    return dbSubnetGroup.vpcId;
   }
 
   protected getTargetPort(): number {
