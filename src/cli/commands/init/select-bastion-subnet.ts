@@ -2,6 +2,7 @@ import inquirer from "inquirer";
 import { getSubnets } from "../../../aws/ec2/get-subnets.js";
 import { AwsSubnet } from "../../../aws/ec2/types/aws-vpc.js";
 import { fmt } from "../../../common/fmt.js";
+import { handleOperation } from "../common/handle-operation.js";
 
 export interface SelectBastionSubnetInput {
   vpcId: string;
@@ -10,7 +11,10 @@ export interface SelectBastionSubnetInput {
 export async function selectBastionSubnet({
   vpcId,
 }: SelectBastionSubnetInput): Promise<AwsSubnet> {
-  const subnets = await getSubnets({ vpcId });
+  const subnets = await handleOperation(
+    () => getSubnets({ vpcId }),
+    "Analyzing VPC"
+  );
 
   const { subnet } = await inquirer.prompt({
     type: "list",
