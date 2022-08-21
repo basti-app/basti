@@ -1,7 +1,8 @@
-import { GetParameterCommand, ParameterType } from "@aws-sdk/client-ssm";
+import { GetParameterCommand } from "@aws-sdk/client-ssm";
+import { AwsError, AwsNotFoundError } from "../common/aws-error.js";
 import { parseSsmParameter } from "./parse-ssm-response.js";
 import { ssmClient } from "./ssm-client.js";
-import { AwsSsmParameter } from "./types.js";
+import { AwsSsmParameter, AwsSsmParameterType } from "./types.js";
 
 export interface GetSsmParameterInput {
   name: string;
@@ -10,17 +11,24 @@ export interface GetSsmParameterInput {
 export async function getSsmParameter({
   name,
 }: GetSsmParameterInput): Promise<AwsSsmParameter | undefined> {
-  const { Parameter } = await ssmClient.send(
-    new GetParameterCommand({
-      Name: name,
-    })
-  );
+  try {
+    const { Parameter } = await ssmClient.send(
+      new GetParameterCommand({
+        Name: name,
+      })
+    );
 
-  if (!Parameter) {
-    return;
+    if (!Parameter) {
+      throw new Error(`Invalid response from AWS.`);
+    }
+
+    return parseSsmParameter(Parameter);
+  } catch (error) {
+    if (error instanceof AwsNotFoundError) {
+      return undefined;
+    }
+    throw error;
   }
-
-  return parseSsmParameter(Parameter);
 }
 
 export async function getStringSsmParameter(
@@ -33,10 +41,24 @@ export async function getStringSsmParameter(
   }
 
   if (parameter.type !== "string") {
-    throw new Error(
-      `Expecting SSM parameter "${parameter.name}" to be of type "string" but got "${parameter.type}."`
+    throw new AwsWrongSsmParameterTypeError(
+      AwsSsmParameterType.STRING,
+      parameter.name,
+      parameter.type
     );
   }
 
   return parameter.value;
+}
+
+export class AwsWrongSsmParameterTypeError extends AwsError {
+  constructor(
+    public readonly expectedType: string,
+    public readonly parameterName: string,
+    public readonly parameterType: string
+  ) {
+    super(
+      `Expecting SSM parameter "${parameterName}" to be of type "${expectedType}" but got "${parameterType}"`
+    );
+  }
 }

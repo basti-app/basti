@@ -4,6 +4,7 @@ import { hideBin } from "yargs/helpers";
 import { handleCleanup } from "./commands/cleanup/cleanup.js";
 import { handleConnect } from "./commands/connect/connect.js";
 import { handleInit } from "./commands/init/init.js";
+import { withErrorHandling } from "./error/with-error-handling.js";
 
 const pkg: {
   version: string;
@@ -13,11 +14,16 @@ const pkg: {
 
 yargs(hideBin(process.argv))
   .version(pkg.version)
-  .command("init", "Set up the aws account to use Basti", () => {}, handleInit)
+  .command(
+    "init",
+    "Set up the aws account to use Basti",
+    () => {},
+    withErrorHandling(handleInit)
+  )
   .command(
     "connect",
     "Start port forwarding session to the selected target",
-    (yargs) => yargs,
+    () => {},
     handleConnect
   )
   .command(

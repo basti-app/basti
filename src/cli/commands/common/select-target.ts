@@ -1,5 +1,5 @@
 import inquirer, { DistinctChoice } from "inquirer";
-import { AwsAccessDeniedError } from "../../../aws/common/AwsError.js";
+import { AwsAccessDeniedError } from "../../../aws/common/aws-error.js";
 import { getDbClusters } from "../../../aws/rds/get-db-clusters.js";
 import { getDbInstances } from "../../../aws/rds/get-db-instances.js";
 import { AwsDbCluster, AwsDbInstance } from "../../../aws/rds/rds-types.js";

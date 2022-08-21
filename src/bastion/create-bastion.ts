@@ -2,8 +2,14 @@ import * as crypto from "crypto";
 
 import { createEc2Instance } from "../aws/ec2/create-ec2-instance.js";
 import { createSecurityGroup } from "../aws/ec2/create-security-group.js";
+import { AwsSecurityGroup } from "../aws/ec2/types/aws-security-group.js";
 import { createIamRole } from "../aws/iam/create-iam-role.js";
+import { AwsRole } from "../aws/iam/types.js";
 import { getStringSsmParameter } from "../aws/ssm/get-ssm-parameter.js";
+import {
+  ResourceNotFoundError,
+  RuntimeError,
+} from "../common/runtime-error.js";
 import { BASTION_INSTANCE_CLOUD_INIT } from "./bastion-cloudinit.js";
 import {
   Bastion,
@@ -16,19 +22,45 @@ import {
   BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
 } from "./bastion.js";
 
+interface CreateBastionHooks {
+  onRetrievingImageId?: () => void;
+  onImageIdRetrieved?: (imageId: string) => void;
+  onCreatingRole?: () => void;
+  onRoleCreated?: (roleId: string) => void;
+  onCreatingSecurityGroup?: () => void;
+  onSecurityGroupCreated?: (securityGroupId: string) => void;
+  onCreatingInstance?: () => void;
+  onInstanceCreated?: (instanceId: string) => void;
+}
+
 export interface CreateBastionInput {
   vpcId: string;
   subnetId: string;
-  hooks?: {
-    onImageIdRetrievalStarted?: () => void;
-    onImageIdRetrieved?: (imageId: string) => void;
-    onRoleCreationStarted?: () => void;
-    onRoleCreated?: (roleId: string) => void;
-    onSecurityGroupCreationStarted?: () => void;
-    onSecurityGroupCreated?: (securityGroupId: string) => void;
-    onInstanceCreationStarted?: () => void;
-    onInstanceCreated?: (instanceId: string) => void;
-  };
+  hooks?: CreateBastionHooks;
+}
+
+export class BastionImageRetrievalError extends RuntimeError {
+  constructor(cause: unknown) {
+    super(`Can't get latest EC2 AMI for bastion instance`, cause);
+  }
+}
+
+export class BastionRoleCreationError extends RuntimeError {
+  constructor(cause: unknown) {
+    super(`Can't create IAM role for bastion instance`, cause);
+  }
+}
+
+export class BastionSecurityGroupCreationError extends RuntimeError {
+  constructor(cause: unknown) {
+    super(`Can't create security group for bastion instance`, cause);
+  }
+}
+
+export class BastionInstanceCreationError extends RuntimeError {
+  constructor(cause: unknown) {
+    super(`Can't create bastion EC2 instance`, cause);
+  }
 }
 
 export async function createBastion({
@@ -38,60 +70,24 @@ export async function createBastion({
 }: CreateBastionInput): Promise<Bastion> {
   const bastionId = generateBastionInstanceId();
 
-  hooks?.onImageIdRetrievalStarted?.();
-  const bastionImageId = await getStringSsmParameter({
-    name: "/aws/service/ami-amazon-linux-latest/amzn2-ami-kernel-5.10-hvm-x86_64-gp2",
-  });
-  if (!bastionImageId) {
-    throw new Error(`Can't get latest Amazon Linux image id.`);
-  }
-  hooks?.onImageIdRetrieved?.(bastionImageId);
+  const bastionImageId = await getBastionImageId(hooks);
 
-  hooks?.onRoleCreationStarted?.();
-  const bastionRole = await createIamRole({
-    name: `${BASTION_INSTANCE_ROLE_NAME_PREFIX}-${bastionId}`,
-    path: BASTION_INSTANCE_ROLE_PATH,
-    principalService: "ec2.amazonaws.com",
-    managedPolicies: [
-      "AmazonSSMManagedInstanceCore",
-      "AmazonEC2ReadOnlyAccess",
-    ],
-  });
-  hooks?.onRoleCreated?.(bastionRole.name);
+  const bastionRole = await createBastionRole(bastionId, hooks);
 
-  hooks?.onSecurityGroupCreationStarted?.();
-  const bastionSecurityGroup = await createSecurityGroup({
-    name: `${BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX}-${bastionId}`,
-    description:
-      "Identifies basti instance and allows connection to the Internet.",
+  const bastionSecurityGroup = await createBastionSecurityGroup(
+    bastionId,
     vpcId,
-    ingressRules: [],
-  });
-  hooks?.onSecurityGroupCreated?.(bastionSecurityGroup.id);
+    hooks
+  );
 
-  hooks?.onInstanceCreationStarted?.();
-  const bastionInstance = await createEc2Instance({
-    name: `${BASTION_INSTANCE_NAME_PREFIX}-${bastionId}`,
-    imageId: bastionImageId,
-    instanceType: "t2.micro",
-    roleNames: [bastionRole.name],
-    profilePath: BASTION_INSTANCE_PROFILE_PATH,
+  const bastionInstance = await createBastionInstance(
+    bastionId,
+    bastionImageId,
+    bastionRole,
     subnetId,
-    assignPublicIp: true,
-    securityGroupIds: [bastionSecurityGroup.id],
-    userData: BASTION_INSTANCE_CLOUD_INIT,
-    tags: [
-      {
-        key: BASTION_INSTANCE_ID_TAG_NAME,
-        value: bastionId,
-      },
-      {
-        key: BASTION_INSTANCE_IN_USE_TAG_NAME,
-        value: new Date().toISOString(),
-      },
-    ],
-  });
-  hooks?.onInstanceCreated?.(bastionInstance.id);
+    bastionSecurityGroup,
+    hooks
+  );
 
   return {
     id: bastionId,
@@ -101,6 +97,109 @@ export async function createBastion({
     securityGroupId: bastionSecurityGroup.id,
     securityGroupName: bastionSecurityGroup.name,
   };
+}
+
+async function getBastionImageId(hooks?: CreateBastionHooks) {
+  try {
+    const parameterName =
+      "/aws/service/ami-amazon-linux-latest/amzn2-ami-kernel-5.10-hvm-x86_64-gp2";
+
+    hooks?.onRetrievingImageId?.();
+
+    const bastionImageId = await getStringSsmParameter({
+      name: parameterName,
+    });
+    if (!bastionImageId) {
+      throw new ResourceNotFoundError(parameterName);
+    }
+
+    hooks?.onImageIdRetrieved?.(bastionImageId);
+
+    return bastionImageId;
+  } catch (error) {
+    throw new BastionImageRetrievalError(error);
+  }
+}
+
+async function createBastionRole(
+  bastionId: string,
+  hooks?: CreateBastionHooks
+) {
+  try {
+    hooks?.onCreatingRole?.();
+    const bastionRole = await createIamRole({
+      name: `${BASTION_INSTANCE_ROLE_NAME_PREFIX}-${bastionId}`,
+      path: BASTION_INSTANCE_ROLE_PATH,
+      principalService: "ec2.amazonaws.com",
+      managedPolicies: [
+        "AmazonSSMManagedInstanceCore",
+        "AmazonEC2ReadOnlyAccess",
+      ],
+    });
+    hooks?.onRoleCreated?.(bastionRole.name);
+    return bastionRole;
+  } catch (error) {
+    throw new BastionRoleCreationError(error);
+  }
+}
+
+async function createBastionSecurityGroup(
+  bastionId: string,
+  vpcId: string,
+  hooks?: CreateBastionHooks
+) {
+  try {
+    hooks?.onCreatingSecurityGroup?.();
+    const bastionSecurityGroup = await createSecurityGroup({
+      name: `${BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX}-${bastionId}`,
+      description:
+        "Identifies basti instance and allows connection to the Internet.",
+      vpcId,
+      ingressRules: [],
+    });
+    hooks?.onSecurityGroupCreated?.(bastionSecurityGroup.id);
+    return bastionSecurityGroup;
+  } catch (error) {
+    throw new BastionSecurityGroupCreationError(error);
+  }
+}
+
+async function createBastionInstance(
+  bastionId: string,
+  bastionImageId: string,
+  bastionRole: AwsRole,
+  subnetId: string,
+  bastionSecurityGroup: AwsSecurityGroup,
+  hooks?: CreateBastionHooks
+) {
+  try {
+    hooks?.onCreatingInstance?.();
+    const bastionInstance = await createEc2Instance({
+      name: `${BASTION_INSTANCE_NAME_PREFIX}-${bastionId}`,
+      imageId: bastionImageId,
+      instanceType: "t2.micro",
+      roleNames: [bastionRole.name],
+      profilePath: BASTION_INSTANCE_PROFILE_PATH,
+      subnetId,
+      assignPublicIp: true,
+      securityGroupIds: [bastionSecurityGroup.id],
+      userData: BASTION_INSTANCE_CLOUD_INIT,
+      tags: [
+        {
+          key: BASTION_INSTANCE_ID_TAG_NAME,
+          value: bastionId,
+        },
+        {
+          key: BASTION_INSTANCE_IN_USE_TAG_NAME,
+          value: new Date().toISOString(),
+        },
+      ],
+    });
+    hooks?.onInstanceCreated?.(bastionInstance.id);
+    return bastionInstance;
+  } catch (error) {
+    throw new BastionInstanceCreationError(error);
+  }
 }
 
 function generateBastionInstanceId(): string {

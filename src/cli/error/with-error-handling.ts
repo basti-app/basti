@@ -1,13 +1,13 @@
-import { cli } from "../../../common/cli.js";
-import { getErrorMessage } from "../../../common/get-error-message.js";
-import { BastiError } from "./basti-error.js";
+import { cli } from "../../common/cli.js";
+import { getErrorMessage } from "../../common/get-error-message.js";
+import { OperationError } from "./operation-error.js";
 
-export function bastiCommand<T extends unknown[], R>(
-  command: (...args: T) => Promise<R>
+export function withErrorHandling<T extends unknown[], R>(
+  handler: (...args: T) => Promise<R>
 ): (...args: T) => Promise<R> {
   return async (...args) => {
     try {
-      return await command(...args);
+      return await handler(...args);
     } catch (error) {
       handleError(error);
     }
@@ -16,7 +16,7 @@ export function bastiCommand<T extends unknown[], R>(
 
 function handleError(error: unknown): never {
   const errorMessage =
-    error instanceof BastiError
+    error instanceof OperationError
       ? error.message
       : `Unexpected error: ${getErrorMessage(error)}`;
 

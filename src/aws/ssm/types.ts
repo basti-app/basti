@@ -1,6 +1,12 @@
 import { StartSessionRequest, StartSessionResponse } from "@aws-sdk/client-ssm";
 
-export type AwsSsmParameterType = "string" | "string-list";
+export const AwsSsmParameterType = {
+  STRING: "string",
+  STRING_LIST: "string-list",
+} as const;
+
+export type AwsSsmParameterType =
+  typeof AwsSsmParameterType[keyof typeof AwsSsmParameterType];
 
 export interface AwsSsmParameter {
   name: string;

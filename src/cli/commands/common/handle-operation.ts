@@ -1,28 +1,19 @@
-import { AwsAccessDeniedError } from "../../../aws/common/AwsError.js";
 import { cli } from "../../../common/cli.js";
-import { ExpectedBastiError, UnexpectedBastiError } from "./basti-error.js";
+import { fmt } from "../../../common/fmt.js";
+import { ErrorMessageProvider } from "../../error/get-error-detail.js";
+import { OperationError } from "../../error/operation-error.js";
 
 export async function handleOperation<T>(
-  operation: () => Promise<T>,
-  operationName: string
+  operationName: string,
+  handler: () => Promise<T>,
+  errorProviders: ErrorMessageProvider[] = []
 ): Promise<T> {
   try {
-    cli.progressStart(operationName);
-    const result = await operation();
-    cli.progressStop();
-    return result;
+    cli.progressStart(fmt.capitalize(operationName));
+    return await handler();
   } catch (error) {
-    handleError(error, operationName);
+    throw OperationError.from(operationName, error, errorProviders);
   } finally {
     cli.progressStop();
   }
-}
-
-function handleError(error: unknown, operationName: string): never {
-  const errorMessage = `Error ${operationName}`;
-
-  if (error instanceof AwsAccessDeniedError) {
-    throw new ExpectedBastiError(`${errorMessage}. Access denied by IAM`);
-  }
-  throw new UnexpectedBastiError(errorMessage, error);
 }

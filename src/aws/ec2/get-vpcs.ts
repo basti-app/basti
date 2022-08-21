@@ -1,6 +1,5 @@
 import { DescribeVpcsCommand } from "@aws-sdk/client-ec2";
 import { ec2Client } from "./ec2-client.js";
-import { handleEc2Errors } from "./handle-ec2-errors.js";
 import { parseVpcResponse } from "./parse-ec2-response.js";
 import { AwsVpc } from "./types/aws-vpc.js";
 
@@ -9,9 +8,7 @@ export interface GetVpcInput {
 }
 
 export async function getVpcs(): Promise<AwsVpc[]> {
-  const { Vpcs } = await handleEc2Errors(() =>
-    ec2Client.send(new DescribeVpcsCommand({}))
-  );
+  const { Vpcs } = await ec2Client.send(new DescribeVpcsCommand({}));
 
   if (!Vpcs) {
     throw new Error(`Invalid response from AWS.`);
@@ -23,8 +20,8 @@ export async function getVpcs(): Promise<AwsVpc[]> {
 export async function getVpc({
   vpcId,
 }: GetVpcInput): Promise<AwsVpc | undefined> {
-  const { Vpcs } = await handleEc2Errors(() =>
-    ec2Client.send(new DescribeVpcsCommand({ VpcIds: [vpcId] }))
+  const { Vpcs } = await ec2Client.send(
+    new DescribeVpcsCommand({ VpcIds: [vpcId] })
   );
 
   if (!Vpcs) {

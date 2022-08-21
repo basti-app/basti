@@ -27,8 +27,8 @@ export class Fmt {
     return chalk.yellow(message);
   }
 
-  code(message: string): string {
-    return chalk.gray(message);
+  capitalize(message: string): string {
+    return message.charAt(0).toUpperCase() + message.slice(1);
   }
 
   private getListItemPrefix(indent: number): string {

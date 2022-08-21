@@ -11,8 +11,8 @@ export async function getBastion({
   vpcId,
 }: GetBastionInput): Promise<Bastion | undefined> {
   const bastion = await handleOperation(
-    () => bastionOps.getBastion({ vpcId }),
-    "Checking for an existing bastion"
+    "checking for an existing bastion",
+    () => bastionOps.getBastion({ vpcId })
   );
 
   if (bastion) {

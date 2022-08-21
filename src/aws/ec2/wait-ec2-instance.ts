@@ -3,6 +3,7 @@ import {
   waitUntilInstanceStopped,
 } from "@aws-sdk/client-ec2";
 import { COMMON_WAITER_CONFIG } from "../common/waiter-config.js";
+import { handleWaiterError } from "../common/waiter-error.js";
 import { ec2Client } from "./ec2-client.js";
 
 export interface WaitEc2InstanceInput {
@@ -12,17 +13,21 @@ export interface WaitEc2InstanceInput {
 export async function waitEc2InstanceIsRunning({
   instanceId,
 }: WaitEc2InstanceInput): Promise<void> {
-  await waitUntilInstanceRunning(
-    { ...COMMON_WAITER_CONFIG, client: ec2Client },
-    { InstanceIds: [instanceId] }
+  await handleWaiterError(() =>
+    waitUntilInstanceRunning(
+      { ...COMMON_WAITER_CONFIG, client: ec2Client.client },
+      { InstanceIds: [instanceId] }
+    )
   );
 }
 
 export async function waitEc2InstanceIsStopped({
   instanceId,
 }: WaitEc2InstanceInput): Promise<void> {
-  await waitUntilInstanceStopped(
-    { ...COMMON_WAITER_CONFIG, client: ec2Client },
-    { InstanceIds: [instanceId] }
+  await handleWaiterError(() =>
+    waitUntilInstanceStopped(
+      { ...COMMON_WAITER_CONFIG, client: ec2Client.client },
+      { InstanceIds: [instanceId] }
+    )
   );
 }

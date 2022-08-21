@@ -2,6 +2,8 @@ import { Bastion } from "../../../bastion/bastion.js";
 import * as bastionOps from "../../../bastion/create-bastion.js";
 import { cli } from "../../../common/cli.js";
 import { fmt } from "../../../common/fmt.js";
+import { detailProvider } from "../../error/get-error-detail.js";
+import { OperationError } from "../../error/operation-error.js";
 
 export interface CreateBastionInput {
   vpcId: string;
@@ -14,40 +16,63 @@ export async function createBastion({
 }: CreateBastionInput): Promise<Bastion> {
   const subCli = cli.createSubInstance({ indent: 2 });
 
-  cli.info(`${fmt.green("❯")} Creating bastion:`);
+  try {
+    cli.info(`${fmt.green("❯")} Setting up bastion:`);
+    const bastion = await bastionOps.createBastion({
+      vpcId,
+      subnetId,
+      hooks: {
+        onRetrievingImageId: () =>
+          subCli.progressStart("Retrieving the latest EC2 AMI"),
+        onImageIdRetrieved: (imageId) =>
+          subCli.progressSuccess(
+            `Bastion EC2 AMI to be used: ${fmt.value(imageId)}`
+          ),
 
-  const bastion = await bastionOps.createBastion({
-    vpcId,
-    subnetId,
-    hooks: {
-      onImageIdRetrievalStarted: () =>
-        subCli.progressStart("Retrieving the latest EC2 AMI"),
-      onImageIdRetrieved: (imageId) =>
-        subCli.progressSuccess(`EC2 AMI retrieved: ${fmt.value(imageId)}`),
+        onCreatingRole: () => subCli.progressStart("Creating bastion IAM role"),
+        onRoleCreated: (roleName) =>
+          subCli.progressSuccess(
+            `Bastion IAM role created: ${fmt.value(roleName)}`
+          ),
 
-      onRoleCreationStarted: () => subCli.progressStart("Creating IAM role"),
-      onRoleCreated: (roleName) =>
-        subCli.progressSuccess(`IAM role created: ${fmt.value(roleName)}`),
+        onCreatingSecurityGroup: () =>
+          subCli.progressStart("Creating bastion security group"),
+        onSecurityGroupCreated: (sgId) =>
+          subCli.progressSuccess(
+            `Bastion security group created: ${fmt.value(sgId)}`
+          ),
 
-      onSecurityGroupCreationStarted: () =>
-        subCli.progressStart("Creating security group"),
-      onSecurityGroupCreated: (sgId) =>
-        subCli.progressSuccess(`Security group created: ${fmt.value(sgId)}`),
+        onCreatingInstance: () =>
+          subCli.progressStart("Creating bastion EC2 instance"),
+        onInstanceCreated: (instanceId) =>
+          subCli.progressSuccess(
+            `Bastion EC2 instance created: ${fmt.value(instanceId)}`
+          ),
+      },
+    });
+    cli.progressSuccess(`Bastion set up. Bastion id: ${bastion.id}`);
 
-      onInstanceCreationStarted: () =>
-        subCli.progressStart("Creating EC2 instance"),
-      onInstanceCreated: (instanceId) =>
-        subCli.progressSuccess(
-          `EC2 instance created: ${fmt.value(instanceId)}`
-        ),
-    },
-  });
+    return bastion;
+  } catch (error) {
+    subCli.progressFailure();
 
-  cli.progressSuccess(`Bastion created: ${bastion.id}`);
-
-  return bastion;
-}
-
-function green(str: string): string {
-  return `\x1b[32m${str}\x1b[0m`;
+    throw OperationError.from("setting up bastion", error, [
+      detailProvider(
+        bastionOps.BastionImageRetrievalError,
+        () => "Can't retrieve EC2 AMI for bastion instance"
+      ),
+      detailProvider(
+        bastionOps.BastionRoleCreationError,
+        () => "Can't create IAM role for bastion instance"
+      ),
+      detailProvider(
+        bastionOps.BastionSecurityGroupCreationError,
+        () => "Can't create security group for bastion instance"
+      ),
+      detailProvider(
+        bastionOps.BastionInstanceCreationError,
+        () => "Can't create bastion EC2 instance"
+      ),
+    ]);
+  }
 }

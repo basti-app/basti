@@ -5,6 +5,7 @@ import {
   waitUntilSecurityGroupExists,
 } from "@aws-sdk/client-ec2";
 import { COMMON_WAITER_CONFIG } from "../common/waiter-config.js";
+import { handleWaiterError } from "../common/waiter-error.js";
 import { ec2Client } from "./ec2-client.js";
 import {
   AwsSecurityGroup,
@@ -31,9 +32,11 @@ export async function createSecurityGroup({
     throw new Error(`Invalid response from AWS.`);
   }
 
-  await waitUntilSecurityGroupExists(
-    { ...COMMON_WAITER_CONFIG, client: ec2Client },
-    { GroupIds: [GroupId] }
+  await handleWaiterError(() =>
+    waitUntilSecurityGroupExists(
+      { ...COMMON_WAITER_CONFIG, client: ec2Client.client },
+      { GroupIds: [GroupId] }
+    )
   );
 
   if (ingressRules.length > 0) {

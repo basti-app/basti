@@ -11,9 +11,8 @@ export interface SelectBastionSubnetInput {
 export async function selectBastionSubnet({
   vpcId,
 }: SelectBastionSubnetInput): Promise<AwsSubnet> {
-  const subnets = await handleOperation(
-    () => getSubnets({ vpcId }),
-    "Analyzing VPC"
+  const subnets = await handleOperation("analyzing VPC", () =>
+    getSubnets({ vpcId })
   );
 
   const { subnet } = await inquirer.prompt({

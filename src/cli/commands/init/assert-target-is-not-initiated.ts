@@ -9,9 +9,12 @@ export interface AssertTargetIsNotInitiatedInput {
 export async function assertTargetIsNotInitialized({
   target,
 }: AssertTargetIsNotInitiatedInput): Promise<void> {
-  const targetInitialized = await handleOperation(async () => {
-    return target.hasAccessAllowed ? target.hasAccessAllowed() : false;
-  }, "Checking target state");
+  const targetInitialized = await handleOperation(
+    "checking target state",
+    async () => {
+      return target.hasAccessAllowed ? target.hasAccessAllowed() : false;
+    }
+  );
 
   if (targetInitialized) {
     cli.info(
