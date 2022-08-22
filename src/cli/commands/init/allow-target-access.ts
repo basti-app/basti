@@ -2,6 +2,7 @@ import ora from "ora";
 
 import { Bastion } from "../../../bastion/bastion.js";
 import { cli } from "../../../common/cli.js";
+import { fmt } from "../../../common/fmt.js";
 import { InitTarget } from "../../../target/init-target.js";
 
 export interface AllowTargetAccessInput {
@@ -15,7 +16,9 @@ export async function allowTargetAccess({
 }: AllowTargetAccessInput): Promise<void> {
   if (!target.allowAccess) {
     cli.info(
-      `Please, make sure your target is accessible from the bastion. Bastion security group: ${bastion.securityGroupName}`
+      `Please, make sure your target is accessible from the bastion. Bastion security group: ${fmt.value(
+        bastion.securityGroupName
+      )}`
     );
     return;
   }
