@@ -14,6 +14,8 @@ export class Cli {
   private readonly indent: number;
   private readonly spinner: Ora;
 
+  private inProgress: boolean = false;
+
   private constructor({ indent, spinner }: CliPrivateInput) {
     this.indent = indent || 0;
     this.spinner = spinner || ora();
@@ -39,29 +41,36 @@ export class Cli {
   info(text: string): void {
     this.progressStop();
 
-    console.log(this.indentStr() + text);
+    console.log(this.indentText(text));
   }
 
   error(text: string): void {
     this.progressStop();
 
     console.log("\n");
-    console.log(fmt.red(this.indentStr() + text));
+    console.log(fmt.red(this.indentText(text)));
   }
 
   progressStart(text: string): void {
+    this.inProgress = true;
     this.spinner.start(text);
   }
 
   progressStop(): void {
+    if (!this.inProgress) {
+      return;
+    }
+    this.inProgress = false;
     this.spinner.stop();
   }
 
   progressSuccess(text?: string): void {
+    this.inProgress = false;
     this.spinner.succeed(text);
   }
 
   progressFailure(text?: string): void {
+    this.inProgress = false;
     this.spinner.fail(text);
   }
 
@@ -76,14 +85,14 @@ export class Cli {
     });
   }
 
-  private indentNewLines(message: string): string {
-    return message.replace(
-      NEW_LINE_REGEX,
-      (newLine) => this.indentStr() + newLine
+  private indentText(text: string): string {
+    return (
+      this.getIndentStr() +
+      text.replace(NEW_LINE_REGEX, (newLine) => newLine + this.getIndentStr())
     );
   }
 
-  private indentStr(): string {
+  private getIndentStr(): string {
     return " ".repeat(this.indent);
   }
 }
