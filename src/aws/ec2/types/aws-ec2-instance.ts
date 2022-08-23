@@ -6,6 +6,7 @@ export interface AwsEc2Instance {
   id: string;
   name?: string;
 
+  vpcId: string;
   securityGroups: AwsSecurityGroupIdentifier[];
 
   state: InstanceStateName;

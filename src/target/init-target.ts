@@ -26,11 +26,11 @@ export abstract class InitTargetBase implements InitTarget {
     bastionInstance,
     hooks,
   }: InitTargetAllowAccessInput): Promise<void> {
-    hooks?.onSecurityGroupCreationStarted?.();
+    hooks?.onCreatingSecurityGroup?.();
     const allowAccessSecurityGroup = await createSecurityGroup({
-      name: `basti-access-${bastionInstance.id}`,
+      name: `${TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX}-${bastionInstance.id}`,
       description: "Allows access from the basti instance.",
-      vpcId: await this.getVpcId(),
+      vpcId: bastionInstance.instance.vpcId,
       ingressRules: [
         {
           ipProtocol: "tcp",
@@ -48,7 +48,7 @@ export abstract class InitTargetBase implements InitTarget {
     });
     hooks?.onSecurityGroupCreated?.(allowAccessSecurityGroup.id);
 
-    hooks?.onSecurityGroupAttachmentStarted?.();
+    hooks?.onAttachingSecurityGroup?.();
     await this.attachSecurityGroup(allowAccessSecurityGroup.id);
     hooks?.onSecurityGroupAttached?.();
   }
@@ -63,9 +63,9 @@ export abstract class InitTargetBase implements InitTarget {
 export interface InitTargetAllowAccessInput {
   bastionInstance: Bastion;
   hooks?: {
-    onSecurityGroupCreationStarted?: () => void;
+    onCreatingSecurityGroup?: () => void;
     onSecurityGroupCreated?: (sgId: string) => void;
-    onSecurityGroupAttachmentStarted?: () => void;
+    onAttachingSecurityGroup?: () => void;
     onSecurityGroupAttached?: () => void;
   };
 }

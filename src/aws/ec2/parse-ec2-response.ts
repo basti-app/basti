@@ -15,6 +15,7 @@ export const parseEc2InstanceResponse: (response: Instance) => AwsEc2Instance =
   z
     .object({
       InstanceId: z.string(),
+      VpcId: z.string(),
       SecurityGroups: z.array(
         z.object({
           GroupId: z.string(),
@@ -38,6 +39,7 @@ export const parseEc2InstanceResponse: (response: Instance) => AwsEc2Instance =
       return {
         id: response.InstanceId,
         name: tags["Name"],
+        vpcId: response.VpcId,
         securityGroups: response.SecurityGroups.map((group) => ({
           id: group.GroupId,
           name: group.GroupName,
