@@ -11,7 +11,7 @@ export async function handleInit() {
 
   await assertTargetIsNotInitialized({ target });
 
-  const targetVpcId = await handleOperation("analyzing target", () =>
+  const targetVpcId = await handleOperation("retrieving target VPC", () =>
     target.getVpcId()
   );
 
