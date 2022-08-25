@@ -3,8 +3,10 @@ import { AwsTimeoutError } from "../../aws/common/waiter-error.js";
 import { AwsInstanceProfileNotFoundError } from "../../aws/ec2/ec2-client.js";
 import { getErrorMessage } from "../../common/get-error-message.js";
 import {
+  ResourceDamagerError,
   ResourceNotFoundError,
   RuntimeError,
+  UnexpectedStateError,
 } from "../../common/runtime-error.js";
 
 type Constructor<T> = new (...args: any) => T;
@@ -38,8 +40,21 @@ export const COMMON_DETAIL_PROVIDERS: ErrorMessageProvider[] = [
       "Operation timed out. This looks like an AWS delay. Please try again"
   ),
   detailProvider(
+    UnexpectedStateError,
+    (error) =>
+      "Unexpected Basti setup state. Looks like some of the Basti-managed resources were changed outside of Basti. Please try again after cleaning up the Basti setup"
+  ),
+  detailProvider(
     ResourceNotFoundError,
-    (error) => `Resource "${error.resourceId}" not found`
+    (error) =>
+      `${error.resourceType} ${
+        error.resourceId ? `"${error.resourceId} "` : ""
+      } was not found`
+  ),
+  detailProvider(
+    ResourceDamagerError,
+    (error) =>
+      `${error.resourceType} "${error.resourceId}" is in unexpected state: ${error.detail}`
   ),
 ];
 

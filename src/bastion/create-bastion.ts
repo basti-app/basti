@@ -6,10 +6,7 @@ import { AwsSecurityGroup } from "../aws/ec2/types/aws-security-group.js";
 import { createIamRole } from "../aws/iam/create-iam-role.js";
 import { AwsRole } from "../aws/iam/types.js";
 import { getStringSsmParameter } from "../aws/ssm/get-ssm-parameter.js";
-import {
-  ResourceNotFoundError,
-  RuntimeError,
-} from "../common/runtime-error.js";
+import { RuntimeError } from "../common/runtime-error.js";
 import { BASTION_INSTANCE_CLOUD_INIT } from "./bastion-cloudinit.js";
 import {
   Bastion,
@@ -99,6 +96,10 @@ export async function createBastion({
   };
 }
 
+function generateBastionInstanceId(): string {
+  return crypto.randomBytes(4).toString("hex");
+}
+
 async function getBastionImageId(hooks?: CreateBastionHooks) {
   try {
     const parameterName =
@@ -110,7 +111,9 @@ async function getBastionImageId(hooks?: CreateBastionHooks) {
       name: parameterName,
     });
     if (!bastionImageId) {
-      throw new ResourceNotFoundError(parameterName);
+      throw new Error(
+        `Bastion image ID not found in SSM parameter ${parameterName}`
+      );
     }
 
     hooks?.onImageIdRetrieved?.(bastionImageId);
@@ -200,8 +203,4 @@ async function createBastionInstance(
   } catch (error) {
     throw new BastionInstanceCreationError(error);
   }
-}
-
-function generateBastionInstanceId(): string {
-  return crypto.randomBytes(4).toString("hex");
 }

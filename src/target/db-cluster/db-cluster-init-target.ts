@@ -1,7 +1,6 @@
 import { getDbSubnetGroup } from "../../aws/rds/get-db-subnet-group.js";
 import { modifyDBCluster } from "../../aws/rds/modify-db-cluster.js";
 import { AwsDbCluster } from "../../aws/rds/rds-types.js";
-import { ResourceNotFoundError } from "../../common/runtime-error.js";
 import { InitTargetBase } from "../init-target.js";
 
 export class DbClusterInitTarget extends InitTargetBase {
@@ -18,7 +17,9 @@ export class DbClusterInitTarget extends InitTargetBase {
     });
 
     if (!dbSubnetGroup) {
-      throw new ResourceNotFoundError(this.dbCluster.dbSubnetGroupName);
+      throw new Error(
+        `DB subnet group "${this.dbCluster.dbSubnetGroupName}" not found`
+      );
     }
 
     return dbSubnetGroup.vpcId;

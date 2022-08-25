@@ -39,14 +39,14 @@ export async function startSsmPortForwardingSession({
 }
 
 async function getSsmClientRegion(): Promise<string> {
-  const clientRegion = ssmClient.config.region;
+  const clientRegion = ssmClient.client.config.region;
 
   return typeof clientRegion === "string" ? clientRegion : await clientRegion();
 }
 
 async function getSsmClientEndpoint(): Promise<string> {
   const { protocol, hostname, port, path, query } =
-    await ssmClient.config.endpoint();
+    await ssmClient.client.config.endpoint();
 
   const portPart = port ? `:${port}` : "";
   const queryPart = query ? `:${query}` : "";

@@ -27,9 +27,10 @@ export abstract class InitTargetBase implements InitTarget {
     hooks,
   }: InitTargetAllowAccessInput): Promise<void> {
     hooks?.onCreatingSecurityGroup?.();
+    // FIXME: create access security group per target instead of per bastion instance
     const allowAccessSecurityGroup = await createSecurityGroup({
       name: `${TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX}-${bastionInstance.id}`,
-      description: "Allows access from the basti instance.",
+      description: "Allows access from a Basti instance.",
       vpcId: bastionInstance.instance.vpcId,
       ingressRules: [
         {
