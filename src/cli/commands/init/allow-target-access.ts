@@ -1,7 +1,13 @@
+import { AwsTooManySecurityGroupsAttachedError } from "../../../aws/rds/rds-client.js";
 import { Bastion } from "../../../bastion/bastion.js";
 import { cli } from "../../../common/cli.js";
 import { fmt } from "../../../common/fmt.js";
-import { InitTarget } from "../../../target/init-target.js";
+import {
+  AccessSecurityGroupAttachmentError,
+  AccessSecurityGroupCreationError,
+  InitTarget,
+} from "../../../target/init-target.js";
+import { detailProvider } from "../../error/get-error-detail.js";
 import { OperationError } from "../../error/operation-error.js";
 
 export interface AllowTargetAccessInput {
@@ -27,7 +33,7 @@ export async function allowTargetAccess({
   try {
     cli.info(`${fmt.green("❯")} Configuring target access:`);
     await target.allowAccess({
-      bastionInstance: bastion,
+      bastion: bastion,
       hooks: {
         onCreatingSecurityGroup: () =>
           subCli.progressStart("Creating access security group"),
@@ -44,6 +50,20 @@ export async function allowTargetAccess({
   } catch (error) {
     subCli.progressFailure();
 
-    throw OperationError.from("configuring target access", error, []);
+    throw OperationError.from("configuring target access", error, [
+      detailProvider(
+        AccessSecurityGroupCreationError,
+        (error) => "Can't create access security group for target"
+      ),
+      detailProvider(
+        AccessSecurityGroupAttachmentError,
+        (error) => "Can't attach access security group to target"
+      ),
+      detailProvider(
+        AwsTooManySecurityGroupsAttachedError,
+        () =>
+          "Security group associations limit reached. Please, remove a security group from your target and try again"
+      ),
+    ]);
   }
 }

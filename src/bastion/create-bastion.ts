@@ -36,30 +36,6 @@ export interface CreateBastionInput {
   hooks?: CreateBastionHooks;
 }
 
-export class BastionImageRetrievalError extends RuntimeError {
-  constructor(cause: unknown) {
-    super(`Can't get latest EC2 AMI for bastion instance`, cause);
-  }
-}
-
-export class BastionRoleCreationError extends RuntimeError {
-  constructor(cause: unknown) {
-    super(`Can't create IAM role for bastion instance`, cause);
-  }
-}
-
-export class BastionSecurityGroupCreationError extends RuntimeError {
-  constructor(cause: unknown) {
-    super(`Can't create security group for bastion instance`, cause);
-  }
-}
-
-export class BastionInstanceCreationError extends RuntimeError {
-  constructor(cause: unknown) {
-    super(`Can't create bastion EC2 instance`, cause);
-  }
-}
-
 export async function createBastion({
   vpcId,
   subnetId,
@@ -156,7 +132,7 @@ async function createBastionSecurityGroup(
     const bastionSecurityGroup = await createSecurityGroup({
       name: `${BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX}-${bastionId}`,
       description:
-        "Identifies basti instance and allows connection to the Internet.",
+        "Identifies basti instance and allows connection to the Internet",
       vpcId,
       ingressRules: [],
     });
@@ -202,5 +178,29 @@ async function createBastionInstance(
     return bastionInstance;
   } catch (error) {
     throw new BastionInstanceCreationError(error);
+  }
+}
+
+export class BastionImageRetrievalError extends RuntimeError {
+  constructor(cause: unknown) {
+    super(`Can't get latest EC2 AMI for bastion instance`, cause);
+  }
+}
+
+export class BastionRoleCreationError extends RuntimeError {
+  constructor(cause: unknown) {
+    super(`Can't create IAM role for bastion instance`, cause);
+  }
+}
+
+export class BastionSecurityGroupCreationError extends RuntimeError {
+  constructor(cause: unknown) {
+    super(`Can't create security group for bastion instance`, cause);
+  }
+}
+
+export class BastionInstanceCreationError extends RuntimeError {
+  constructor(cause: unknown) {
+    super(`Can't create bastion EC2 instance`, cause);
   }
 }

@@ -1,7 +1,21 @@
 import { createSecurityGroup } from "../aws/ec2/create-security-group.js";
 import { getSecurityGroups } from "../aws/ec2/get-security-groups.js";
+import { AwsSecurityGroup } from "../aws/ec2/types/aws-security-group.js";
 import { Bastion } from "../bastion/bastion.js";
+import { RuntimeError } from "../common/runtime-error.js";
 import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from "./target-input.js";
+
+interface InitTargetAllowAccessHooks {
+  onCreatingSecurityGroup?: () => void;
+  onSecurityGroupCreated?: (sgId: string) => void;
+  onAttachingSecurityGroup?: () => void;
+  onSecurityGroupAttached?: () => void;
+}
+
+export interface InitTargetAllowAccessInput {
+  bastion: Bastion;
+  hooks?: InitTargetAllowAccessHooks;
+}
 
 export interface InitTarget {
   getVpcId(): Promise<string>;
@@ -11,47 +25,24 @@ export interface InitTarget {
 }
 
 export abstract class InitTargetBase implements InitTarget {
+  abstract getId(): string;
   abstract getVpcId(): Promise<string>;
 
   async hasAccessAllowed(): Promise<boolean> {
-    const securityGroupIds = await this.getSecurityGroupIds();
-    const securityGroups = await getSecurityGroups({ securityGroupIds });
-
-    return securityGroups.some((group) =>
-      group.name.startsWith(TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX)
-    );
+    const accessSecurityGroup = await this.getAccessSecurityGroup();
+    return accessSecurityGroup !== undefined;
   }
 
   async allowAccess({
-    bastionInstance,
+    bastion,
     hooks,
   }: InitTargetAllowAccessInput): Promise<void> {
-    hooks?.onCreatingSecurityGroup?.();
-    // FIXME: create access security group per target instead of per bastion instance
-    const allowAccessSecurityGroup = await createSecurityGroup({
-      name: `${TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX}-${bastionInstance.id}`,
-      description: "Allows access from a Basti instance.",
-      vpcId: bastionInstance.instance.vpcId,
-      ingressRules: [
-        {
-          ipProtocol: "tcp",
-          sources: [
-            {
-              securityGroupId: bastionInstance.securityGroupId,
-            },
-          ],
-          ports: {
-            from: this.getTargetPort(),
-            to: this.getTargetPort(),
-          },
-        },
-      ],
-    });
-    hooks?.onSecurityGroupCreated?.(allowAccessSecurityGroup.id);
+    const accessSecurityGroup = await this.createAccessSecurityGroup(
+      bastion,
+      hooks
+    );
 
-    hooks?.onAttachingSecurityGroup?.();
-    await this.attachSecurityGroup(allowAccessSecurityGroup.id);
-    hooks?.onSecurityGroupAttached?.();
+    await this.attachAccessSecurityGroup(accessSecurityGroup, hooks);
   }
 
   protected abstract getTargetPort(): number;
@@ -59,14 +50,72 @@ export abstract class InitTargetBase implements InitTarget {
   protected abstract getSecurityGroupIds(): Promise<string[]>;
 
   protected abstract attachSecurityGroup(groupId: string): Promise<void>;
+
+  private async getAccessSecurityGroup(): Promise<
+    AwsSecurityGroup | undefined
+  > {
+    const securityGroupIds = await this.getSecurityGroupIds();
+    const securityGroups = await getSecurityGroups({ securityGroupIds });
+
+    return securityGroups.find((group) =>
+      group.name.startsWith(TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX)
+    );
+  }
+
+  private async createAccessSecurityGroup(
+    bastion: Bastion,
+    hooks?: InitTargetAllowAccessHooks
+  ): Promise<AwsSecurityGroup> {
+    try {
+      hooks?.onCreatingSecurityGroup?.();
+      const accessSecurityGroup = await createSecurityGroup({
+        name: `${TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX}-${this.getId()}`,
+        description: "Allows access from Basti instances",
+        vpcId: bastion.instance.vpcId,
+        ingressRules: [
+          {
+            ipProtocol: "tcp",
+            sources: [
+              {
+                securityGroupId: bastion.securityGroupId,
+              },
+            ],
+            ports: {
+              from: this.getTargetPort(),
+              to: this.getTargetPort(),
+            },
+          },
+        ],
+      });
+      hooks?.onSecurityGroupCreated?.(accessSecurityGroup.id);
+      return accessSecurityGroup;
+    } catch (error) {
+      throw new AccessSecurityGroupCreationError(error);
+    }
+  }
+
+  private async attachAccessSecurityGroup(
+    accessSecurityGroup: AwsSecurityGroup,
+    hooks?: InitTargetAllowAccessHooks
+  ): Promise<void> {
+    try {
+      hooks?.onAttachingSecurityGroup?.();
+      await this.attachSecurityGroup(accessSecurityGroup.id);
+      hooks?.onSecurityGroupAttached?.();
+    } catch (error) {
+      throw new AccessSecurityGroupAttachmentError(error);
+    }
+  }
 }
 
-export interface InitTargetAllowAccessInput {
-  bastionInstance: Bastion;
-  hooks?: {
-    onCreatingSecurityGroup?: () => void;
-    onSecurityGroupCreated?: (sgId: string) => void;
-    onAttachingSecurityGroup?: () => void;
-    onSecurityGroupAttached?: () => void;
-  };
+export class AccessSecurityGroupCreationError extends RuntimeError {
+  constructor(cause: unknown) {
+    super(`Can't create access security group`, cause);
+  }
+}
+
+export class AccessSecurityGroupAttachmentError extends RuntimeError {
+  constructor(cause: unknown) {
+    super(`Can't attach access security group to the target`, cause);
+  }
 }

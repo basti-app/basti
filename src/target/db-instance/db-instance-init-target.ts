@@ -10,6 +10,10 @@ export class DbInstanceInitTarget extends InitTargetBase {
     this.dbInstance = dbInstance;
   }
 
+  getId(): string {
+    return this.dbInstance.identifier;
+  }
+
   async getVpcId(): Promise<string> {
     return this.dbInstance.vpcId;
   }

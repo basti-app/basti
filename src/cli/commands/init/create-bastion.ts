@@ -1,3 +1,4 @@
+import { AwsInstanceProfileNotFoundError } from "../../../aws/ec2/ec2-client.js";
 import { Bastion } from "../../../bastion/bastion.js";
 import * as bastionOps from "../../../bastion/create-bastion.js";
 import { cli } from "../../../common/cli.js";
@@ -72,6 +73,11 @@ export async function createBastion({
       detailProvider(
         bastionOps.BastionInstanceCreationError,
         () => "Can't create bastion EC2 instance"
+      ),
+      detailProvider(
+        AwsInstanceProfileNotFoundError,
+        () =>
+          "Instance profile not found. This looks like an AWS delay. Please try again"
       ),
     ]);
   }

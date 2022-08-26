@@ -11,6 +11,10 @@ export class DbClusterInitTarget extends InitTargetBase {
     this.dbCluster = dbCluster;
   }
 
+  getId(): string {
+    return this.dbCluster.identifier;
+  }
+
   async getVpcId(): Promise<string> {
     const dbSubnetGroup = await getDbSubnetGroup({
       name: this.dbCluster.dbSubnetGroupName,
