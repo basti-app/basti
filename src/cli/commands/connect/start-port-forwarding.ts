@@ -21,13 +21,13 @@ export async function startPortForwarding({
     localPort,
     hooks: {
       onStartingSession: () =>
-        cli.progressStart("Starting port forwarding session"),
-      onSessionStarted: () =>
-        cli.progressSuccess(
-          `Session started. Port ${localPort} is open for your connections 🚀`
-        ),
+        cli.progressStart("Initializing port forwarding session"),
+      onSessionStarted: () => {
+        cli.progressStop();
+        cli.info(`Port ${localPort} is open for your connections`, "🚀");
+      },
       onSessionInterrupted: () => {
-        cli.info("Session was interrupted unexpectedly");
+        cli.error("Session was interrupted unexpectedly");
         process.exit(1);
       },
     },

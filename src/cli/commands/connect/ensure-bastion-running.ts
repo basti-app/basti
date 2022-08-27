@@ -28,8 +28,7 @@ export async function ensureBastionRunning({
           cli.progressStart(
             `Bastion instance is stopped. Starting bastion instance`
           ),
-        onInstanceStarted: () =>
-          cli.progressSuccess(`Bastion instance is running`),
+        onInstanceStarted: () => cli.progressStop(),
       },
     });
   } catch (error) {

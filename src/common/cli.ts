@@ -44,14 +44,14 @@ export class Cli {
     console.log(this.indentText(text));
   }
 
-  info(text: string): void {
+  info(text: string, symbol: string = fmt.blue("ⓘ")): void {
     this.out("\n");
-    this.out(fmt.blue("ⓘ ") + text);
+    this.out(`${symbol} ${text}`);
   }
 
   error(text: string): void {
     this.out("\n");
-    this.out(fmt.red("❌ " + text));
+    this.out(fmt.red(`❌ ${text}`));
   }
 
   progressStart(text: string): void {
@@ -67,9 +67,11 @@ export class Cli {
     this.spinner.stop();
   }
 
-  progressSuccess(text?: string): void {
+  progressSuccess(text?: string, symbol?: string): void {
     this.inProgress = false;
-    this.spinner.succeed(text);
+    symbol
+      ? this.spinner.stopAndPersist({ symbol })
+      : this.spinner.succeed(text);
   }
 
   progressFailure(text?: string): void {

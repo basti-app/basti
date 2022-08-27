@@ -8,13 +8,13 @@ import { startPortForwarding } from "./start-port-forwarding.js";
 export async function handleConnect(): Promise<void> {
   const target = await selectConnectTarget();
 
+  const localPort = await selectPort("Local port number");
+
   await assertTargetIsInitialized({ target });
 
   const bastion = await getBastion({ target });
 
   await ensureBastionRunning({ bastion });
-
-  const localPort = await selectPort("Local port number");
 
   await startPortForwarding({
     bastionInstanceId: bastion.instance.id,
