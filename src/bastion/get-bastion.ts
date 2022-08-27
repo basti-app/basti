@@ -1,7 +1,6 @@
 import { getEc2Instances } from "../aws/ec2/get-ec2-instances.js";
 import {
   ResourceDamagedError,
-  ResourceNotFoundError,
   ResourceType,
   UnexpectedStateError,
 } from "../common/runtime-error.js";

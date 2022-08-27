@@ -50,20 +50,25 @@ export async function allowTargetAccess({
   } catch (error) {
     subCli.progressFailure();
 
-    throw OperationError.from("configuring target access", error, [
-      detailProvider(
-        AccessSecurityGroupCreationError,
-        (error) => "Can't create access security group for target"
-      ),
-      detailProvider(
-        AccessSecurityGroupAttachmentError,
-        (error) => "Can't attach access security group to target"
-      ),
-      detailProvider(
-        AwsTooManySecurityGroupsAttachedError,
-        () =>
-          "Security group associations limit reached. Please, remove a security group from your target and try again"
-      ),
-    ]);
+    throw OperationError.from({
+      operationName: "configuring target access",
+      error,
+      dirtyOperation: true,
+      detailProviders: [
+        detailProvider(
+          AccessSecurityGroupCreationError,
+          () => "Can't create access security group for target"
+        ),
+        detailProvider(
+          AccessSecurityGroupAttachmentError,
+          () => "Can't attach access security group to target"
+        ),
+        detailProvider(
+          AwsTooManySecurityGroupsAttachedError,
+          () =>
+            "Security group associations limit reached. Please, remove a security group from your target and try again"
+        ),
+      ],
+    });
   }
 }

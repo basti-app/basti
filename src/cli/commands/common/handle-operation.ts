@@ -6,13 +6,17 @@ import { OperationError } from "../../error/operation-error.js";
 export async function handleOperation<T>(
   operationName: string,
   handler: () => Promise<T>,
-  errorProviders: ErrorMessageProvider[] = []
+  detailProviders: ErrorMessageProvider[] = []
 ): Promise<T> {
   try {
     cli.progressStart(fmt.capitalize(operationName));
     return await handler();
   } catch (error) {
-    throw OperationError.from(operationName, error, errorProviders);
+    throw OperationError.from({
+      operationName,
+      error,
+      detailProviders,
+    });
   } finally {
     cli.progressStop();
   }

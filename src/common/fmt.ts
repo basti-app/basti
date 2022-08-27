@@ -15,6 +15,10 @@ export class Fmt {
     return prefix + items.join("\n" + prefix);
   }
 
+  code(message: string): string {
+    return chalk.gray(message);
+  }
+
   green(message: string): string {
     return chalk.green(message);
   }

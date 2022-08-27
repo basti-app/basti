@@ -57,28 +57,33 @@ export async function createBastion({
   } catch (error) {
     subCli.progressFailure();
 
-    throw OperationError.from("setting up bastion", error, [
-      detailProvider(
-        bastionOps.BastionImageRetrievalError,
-        () => "Can't retrieve EC2 AMI for bastion instance"
-      ),
-      detailProvider(
-        bastionOps.BastionRoleCreationError,
-        () => "Can't create IAM role for bastion instance"
-      ),
-      detailProvider(
-        bastionOps.BastionSecurityGroupCreationError,
-        () => "Can't create security group for bastion instance"
-      ),
-      detailProvider(
-        bastionOps.BastionInstanceCreationError,
-        () => "Can't create bastion EC2 instance"
-      ),
-      detailProvider(
-        AwsInstanceProfileNotFoundError,
-        () =>
-          "Instance profile not found. This looks like an AWS delay. Please try again"
-      ),
-    ]);
+    throw OperationError.from({
+      operationName: "setting up bastion",
+      error,
+      dirtyOperation: true,
+      detailProviders: [
+        detailProvider(
+          bastionOps.BastionImageRetrievalError,
+          () => "Can't retrieve EC2 AMI for bastion instance"
+        ),
+        detailProvider(
+          bastionOps.BastionRoleCreationError,
+          () => "Can't create IAM role for bastion instance"
+        ),
+        detailProvider(
+          bastionOps.BastionSecurityGroupCreationError,
+          () => "Can't create security group for bastion instance"
+        ),
+        detailProvider(
+          bastionOps.BastionInstanceCreationError,
+          () => "Can't create bastion EC2 instance"
+        ),
+        detailProvider(
+          AwsInstanceProfileNotFoundError,
+          () =>
+            "Instance profile not found. This looks like an AWS delay. Please try again"
+        ),
+      ],
+    });
   }
 }

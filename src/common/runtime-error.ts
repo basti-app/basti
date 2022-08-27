@@ -29,9 +29,7 @@ export class ResourceNotFoundError extends RuntimeError {
   public readonly resourceId?: string;
 
   constructor(resourceType: ResourceType, resourceId?: string) {
-    super(
-      `${resourceType} ` + (resourceId ? `"${resourceId}" ` : "") + "not found"
-    );
+    super(getResourceNotFoundMessage(resourceType, resourceId));
 
     this.resourceType = resourceType;
     this.resourceId = resourceId;
@@ -50,4 +48,12 @@ export class ResourceDamagedError extends RuntimeError {
     this.resourceId = resourceId;
     this.detail = detail;
   }
+}
+
+function getResourceNotFoundMessage(
+  resourceType: string,
+  resourceId: string | undefined
+): string {
+  const resourceIdMessage = resourceId ? `"${resourceId}" ` : "";
+  return `${resourceType} ` + resourceIdMessage + "not found";
 }
