@@ -1,5 +1,3 @@
-import * as crypto from "crypto";
-
 import { createEc2Instance } from "../aws/ec2/create-ec2-instance.js";
 import { createSecurityGroup } from "../aws/ec2/create-security-group.js";
 import { AwsSecurityGroup } from "../aws/ec2/types/aws-security-group.js";
@@ -7,6 +5,7 @@ import { createIamRole } from "../aws/iam/create-iam-role.js";
 import { AwsRole } from "../aws/iam/types.js";
 import { getStringSsmParameter } from "../aws/ssm/get-ssm-parameter.js";
 import { RuntimeError } from "../common/runtime-error.js";
+import { generateShortId } from "../common/short-id.js";
 import { BASTION_INSTANCE_CLOUD_INIT } from "./bastion-cloudinit.js";
 import {
   Bastion,
@@ -41,7 +40,7 @@ export async function createBastion({
   subnetId,
   hooks,
 }: CreateBastionInput): Promise<Bastion> {
-  const bastionId = generateBastionInstanceId();
+  const bastionId = generateShortId();
 
   const bastionImageId = await getBastionImageId(hooks);
 
@@ -70,10 +69,6 @@ export async function createBastion({
     securityGroupId: bastionSecurityGroup.id,
     securityGroupName: bastionSecurityGroup.name,
   };
-}
-
-function generateBastionInstanceId(): string {
-  return crypto.randomBytes(4).toString("hex");
 }
 
 async function getBastionImageId(hooks?: CreateBastionHooks) {

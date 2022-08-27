@@ -3,6 +3,7 @@ import { getSecurityGroups } from "../aws/ec2/get-security-groups.js";
 import { AwsSecurityGroup } from "../aws/ec2/types/aws-security-group.js";
 import { Bastion } from "../bastion/bastion.js";
 import { RuntimeError } from "../common/runtime-error.js";
+import { generateShortId } from "../common/short-id.js";
 import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from "./target-input.js";
 
 interface InitTargetAllowAccessHooks {
@@ -69,7 +70,7 @@ export abstract class InitTargetBase implements InitTarget {
     try {
       hooks?.onCreatingSecurityGroup?.();
       const accessSecurityGroup = await createSecurityGroup({
-        name: `${TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX}-${this.getId()}`,
+        name: `${TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX}-${generateShortId()}`,
         description: "Allows access from Basti instances",
         vpcId: bastion.instance.vpcId,
         ingressRules: [
