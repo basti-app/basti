@@ -38,7 +38,7 @@ export class ResourceNotFoundError extends RuntimeError {
   }
 }
 
-export class ResourceDamagerError extends RuntimeError {
+export class ResourceDamagedError extends RuntimeError {
   public readonly resourceType: ResourceType;
   public readonly resourceId: string;
   public readonly detail: string;

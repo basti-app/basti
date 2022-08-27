@@ -1,6 +1,6 @@
 import { getEc2Instances } from "../aws/ec2/get-ec2-instances.js";
 import {
-  ResourceDamagerError,
+  ResourceDamagedError,
   ResourceNotFoundError,
   ResourceType,
   UnexpectedStateError,
@@ -38,7 +38,7 @@ export async function getBastion({
   const id = instance.tags[BASTION_INSTANCE_ID_TAG_NAME];
   if (!id) {
     throw new UnexpectedStateError(
-      new ResourceDamagerError(
+      new ResourceDamagedError(
         ResourceType.BASTION_INSTANCE,
         instance.id,
         `"${BASTION_INSTANCE_ID_TAG_NAME}" tag is missing`
@@ -51,7 +51,7 @@ export async function getBastion({
   );
   if (!securityGroup) {
     throw new UnexpectedStateError(
-      new ResourceDamagerError(
+      new ResourceDamagedError(
         ResourceType.BASTION_INSTANCE,
         instance.id,
         `No bastion security group associated with the instance`

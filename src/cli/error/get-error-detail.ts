@@ -2,7 +2,7 @@ import { AwsAccessDeniedError } from "../../aws/common/aws-error.js";
 import { AwsTimeoutError } from "../../aws/common/waiter-error.js";
 import { getErrorMessage } from "../../common/get-error-message.js";
 import {
-  ResourceDamagerError,
+  ResourceDamagedError,
   ResourceNotFoundError,
   RuntimeError,
   UnexpectedStateError,
@@ -45,7 +45,7 @@ export const COMMON_DETAIL_PROVIDERS: ErrorMessageProvider[] = [
       } was not found`
   ),
   detailProvider(
-    ResourceDamagerError,
+    ResourceDamagedError,
     (error) =>
       `${error.resourceType} "${error.resourceId}" is in unexpected state: ${error.detail}`
   ),
