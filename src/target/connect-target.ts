@@ -4,9 +4,16 @@ import {
   isGroupSecurityGroupSource,
 } from "../aws/ec2/types/aws-security-group.js";
 import { BASTION_INSTANCE_NAME_PREFIX } from "../bastion/bastion.js";
+import {
+  ResourceDamagedError,
+  ResourceType,
+  RuntimeError,
+} from "../common/runtime-error.js";
 import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from "./target-input.js";
 
 export interface ConnectTarget {
+  isInitialized(): Promise<boolean>;
+
   getBastionId(): Promise<string>;
 
   getHost(): Promise<string>;
@@ -14,8 +21,16 @@ export interface ConnectTarget {
 }
 
 export abstract class ConnectTargetBase implements ConnectTarget {
+  async isInitialized() {
+    const accessSecurityGroup = await this.getAccessSecurityGroup();
+    return accessSecurityGroup !== undefined;
+  }
+
   async getBastionId(): Promise<string> {
     const accessSecurityGroup = await this.getAccessSecurityGroup();
+    if (!accessSecurityGroup) {
+      throw new TargetNotInitializedError();
+    }
 
     const sourceSecurityGroupIds = accessSecurityGroup.ingressRules
       .flatMap((rule) => rule.sources)
@@ -32,8 +47,10 @@ export abstract class ConnectTargetBase implements ConnectTarget {
       ?.substring(BASTION_INSTANCE_NAME_PREFIX.length + 1); // Prefix and ID are separated with a dash.
 
     if (!bastionId) {
-      throw new Error(
-        `Can't find bastion instance id for the selected target.`
+      throw new ResourceDamagedError(
+        ResourceType.ACCESS_SECURITY_GROUP,
+        accessSecurityGroup.id,
+        "No bastion security group found among the ingress rules"
       );
     }
 
@@ -43,21 +60,23 @@ export abstract class ConnectTargetBase implements ConnectTarget {
   abstract getHost(): Promise<string>;
   abstract getPort(): Promise<number>;
 
-  private async getAccessSecurityGroup(): Promise<AwsSecurityGroup> {
+  private async getAccessSecurityGroup(): Promise<
+    AwsSecurityGroup | undefined
+  > {
     const securityGroupIds = await this.getSecurityGroupIds();
 
     const securityGroups = await getSecurityGroups({ securityGroupIds });
 
-    const accessSecurityGroup = securityGroups.find((group) =>
+    return securityGroups.find((group) =>
       group.name.startsWith(TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX)
     );
-
-    if (!accessSecurityGroup) {
-      throw new Error(`Can't find access security group on selected target.`);
-    }
-
-    return accessSecurityGroup;
   }
 
   protected abstract getSecurityGroupIds(): Promise<string[]>;
+}
+
+export class TargetNotInitializedError extends RuntimeError {
+  constructor() {
+    super("Target is not initialized");
+  }
 }

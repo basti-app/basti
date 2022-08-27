@@ -1,5 +1,5 @@
 import { getBastion } from "../../bastion/get-bastion.js";
-import { ConnectTarget } from "../connect-target.js";
+import { ConnectTarget, TargetNotInitializedError } from "../connect-target.js";
 
 export class CustomConnectTarget implements ConnectTarget {
   private readonly vpcId: string;
@@ -20,12 +20,17 @@ export class CustomConnectTarget implements ConnectTarget {
     this.port = port;
   }
 
+  async isInitialized() {
+    const bastion = await getBastion({ vpcId: this.vpcId });
+    return bastion !== undefined;
+  }
+
   // TODO: Consider changing the getBastionId signature
   // to avoid retrieving EC2 instance info multiple times
   async getBastionId(): Promise<string> {
     const bastion = await getBastion({ vpcId: this.vpcId });
     if (!bastion) {
-      throw new Error(`Can't find bastion for the selected VPC.`);
+      throw new TargetNotInitializedError();
     }
 
     return bastion.id;

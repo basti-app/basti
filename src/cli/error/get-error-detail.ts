@@ -41,7 +41,7 @@ export const COMMON_DETAIL_PROVIDERS: ErrorMessageProvider[] = [
     ResourceNotFoundError,
     (error) =>
       `${error.resourceType} ${
-        error.resourceId ? `"${error.resourceId} "` : ""
+        error.resourceId ? `"${error.resourceId}"` : ""
       } was not found`
   ),
   detailProvider(

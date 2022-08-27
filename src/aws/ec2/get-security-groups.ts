@@ -16,6 +16,10 @@ export async function getSecurityGroups({
   tags,
   names,
 }: GetSecurityGroupsInput): Promise<AwsSecurityGroup[]> {
+  if (securityGroupIds && !securityGroupIds.length) {
+    return [];
+  }
+
   const { SecurityGroups } = await ec2Client.send(
     new DescribeSecurityGroupsCommand({
       GroupIds: securityGroupIds,

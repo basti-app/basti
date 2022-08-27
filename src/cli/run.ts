@@ -24,7 +24,7 @@ yargs(hideBin(process.argv))
     "connect",
     "Start port forwarding session to the selected target",
     () => {},
-    handleConnect
+    withErrorHandling(handleConnect)
   )
   .command(
     "cleanup",
