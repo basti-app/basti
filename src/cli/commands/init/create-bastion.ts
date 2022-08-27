@@ -18,7 +18,7 @@ export async function createBastion({
   const subCli = cli.createSubInstance({ indent: 2 });
 
   try {
-    cli.info(`${fmt.green("❯")} Setting up bastion:`);
+    cli.out(`${fmt.green("❯")} Setting up bastion:`);
     const bastion = await bastionOps.createBastion({
       vpcId,
       subnetId,

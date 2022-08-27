@@ -27,12 +27,12 @@ export async function confirmCleanup({
     process.exit(0);
   }
 
-  cli.info("The following resources will be deleted:");
+  cli.out("The following resources will be deleted:");
 
   ManagedResourceGroups.filter((group) => resources[group].length > 0).forEach(
     (group) => {
-      cli.info(RESOURCE_GROUP_TITLES[group]);
-      cli.info(fmt.list(resources[group].map(fmt.value)));
+      cli.out(RESOURCE_GROUP_TITLES[group]);
+      cli.out(fmt.list(resources[group].map(fmt.value)));
     }
   );
 

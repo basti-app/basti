@@ -16,7 +16,7 @@ export class Fmt {
   }
 
   code(message: string): string {
-    return chalk.gray(message);
+    return chalk.gray.italic(`\`${message}\``);
   }
 
   green(message: string): string {
@@ -29,6 +29,10 @@ export class Fmt {
 
   yellow(message: string): string {
     return chalk.yellow(message);
+  }
+
+  blue(message: string): string {
+    return chalk.blue(message);
   }
 
   capitalize(message: string): string {

@@ -38,17 +38,20 @@ export class Cli {
     return new Cli(subInput);
   }
 
-  info(text: string): void {
+  out(text: string): void {
     this.progressStop();
 
     console.log(this.indentText(text));
   }
 
-  error(text: string): void {
-    this.progressStop();
+  info(text: string): void {
+    this.out("\n");
+    this.out(fmt.blue("ⓘ ") + text);
+  }
 
-    console.log("\n");
-    console.log(fmt.red(this.indentText(text)));
+  error(text: string): void {
+    this.out("\n");
+    this.out(fmt.red("❌ " + text));
   }
 
   progressStart(text: string): void {

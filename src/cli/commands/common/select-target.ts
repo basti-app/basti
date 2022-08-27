@@ -39,7 +39,7 @@ async function getTargets(): Promise<{
 }> {
   const subCli = cli.createSubInstance({ indent: 2 });
 
-  cli.info(`${fmt.green("❯")} Retrieving connection targets:`);
+  cli.out(`${fmt.green("❯")} Retrieving connection targets:`);
 
   const instances = await getTargetResources(
     () => getDbInstances(),

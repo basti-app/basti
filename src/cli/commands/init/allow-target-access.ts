@@ -31,14 +31,16 @@ export async function allowTargetAccess({
   const subCli = cli.createSubInstance({ indent: 2 });
 
   try {
-    cli.info(`${fmt.green("❯")} Configuring target access:`);
+    cli.out(`${fmt.green("❯")} Configuring target access:`);
     await target.allowAccess({
       bastion: bastion,
       hooks: {
         onCreatingSecurityGroup: () =>
           subCli.progressStart("Creating access security group"),
         onSecurityGroupCreated: (sgId) =>
-          subCli.progressSuccess(`Access security group created: ${sgId}`),
+          subCli.progressSuccess(
+            `Access security group created: ${fmt.value(sgId)}`
+          ),
 
         onAttachingSecurityGroup: () =>
           subCli.progressStart("Attaching security group to your target"),

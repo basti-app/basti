@@ -17,7 +17,7 @@ export async function assertTargetIsNotInitialized({
 
   if (targetInitialized) {
     cli.info(
-      `The selected target has already been initialized. If you'd like to re-initialize Basti, please, clean up your account first using ${fmt.code(
+      `The selected target has already been initialized. If you'd like to re-initialize Basti, please, clean up your account first by running ${fmt.code(
         "basti cleanup"
       )}`
     );
