@@ -1,6 +1,9 @@
 import * as bastionOps from "../../../bastion/ensure-bastion-running.js";
 import { Bastion } from "../../../bastion/bastion.js";
 import { cli } from "../../../common/cli.js";
+import { OperationError } from "../../error/operation-error.js";
+import { detailProvider } from "../../error/get-error-detail.js";
+import { AwsNoRootVolumeAttachedError } from "../../../aws/ec2/ec2-client.js";
 
 export interface EnsureBastionRunningInput {
   bastion: Bastion;
@@ -9,23 +12,42 @@ export interface EnsureBastionRunningInput {
 export async function ensureBastionRunning({
   bastion,
 }: EnsureBastionRunningInput): Promise<void> {
-  await bastionOps.ensureBastionRunning({
-    bastion,
-    hooks: {
-      onWaitingInstanceToStart: () =>
-        cli.progressStart(
-          `Bastion instance is starting. Waiting instance to start`
+  try {
+    await bastionOps.ensureBastionRunning({
+      bastion,
+      hooks: {
+        onWaitingInstanceToStart: () =>
+          cli.progressStart(
+            `Bastion instance is starting. Waiting instance to start`
+          ),
+        onWaitingInstanceToStop: () =>
+          cli.progressStart(
+            `Bastion instance is stopping. Waiting instance to stop`
+          ),
+        onStartingInstance: () =>
+          cli.progressStart(
+            `Bastion instance is stopped. Starting bastion instance`
+          ),
+        onInstanceStarted: () =>
+          cli.progressSuccess(`Bastion instance is running`),
+      },
+    });
+  } catch (error) {
+    cli.progressFailure();
+
+    throw OperationError.from({
+      operationName: "starting bastion instance",
+      error,
+      detailProviders: [
+        detailProvider(
+          bastionOps.StartingInstanceError,
+          (error) => `Can't start bastion instance ${error.instanceId}`
         ),
-      onWaitingInstanceToStop: () =>
-        cli.progressStart(
-          `Bastion instance is stopping. Waiting instance to stop`
+        detailProvider(
+          AwsNoRootVolumeAttachedError,
+          () => "Bastion instance doesn't have a volume attached at root"
         ),
-      onStartingInstance: () =>
-        cli.progressStart(
-          `Bastion instance is stopped. Starting bastion instance`
-        ),
-      onInstanceStarted: () =>
-        cli.progressSuccess(`Bastion instance is running`),
-    },
-  });
+      ],
+    });
+  }
 }

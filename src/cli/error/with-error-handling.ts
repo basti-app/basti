@@ -20,7 +20,7 @@ function handleError(error: unknown): never {
       ? error.message
       : `Unexpected error: ${getErrorMessage(error)}`;
 
-  cli.error(`❌ ${errorMessage}`);
+  cli.error(errorMessage);
 
   process.exit(1);
 }
