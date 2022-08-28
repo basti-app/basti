@@ -14,6 +14,12 @@ export function withErrorHandling<T extends unknown[], R>(
   };
 }
 
+export function handleAsyncErrors(): void {
+  process.on("uncaughtException", (error) => {
+    handleError(error);
+  });
+}
+
 function handleError(error: unknown): never {
   const errorMessage =
     error instanceof OperationError
