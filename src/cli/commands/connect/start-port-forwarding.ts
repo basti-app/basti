@@ -9,7 +9,10 @@ import {
   SessionManagerPluginUnexpectedExitError,
 } from "../../../session/start-session-manager-plugin-process.js";
 import { ConnectTarget } from "../../../target/connect-target.js";
-import { detailProvider } from "../../error/get-error-detail.js";
+import {
+  detailProvider,
+  getErrorDetail,
+} from "../../error/get-error-detail.js";
 import { OperationError } from "../../error/operation-error.js";
 
 export interface StartPortForwardingInput {
@@ -43,6 +46,13 @@ export async function startPortForwarding({
               ),
             ],
           });
+        },
+        onMarkingError: (error) => {
+          cli.warn(
+            `Can't mark bastion usage.  ${getErrorDetail(
+              error
+            )}. This might lead to session interruption.`
+          );
         },
       },
     });

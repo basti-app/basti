@@ -10,11 +10,13 @@ export type CliInput = Omit<CliPrivateInput, "spinner">;
 
 const NEW_LINE_REGEX = /(\r\n|\r|\n)/g;
 
+type CliContext = "info" | "warn" | "error" | "progress";
+
 export class Cli {
   private readonly indent: number;
   private readonly spinner: Ora;
 
-  private inProgress: boolean = false;
+  private context?: CliContext;
 
   private constructor({ indent, spinner }: CliPrivateInput) {
     this.indent = indent || 0;
@@ -45,41 +47,55 @@ export class Cli {
   }
 
   info(text: string, symbol: string = fmt.blue("ⓘ")): void {
-    this.out("\n");
+    this.enterContext("info");
+
     this.out(`${symbol} ${text}`);
   }
 
+  warn(text: string): void {
+    this.enterContext("warn");
+
+    this.out(fmt.yellow(`⚠ ${text}`));
+  }
+
   error(text: string): void {
-    this.out("\n");
+    this.enterContext("error");
+
     this.out(fmt.red(`❌ ${text}`));
   }
 
   progressStart(text: string): void {
-    this.inProgress = true;
+    this.context = "progress";
+
     this.spinner.start(text);
   }
 
   progressStop(): void {
-    if (!this.inProgress) {
+    if (this.context !== "progress") {
       return;
     }
-    this.inProgress = false;
+    this.context = undefined;
+
     this.spinner.stop();
   }
 
   progressSuccess(text?: string, symbol?: string): void {
-    this.inProgress = false;
+    this.context = undefined;
+
     symbol
       ? this.spinner.stopAndPersist({ symbol })
       : this.spinner.succeed(text);
   }
 
   progressFailure(text?: string): void {
-    this.inProgress = false;
+    this.context = undefined;
+
     this.spinner.fail(text);
   }
 
   progressWarn(input?: { text?: string; warnText: string }): void {
+    this.context = undefined;
+
     const currentText = this.spinner.text;
     const text =
       input && `${input.text || currentText} - ${fmt.yellow(input.warnText)}`;
@@ -88,6 +104,13 @@ export class Cli {
       symbol: fmt.yellow("⚠"),
       text,
     });
+  }
+
+  private enterContext(context: CliContext): void {
+    if (this.context !== context) {
+      this.out("\n");
+    }
+    this.context = context;
   }
 
   private indentText(text: string): string {

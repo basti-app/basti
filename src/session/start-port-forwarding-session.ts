@@ -5,8 +5,9 @@ import { ConnectTarget } from "../target/connect-target.js";
 import { startBastionUsageMarker } from "./start-bastion-usage-marker.js";
 import { AwsSsmInstanceNotConnectedError } from "../aws/ssm/ssm-client.js";
 
-interface StartPortForwardingSessionHooks {
+export interface StartPortForwardingSessionHooks {
   onSessionInterrupted?: (error: Error) => void;
+  onMarkingError?: (error: unknown) => void;
 }
 
 export interface StartPortForwardingSessionInput {
@@ -22,7 +23,12 @@ export async function startPortForwardingSession({
   localPort,
   hooks,
 }: StartPortForwardingSessionInput): Promise<void> {
-  const stopUsageMarker = startBastionUsageMarker({ bastionInstanceId });
+  const stopUsageMarker = startBastionUsageMarker({
+    bastionInstanceId,
+    hooks: {
+      onMarkingError: hooks?.onMarkingError,
+    },
+  });
 
   try {
     const targetHost = await target.getHost();
