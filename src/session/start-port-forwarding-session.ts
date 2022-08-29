@@ -4,6 +4,7 @@ import { retry } from "../common/retry.js";
 import { ConnectTarget } from "../target/connect-target.js";
 import { startBastionUsageMarker } from "./start-bastion-usage-marker.js";
 import { AwsSsmInstanceNotConnectedError } from "../aws/ssm/ssm-client.js";
+import { AwsSsmSessionDescriptor } from "../aws/ssm/types.js";
 
 export interface StartPortForwardingSessionHooks {
   onSessionInterrupted?: (error: Error) => void;
@@ -34,19 +35,11 @@ export async function startPortForwardingSession({
     const targetHost = await target.getHost();
     const targetPort = await target.getPort();
 
-    const sessionDescriptor = await retry(
-      () =>
-        startSsmPortForwardingSession({
-          bastionInstanceId,
-          targetHost,
-          targetPort,
-          localPort,
-        }),
-      {
-        delay: 3000,
-        maxRetries: 30,
-        shouldRetry: isTargetNotConnectedError,
-      }
+    const sessionDescriptor = await startSessionWithRetries(
+      bastionInstanceId,
+      targetHost,
+      targetPort,
+      localPort
     );
 
     await startSessionManagerPluginProcess({
@@ -62,6 +55,28 @@ export async function startPortForwardingSession({
     stopUsageMarker();
     throw error;
   }
+}
+
+async function startSessionWithRetries(
+  bastionInstanceId: string,
+  targetHost: string,
+  targetPort: number,
+  localPort: number
+): Promise<AwsSsmSessionDescriptor> {
+  return await retry(
+    () =>
+      startSsmPortForwardingSession({
+        bastionInstanceId,
+        targetHost,
+        targetPort,
+        localPort,
+      }),
+    {
+      delay: 3000,
+      maxRetries: 30,
+      shouldRetry: isTargetNotConnectedError,
+    }
+  );
 }
 
 function isTargetNotConnectedError(error: unknown): boolean {

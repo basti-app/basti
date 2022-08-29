@@ -34,26 +34,8 @@ export async function startPortForwarding({
       bastionInstanceId,
       localPort,
       hooks: {
-        onSessionInterrupted: (error) => {
-          throw OperationError.from({
-            operationName: "running port forwarding session",
-            error,
-            detailProviders: [
-              detailProvider(
-                SessionManagerPluginUnexpectedExitError,
-                (error) =>
-                  `session-manager-plugin exited with code/signal: ${error.reason}\n\nOutput:\n${error.output}\n\nError output:\n${error.errorOutput}`
-              ),
-            ],
-          });
-        },
-        onMarkingError: (error) => {
-          cli.warn(
-            `Can't mark bastion usage.  ${getErrorDetail(
-              error
-            )}. This might lead to session interruption.`
-          );
-        },
+        onSessionInterrupted: handleSessionInterruption,
+        onMarkingError: handleMarkingError,
       },
     });
 
@@ -65,26 +47,52 @@ export async function startPortForwarding({
   } catch (error) {
     cli.progressFailure();
 
-    throw OperationError.from({
-      operationName: "starting port forwarding session",
-      error,
-      detailProviders: [
-        detailProvider(
-          AwsSsmInstanceNotConnectedError,
-          () =>
-            `Bastion instance is not connected to SSM. The instance might have been created in a private VPC subnet during ${fmt.code(
-              "basti init"
-            )}`
-        ),
-        detailProvider(
-          SessionManagerPluginNonInstalledError,
-          () => "session-manager-plugin is not installed"
-        ),
-        detailProvider(
-          SessionManagerPluginPortInUseError,
-          () => `Local port ${fmt.value(String(localPort))} is already in use`
-        ),
-      ],
-    });
+    handleSessionStartError(error, localPort);
   }
+}
+
+function handleSessionInterruption(error: Error): never {
+  throw OperationError.from({
+    operationName: "running port forwarding session",
+    error,
+    detailProviders: [
+      detailProvider(
+        SessionManagerPluginUnexpectedExitError,
+        (error) =>
+          `session-manager-plugin exited with code/signal: ${error.reason}\n\nOutput:\n${error.output}\n\nError output:\n${error.errorOutput}`
+      ),
+    ],
+  });
+}
+
+function handleMarkingError(error: unknown): void {
+  cli.warn(
+    `Can't mark bastion usage.  ${getErrorDetail(
+      error
+    )}. This might lead to session interruption.`
+  );
+}
+
+function handleSessionStartError(error: unknown, localPort: number): never {
+  throw OperationError.from({
+    operationName: "starting port forwarding session",
+    error,
+    detailProviders: [
+      detailProvider(
+        AwsSsmInstanceNotConnectedError,
+        () =>
+          `Bastion instance is not connected to SSM. The instance might have been created in a private VPC subnet during ${fmt.code(
+            "basti init"
+          )}`
+      ),
+      detailProvider(
+        SessionManagerPluginNonInstalledError,
+        () => "session-manager-plugin is not installed"
+      ),
+      detailProvider(
+        SessionManagerPluginPortInUseError,
+        () => `Local port ${fmt.value(String(localPort))} is already in use`
+      ),
+    ],
+  });
 }
