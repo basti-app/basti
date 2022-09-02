@@ -9,39 +9,44 @@ import {
   BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
 } from "../bastion/bastion.js";
 import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from "../target/target-input.js";
-import { ManagedResourceGroup, ManagedResources } from "./managed-resources.js";
+import {
+  ManagedResourceGroup,
+  ManagedResourceGroups,
+  ManagedResources,
+} from "./managed-resources.js";
+
+interface GetResourcesToCleanupHooks {
+  onRetrievingResources?: (resourceGroup: ManagedResourceGroup) => void;
+}
 
 export interface GetResourcesToCleanupInput {
-  hooks?: {
-    onRetrievingResources?: (resourceGroup: ManagedResourceGroup) => void;
-  };
+  hooks?: GetResourcesToCleanupHooks;
 }
+
+const RESOURCE_RETRIEVERS: Record<
+  ManagedResourceGroup,
+  () => Promise<string[]>
+> = {
+  [ManagedResourceGroup.ACCESS_SECURITY_GROUP]: getAccessSecurityGroups,
+  [ManagedResourceGroup.BASTION_SECURITY_GROUP]: getBastionSecurityGroups,
+  [ManagedResourceGroup.BASTION_INSTANCE]: getBastionInstances,
+  [ManagedResourceGroup.BASTION_INSTANCE_PROFILE]: getBastionInstanceProfiles,
+  [ManagedResourceGroup.BASTION_ROLE]: getBastionRoles,
+};
 
 export async function getResourcesToCleanup({
   hooks,
 }: GetResourcesToCleanupInput): Promise<ManagedResources> {
-  hooks?.onRetrievingResources?.("accessSecurityGroups");
-  const accessSecurityGroups = await getAccessSecurityGroups();
+  const managedResources: Partial<ManagedResources> = {};
 
-  hooks?.onRetrievingResources?.("bastionSecurityGroups");
-  const bastionSecurityGroups = await getBastionSecurityGroups();
+  for (const resourceGroup of ManagedResourceGroups) {
+    hooks?.onRetrievingResources?.(resourceGroup);
+    managedResources[resourceGroup] = await RESOURCE_RETRIEVERS[
+      resourceGroup
+    ]();
+  }
 
-  hooks?.onRetrievingResources?.("bastionInstances");
-  const bastionInstances = await getBastionInstances();
-
-  hooks?.onRetrievingResources?.("bastionInstanceProfiles");
-  const bastionInstanceProfiles = await getBastionInstanceProfiles();
-
-  hooks?.onRetrievingResources?.("bastionRoles");
-  const bastionRoles = await getBastionRoles();
-
-  return {
-    accessSecurityGroups,
-    bastionSecurityGroups,
-    bastionInstances,
-    bastionInstanceProfiles,
-    bastionRoles,
-  };
+  return managedResources as ManagedResources;
 }
 
 async function getAccessSecurityGroups(): Promise<string[]> {

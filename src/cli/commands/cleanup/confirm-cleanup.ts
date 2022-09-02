@@ -12,11 +12,12 @@ export interface ConfirmCleanupInput {
 }
 
 const RESOURCE_GROUP_TITLES: Record<ManagedResourceGroup, string> = {
-  accessSecurityGroups: "Access security groups:",
-  bastionSecurityGroups: "Bastion security groups:",
-  bastionInstances: "Bastion EC2 instances:",
-  bastionInstanceProfiles: "Bastion IAM instance profiles:",
-  bastionRoles: "Bastion IAM roles:",
+  [ManagedResourceGroup.ACCESS_SECURITY_GROUP]: "Access security groups:",
+  [ManagedResourceGroup.BASTION_SECURITY_GROUP]: "Bastion security groups:",
+  [ManagedResourceGroup.BASTION_INSTANCE]: "Bastion EC2 instances:",
+  [ManagedResourceGroup.BASTION_INSTANCE_PROFILE]:
+    "Bastion IAM instance profiles:",
+  [ManagedResourceGroup.BASTION_ROLE]: "Bastion IAM roles:",
 };
 
 export async function confirmCleanup({

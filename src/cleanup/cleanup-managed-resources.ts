@@ -9,7 +9,11 @@ import {
   ResourceCleaner,
   ResourceCleanupError,
 } from "./cleanup-errors.js";
-import { ManagedResourceGroup, ManagedResources } from "./managed-resources.js";
+import {
+  ManagedResourceGroup,
+  ManagedResourceGroups,
+  ManagedResources,
+} from "./managed-resources.js";
 import {
   accessSecurityGroupReferencesCleaner,
   securityGroupCleaner,
@@ -35,49 +39,44 @@ export interface CleanupManagedResourcesInput {
   hooks?: CleanupManagedResourcesHooks;
 }
 
+const RESOURCE_CLEANERS: Record<ManagedResourceGroup, ResourceCleaner> = {
+  [ManagedResourceGroup.ACCESS_SECURITY_GROUP]: securityGroupCleaner,
+  [ManagedResourceGroup.BASTION_SECURITY_GROUP]: securityGroupCleaner,
+  [ManagedResourceGroup.BASTION_INSTANCE]: bastionInstanceCleaner,
+  [ManagedResourceGroup.BASTION_INSTANCE_PROFILE]:
+    bastionInstanceProfileCleaner,
+  [ManagedResourceGroup.BASTION_ROLE]: bastionRoleCleaner,
+};
+
+const BATCH_CLEANERS: Record<
+  ManagedResourceGroup,
+  BatchResourceCleaner | undefined
+> = {
+  [ManagedResourceGroup.ACCESS_SECURITY_GROUP]:
+    accessSecurityGroupReferencesCleaner,
+  [ManagedResourceGroup.BASTION_SECURITY_GROUP]: undefined,
+  [ManagedResourceGroup.BASTION_INSTANCE]: undefined,
+  [ManagedResourceGroup.BASTION_INSTANCE_PROFILE]: undefined,
+  [ManagedResourceGroup.BASTION_ROLE]: undefined,
+};
+
 export async function cleanupManagedResources({
   managedResources,
   hooks,
 }: CleanupManagedResourcesInput): Promise<ManagedResourcesCleanupErrors> {
-  const accessSecurityGroups = await cleanupResources({
-    resourceGroup: "accessSecurityGroups",
-    resourceIds: managedResources.accessSecurityGroups,
-    cleaner: securityGroupCleaner,
-    batchCleaner: accessSecurityGroupReferencesCleaner,
-    hooks,
-  });
-  const bastionInstances = await cleanupResources({
-    resourceGroup: "bastionInstances",
-    resourceIds: managedResources.bastionInstances,
-    cleaner: bastionInstanceCleaner,
-    hooks,
-  });
-  const bastionSecurityGroups = await cleanupResources({
-    resourceGroup: "bastionSecurityGroups",
-    resourceIds: managedResources.bastionSecurityGroups,
-    cleaner: securityGroupCleaner,
-    hooks,
-  });
-  const bastionInstanceProfiles = await cleanupResources({
-    resourceGroup: "bastionInstanceProfiles",
-    resourceIds: managedResources.bastionInstanceProfiles,
-    cleaner: bastionInstanceProfileCleaner,
-    hooks,
-  });
-  const bastionRoles = await cleanupResources({
-    resourceGroup: "bastionRoles",
-    resourceIds: managedResources.bastionRoles,
-    cleaner: bastionRoleCleaner,
-    hooks,
-  });
+  const errors: Partial<ManagedResourcesCleanupErrors> = {};
 
-  return {
-    accessSecurityGroups,
-    bastionInstances,
-    bastionSecurityGroups,
-    bastionInstanceProfiles,
-    bastionRoles,
-  };
+  for (const resourceGroup of ManagedResourceGroups) {
+    errors[resourceGroup] = await cleanupResources({
+      resourceGroup,
+      resourceIds: managedResources[resourceGroup],
+      cleaner: RESOURCE_CLEANERS[resourceGroup],
+      batchCleaner: BATCH_CLEANERS[resourceGroup],
+      hooks,
+    });
+  }
+
+  return errors as ManagedResourcesCleanupErrors;
 }
 
 export async function cleanupResources({

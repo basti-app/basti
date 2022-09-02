@@ -21,11 +21,12 @@ export type CleanupErrors = {
 };
 
 const RESOURCE_NAMES: Record<ManagedResourceGroup, string> = {
-  accessSecurityGroups: "access security group",
-  bastionInstances: "bastion EC2 instance",
-  bastionSecurityGroups: "bastion security group",
-  bastionInstanceProfiles: "bastion IAM instance profile",
-  bastionRoles: "bastion IAM role",
+  [ManagedResourceGroup.ACCESS_SECURITY_GROUP]: "access security group",
+  [ManagedResourceGroup.BASTION_INSTANCE]: "bastion EC2 instance",
+  [ManagedResourceGroup.BASTION_SECURITY_GROUP]: "bastion security group",
+  [ManagedResourceGroup.BASTION_INSTANCE_PROFILE]:
+    "bastion IAM instance profile",
+  [ManagedResourceGroup.BASTION_ROLE]: "bastion IAM role",
 };
 
 export async function cleanupResources({
