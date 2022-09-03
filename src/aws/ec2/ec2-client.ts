@@ -1,6 +1,10 @@
 import { EC2Client, EC2ServiceException } from "@aws-sdk/client-ec2";
 import { AwsClient } from "../common/aws-client.js";
-import { AwsAccessDeniedError, AwsError } from "../common/aws-error.js";
+import {
+  AwsAccessDeniedError,
+  AwsDependencyViolationError,
+  AwsError,
+} from "../common/aws-error.js";
 
 export const ec2Client = new AwsClient({
   client: EC2Client,
@@ -28,6 +32,12 @@ export async function errorHandler<T>(operation: () => Promise<T>): Promise<T> {
       error.message.toLowerCase().includes("volume attached")
     ) {
       throw new AwsNoRootVolumeAttachedError();
+    }
+    if (
+      error instanceof EC2ServiceException &&
+      error.name === "DependencyViolation"
+    ) {
+      throw new AwsDependencyViolationError();
     }
     throw error;
   }

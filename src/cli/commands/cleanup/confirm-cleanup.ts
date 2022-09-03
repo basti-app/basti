@@ -12,12 +12,12 @@ export interface ConfirmCleanupInput {
 }
 
 const RESOURCE_GROUP_TITLES: Record<ManagedResourceGroup, string> = {
-  [ManagedResourceGroup.ACCESS_SECURITY_GROUP]: "Access security groups:",
-  [ManagedResourceGroup.BASTION_SECURITY_GROUP]: "Bastion security groups:",
-  [ManagedResourceGroup.BASTION_INSTANCE]: "Bastion EC2 instances:",
+  [ManagedResourceGroup.ACCESS_SECURITY_GROUP]: "Access security groups",
+  [ManagedResourceGroup.BASTION_SECURITY_GROUP]: "Bastion security groups",
+  [ManagedResourceGroup.BASTION_INSTANCE]: "Bastion EC2 instances",
   [ManagedResourceGroup.BASTION_INSTANCE_PROFILE]:
-    "Bastion IAM instance profiles:",
-  [ManagedResourceGroup.BASTION_ROLE]: "Bastion IAM roles:",
+    "Bastion IAM instance profiles",
+  [ManagedResourceGroup.BASTION_ROLE]: "Bastion IAM roles",
 };
 
 export async function confirmCleanup({
@@ -28,19 +28,12 @@ export async function confirmCleanup({
     process.exit(0);
   }
 
-  cli.out("The following resources will be deleted:");
-
-  ManagedResourceGroups.filter((group) => resources[group].length > 0).forEach(
-    (group) => {
-      cli.out(RESOURCE_GROUP_TITLES[group]);
-      cli.out(fmt.list(resources[group].map(fmt.value)));
-    }
-  );
+  printResources(resources);
 
   const { confirm } = await inquirer.prompt({
     type: "confirm",
     name: "confirm",
-    message: "Confirm cleanup?",
+    message: "Proceed to cleanup?",
     default: true,
   });
 
@@ -51,4 +44,17 @@ export async function confirmCleanup({
 
 function isEmpty(resources: ManagedResources): boolean {
   return Object.values(resources).every((group) => group.length === 0);
+}
+
+function printResources(resources: ManagedResources) {
+  const subCli = cli.createSubInstance({ indent: 2 });
+
+  cli.out("The following resources will be deleted:");
+
+  ManagedResourceGroups.filter((group) => resources[group].length > 0).forEach(
+    (group) => {
+      cli.out(`${RESOURCE_GROUP_TITLES[group]}`);
+      subCli.out(fmt.list(resources[group].map(fmt.value)));
+    }
+  );
 }

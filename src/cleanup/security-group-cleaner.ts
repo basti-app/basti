@@ -1,55 +1,38 @@
-import { EC2ServiceException } from "@aws-sdk/client-ec2";
+import { AwsDependencyViolationError } from "../aws/common/aws-error.js";
 import { deleteSecurityGroup } from "../aws/ec2/delete-security-group.js";
 import { getDbClusters } from "../aws/rds/get-db-clusters.js";
 import { getDbInstances } from "../aws/rds/get-db-instances.js";
 import { modifyDBCluster } from "../aws/rds/modify-db-cluster.js";
 import { modifyDbInstance } from "../aws/rds/modify-db-instance.js";
-import { getErrorMessage } from "../common/get-error-message.js";
 import { retry } from "../common/retry.js";
-import { BatchResourceCleaner, ResourceCleaner } from "./cleanup-errors.js";
+import {
+  ResourcesCleanupPreparer,
+  ResourceCleaner,
+} from "./resource-cleaner.js";
 
-export const accessSecurityGroupReferencesCleaner: BatchResourceCleaner =
+export const accessSecurityGroupReferencesCleaner: ResourcesCleanupPreparer =
   async (groupIds) => {
-    try {
-      const groupIdSet = new Set(groupIds);
-      await cleanupDbInstanceReferences(groupIdSet);
-      await cleanupDbClusterReferences(groupIdSet);
-    } catch (error) {
-      return {
-        reason: "UNKNOWN",
-        message: getErrorMessage(error),
-      };
-    }
+    const groupIdSet = new Set(groupIds);
+    await cleanupDbInstanceReferences(groupIdSet);
+    await cleanupDbClusterReferences(groupIdSet);
   };
 
 export const securityGroupCleaner: ResourceCleaner = async (groupId) => {
-  try {
-    await retry(() => deleteSecurityGroup({ groupId }), {
-      delay: 3000,
-      maxRetries: 15,
-      shouldRetry: isDependencyViolationError,
-    });
-  } catch (error) {
-    if (isDependencyViolationError(error)) {
-      return {
-        reason: "DEPENDENCY_VIOLATION",
-      };
-    } else {
-      return {
-        reason: "UNKNOWN",
-        message: getErrorMessage(error),
-      };
-    }
-  }
+  await retry(() => deleteSecurityGroup({ groupId }), {
+    delay: 3000,
+    maxRetries: 15,
+    shouldRetry: (error) => error instanceof AwsDependencyViolationError,
+  });
 };
 
 async function cleanupDbInstanceReferences(
   securityGroupIds: Set<string>
 ): Promise<void> {
-  const dbInstancesWithReferences = (await getDbInstances()).filter(
-    (instance) => arrayContains(instance.securityGroupIds, securityGroupIds)
-  );
+  const dbInstances = await getDbInstances();
 
+  const dbInstancesWithReferences = dbInstances.filter((instance) =>
+    arrayContains(instance.securityGroupIds, securityGroupIds)
+  );
   if (!dbInstancesWithReferences.length) {
     return;
   }
@@ -68,10 +51,11 @@ async function cleanupDbInstanceReferences(
 async function cleanupDbClusterReferences(
   securityGroupsIds: Set<string>
 ): Promise<void> {
-  const dbClustersWithReferences = (await getDbClusters()).filter((cluster) =>
+  const dbClusters = await getDbClusters();
+
+  const dbClustersWithReferences = dbClusters.filter((cluster) =>
     arrayContains(cluster.securityGroupIds, securityGroupsIds)
   );
-
   if (!dbClustersWithReferences.length) {
     return;
   }
@@ -85,12 +69,6 @@ async function cleanupDbClusterReferences(
       ),
     });
   }
-}
-
-function isDependencyViolationError(error: unknown): boolean {
-  return (
-    error instanceof EC2ServiceException && error.name === "DependencyViolation"
-  );
 }
 
 function arrayContains(arr: string[], set: Set<string>): boolean {

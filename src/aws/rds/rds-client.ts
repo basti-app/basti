@@ -22,7 +22,13 @@ export async function errorHandler<T>(operation: () => Promise<T>): Promise<T> {
     ) {
       throw new AwsTooManySecurityGroupsAttachedError();
     }
-
+    if (
+      error instanceof RDSServiceException &&
+      (error.name === "InvalidDBClusterStateFault" ||
+        error.name === "InvalidDBInstanceStateFault")
+    ) {
+      throw new AwsInvalidRdsStateError();
+    }
     throw error;
   }
 }
@@ -30,5 +36,11 @@ export async function errorHandler<T>(operation: () => Promise<T>): Promise<T> {
 export class AwsTooManySecurityGroupsAttachedError extends AwsError {
   constructor() {
     super(`Too many security groups attached`);
+  }
+}
+
+export class AwsInvalidRdsStateError extends AwsError {
+  constructor() {
+    super(`Invalid DB state`);
   }
 }

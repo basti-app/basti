@@ -10,7 +10,7 @@ export type CliInput = Omit<CliPrivateInput, "spinner">;
 
 const NEW_LINE_REGEX = /(\r\n|\r|\n)/g;
 
-type CliContext = "info" | "warn" | "error" | "progress";
+type CliContext = "info" | "warn" | "error" | "progress" | "success";
 
 export class Cli {
   private readonly indent: number;
@@ -50,6 +50,12 @@ export class Cli {
     this.enterContext("info");
 
     this.out(`${symbol} ${text}`);
+  }
+
+  success(text: string): void {
+    this.enterContext("success");
+
+    this.out(`${fmt.green("✔")} ${text}`);
   }
 
   warn(text: string): void {

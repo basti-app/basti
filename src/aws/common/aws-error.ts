@@ -20,3 +20,9 @@ export class AwsNotFoundError extends AwsError {
     super("Resource not found");
   }
 }
+
+export class AwsDependencyViolationError extends AwsError {
+  constructor() {
+    super("Resource has dependent resources");
+  }
+}

@@ -1,14 +1,10 @@
-import { getErrorMessage } from "../common/get-error-message.js";
 import { bastionInstanceCleaner } from "./bastion-instance-cleaner.js";
 import { bastionInstanceProfileCleaner } from "./bastion-instance-profile-cleaner.js";
 import { bastionRoleCleaner } from "./bastion-role-cleaner.js";
 import {
-  BatchCleanupError,
-  BatchResourceCleaner,
-  ManagedResourcesCleanupErrors,
+  ResourcesCleanupPreparer,
   ResourceCleaner,
-  ResourceCleanupError,
-} from "./cleanup-errors.js";
+} from "./resource-cleaner.js";
 import {
   ManagedResourceGroup,
   ManagedResourceGroups,
@@ -20,6 +16,12 @@ import {
 } from "./security-group-cleaner.js";
 
 interface CleanupManagedResourcesHooks {
+  onPreparingToCleanup?: (resourceGroup: ManagedResourceGroup) => void;
+  onPreparedToCleanup?: (resourceGroup: ManagedResourceGroup) => void;
+  onPreparationFailed?: (
+    resourceGroup: ManagedResourceGroup,
+    error: unknown
+  ) => void;
   onCleaningUpResource?: (
     resourceGroup: ManagedResourceGroup,
     resourceId: string
@@ -30,7 +32,8 @@ interface CleanupManagedResourcesHooks {
   ) => void;
   onResourceCleanupFailed?: (
     resourceGroup: ManagedResourceGroup,
-    resourceId: string
+    resourceId: string,
+    error: unknown
   ) => void;
 }
 
@@ -48,9 +51,9 @@ const RESOURCE_CLEANERS: Record<ManagedResourceGroup, ResourceCleaner> = {
   [ManagedResourceGroup.BASTION_ROLE]: bastionRoleCleaner,
 };
 
-const BATCH_CLEANERS: Record<
+const CLEANUP_PREPARERS: Record<
   ManagedResourceGroup,
-  BatchResourceCleaner | undefined
+  ResourcesCleanupPreparer | undefined
 > = {
   [ManagedResourceGroup.ACCESS_SECURITY_GROUP]:
     accessSecurityGroupReferencesCleaner,
@@ -63,62 +66,49 @@ const BATCH_CLEANERS: Record<
 export async function cleanupManagedResources({
   managedResources,
   hooks,
-}: CleanupManagedResourcesInput): Promise<ManagedResourcesCleanupErrors> {
-  const errors: Partial<ManagedResourcesCleanupErrors> = {};
-
+}: CleanupManagedResourcesInput): Promise<void> {
   for (const resourceGroup of ManagedResourceGroups) {
-    errors[resourceGroup] = await cleanupResources({
+    await cleanupResources({
       resourceGroup,
       resourceIds: managedResources[resourceGroup],
       cleaner: RESOURCE_CLEANERS[resourceGroup],
-      batchCleaner: BATCH_CLEANERS[resourceGroup],
+      cleanupPreparer: CLEANUP_PREPARERS[resourceGroup],
       hooks,
     });
   }
-
-  return errors as ManagedResourcesCleanupErrors;
 }
 
 export async function cleanupResources({
   resourceGroup,
   resourceIds,
   cleaner,
-  batchCleaner,
+  cleanupPreparer,
   hooks,
 }: {
   resourceGroup: ManagedResourceGroup;
   resourceIds: string[];
   cleaner: ResourceCleaner;
-  batchCleaner?: BatchResourceCleaner;
+  cleanupPreparer?: ResourcesCleanupPreparer;
   hooks?: CleanupManagedResourcesHooks;
-}): Promise<ResourceCleanupError[] | BatchCleanupError> {
-  try {
-    const batchCleanupError = await batchCleaner?.(resourceIds);
-    if (batchCleanupError) {
-      return batchCleanupError;
+}): Promise<void> {
+  if (cleanupPreparer) {
+    try {
+      hooks?.onPreparingToCleanup?.(resourceGroup);
+      await cleanupPreparer(resourceIds);
+      hooks?.onPreparedToCleanup?.(resourceGroup);
+    } catch (error) {
+      hooks?.onPreparationFailed?.(resourceGroup, error);
+      return;
     }
+  }
 
-    const errors: ResourceCleanupError[] = [];
-
-    for (const resourceId of resourceIds) {
-      hooks?.onCleaningUpResource?.(resourceGroup, resourceId);
-      const error = await cleaner(resourceId);
-      if (error) {
-        hooks?.onResourceCleanupFailed?.(resourceGroup, resourceId);
-        errors.push({
-          resourceId,
-          ...error,
-        });
-      } else {
-        hooks?.onResourceCleanedUp?.(resourceGroup, resourceId);
-      }
+  for (const resourceId of resourceIds) {
+    hooks?.onCleaningUpResource?.(resourceGroup, resourceId);
+    try {
+      await cleaner(resourceId);
+      hooks?.onResourceCleanedUp?.(resourceGroup, resourceId);
+    } catch (error) {
+      hooks?.onResourceCleanupFailed?.(resourceGroup, resourceId, error);
     }
-
-    return errors;
-  } catch (error) {
-    return {
-      reason: "UNKNOWN",
-      message: getErrorMessage(error),
-    };
   }
 }

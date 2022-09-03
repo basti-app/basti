@@ -1,4 +1,7 @@
-import { AwsAccessDeniedError } from "../../aws/common/aws-error.js";
+import {
+  AwsAccessDeniedError,
+  AwsDependencyViolationError,
+} from "../../aws/common/aws-error.js";
 import { AwsTimeoutError } from "../../aws/common/waiter-error.js";
 import { getErrorMessage } from "../../common/get-error-message.js";
 import {
@@ -31,6 +34,10 @@ export const COMMON_DETAIL_PROVIDERS: ErrorMessageProvider[] = [
   detailProvider(
     AwsTimeoutError,
     () => "Operation timed out. This looks like an AWS delay. Please try again"
+  ),
+  detailProvider(
+    AwsDependencyViolationError,
+    () => "Resource has other resources dependent on it"
   ),
   detailProvider(
     UnexpectedStateError,

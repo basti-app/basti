@@ -51,7 +51,7 @@ export async function createBastion({
           ),
       },
     });
-    cli.progressSuccess(`Bastion set up. Bastion id: ${bastion.id}`);
+    cli.progressSuccess(`Bastion set up. Bastion id: ${fmt.value(bastion.id)}`);
 
     return bastion;
   } catch (error) {
