@@ -32,7 +32,7 @@ yargs(hideBin(process.argv))
     "cleanup",
     "Remove all resources created by Basti",
     (yargs) => yargs,
-    handleCleanup
+    withErrorHandling(handleCleanup)
   )
   .demandCommand(1)
   .strict()

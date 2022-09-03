@@ -42,25 +42,26 @@ export interface CleanupManagedResourcesInput {
   hooks?: CleanupManagedResourcesHooks;
 }
 
-const RESOURCE_CLEANERS: Record<ManagedResourceGroup, ResourceCleaner> = {
-  [ManagedResourceGroup.ACCESS_SECURITY_GROUP]: securityGroupCleaner,
-  [ManagedResourceGroup.BASTION_SECURITY_GROUP]: securityGroupCleaner,
-  [ManagedResourceGroup.BASTION_INSTANCE]: bastionInstanceCleaner,
-  [ManagedResourceGroup.BASTION_INSTANCE_PROFILE]:
-    bastionInstanceProfileCleaner,
-  [ManagedResourceGroup.BASTION_ROLE]: bastionRoleCleaner,
-};
-
-const CLEANUP_PREPARERS: Record<
+const RESOURCE_CLEANERS: Record<
   ManagedResourceGroup,
-  ResourcesCleanupPreparer | undefined
+  { cleaner: ResourceCleaner; preparer?: ResourcesCleanupPreparer }
 > = {
-  [ManagedResourceGroup.ACCESS_SECURITY_GROUP]:
-    accessSecurityGroupReferencesCleaner,
-  [ManagedResourceGroup.BASTION_SECURITY_GROUP]: undefined,
-  [ManagedResourceGroup.BASTION_INSTANCE]: undefined,
-  [ManagedResourceGroup.BASTION_INSTANCE_PROFILE]: undefined,
-  [ManagedResourceGroup.BASTION_ROLE]: undefined,
+  [ManagedResourceGroup.ACCESS_SECURITY_GROUP]: {
+    cleaner: securityGroupCleaner,
+    preparer: accessSecurityGroupReferencesCleaner,
+  },
+  [ManagedResourceGroup.BASTION_SECURITY_GROUP]: {
+    cleaner: securityGroupCleaner,
+  },
+  [ManagedResourceGroup.BASTION_INSTANCE]: {
+    cleaner: bastionInstanceCleaner,
+  },
+  [ManagedResourceGroup.BASTION_INSTANCE_PROFILE]: {
+    cleaner: bastionInstanceProfileCleaner,
+  },
+  [ManagedResourceGroup.BASTION_ROLE]: {
+    cleaner: bastionRoleCleaner,
+  },
 };
 
 export async function cleanupManagedResources({
@@ -71,8 +72,8 @@ export async function cleanupManagedResources({
     await cleanupResources({
       resourceGroup,
       resourceIds: managedResources[resourceGroup],
-      cleaner: RESOURCE_CLEANERS[resourceGroup],
-      cleanupPreparer: CLEANUP_PREPARERS[resourceGroup],
+      cleaner: RESOURCE_CLEANERS[resourceGroup].cleaner,
+      cleanupPreparer: RESOURCE_CLEANERS[resourceGroup].preparer,
       hooks,
     });
   }

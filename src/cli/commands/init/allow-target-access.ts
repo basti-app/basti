@@ -49,7 +49,7 @@ export async function allowTargetAccess({
       },
     });
     cli.success(
-      `The target has bees successfully initialized to use with Basti. Use ${fmt.code(
+      `The target has been initialized to use with Basti. Use ${fmt.code(
         "basti connect"
       )} to establish a connection`
     );
