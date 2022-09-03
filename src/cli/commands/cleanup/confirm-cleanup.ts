@@ -24,7 +24,7 @@ export async function confirmCleanup({
   resources,
 }: ConfirmCleanupInput): Promise<void> {
   if (isEmpty(resources)) {
-    cli.info("No Basti-managed resources found in your account");
+    cli.success("No Basti-managed resources found in your account");
     process.exit(0);
   }
 
@@ -49,7 +49,7 @@ function isEmpty(resources: ManagedResources): boolean {
 function printResources(resources: ManagedResources) {
   const subCli = cli.createSubInstance({ indent: 2 });
 
-  cli.info("The following resources will be deleted:");
+  cli.info("The following resources are going to be deleted:");
 
   ManagedResourceGroups.filter((group) => resources[group].length > 0).forEach(
     (group) => {

@@ -1,3 +1,5 @@
+import { cli } from "../../../common/cli.js";
+import { fmt } from "../../../common/fmt.js";
 import { handleOperation } from "../common/handle-operation.js";
 import { allowTargetAccess } from "./allow-target-access.js";
 import { assertTargetIsNotInitialized } from "./assert-target-is-not-initiated.js";

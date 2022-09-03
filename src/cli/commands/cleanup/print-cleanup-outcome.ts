@@ -4,7 +4,7 @@ import { CleanupErrors } from "./cleanup-resources.js";
 
 export function printCleanupOutcome(cleanupErrors: CleanupErrors): void {
   if (cleanupErrors.length === 0) {
-    cli.success("All resources deleted");
+    cli.success("Basti-managed resources deleted successfully");
     return;
   }
 

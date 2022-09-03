@@ -48,7 +48,11 @@ export async function allowTargetAccess({
           subCli.progressSuccess("Access security group attached"),
       },
     });
-    cli.progressSuccess("Target configured");
+    cli.success(
+      `The target has bees successfully initialized to use with Basti. Use ${fmt.code(
+        "basti connect"
+      )} to establish a connection`
+    );
   } catch (error) {
     subCli.progressFailure();
 
