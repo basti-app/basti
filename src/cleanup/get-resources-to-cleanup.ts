@@ -17,6 +17,11 @@ import {
 
 interface GetResourcesToCleanupHooks {
   onRetrievingResources?: (resourceGroup: ManagedResourceGroup) => void;
+  onResourcesRetrieved?: (resourceGroup: ManagedResourceGroup) => void;
+  onRetrievalFailed?: (
+    resourceGroup: ManagedResourceGroup,
+    error: unknown
+  ) => void;
 }
 
 export interface GetResourcesToCleanupInput {
@@ -40,10 +45,16 @@ export async function getResourcesToCleanup({
   const managedResources: Partial<ManagedResources> = {};
 
   for (const resourceGroup of ManagedResourceGroups) {
-    hooks?.onRetrievingResources?.(resourceGroup);
-    managedResources[resourceGroup] = await RESOURCE_RETRIEVERS[
-      resourceGroup
-    ]();
+    try {
+      hooks?.onRetrievingResources?.(resourceGroup);
+      managedResources[resourceGroup] = await RESOURCE_RETRIEVERS[
+        resourceGroup
+      ]();
+      hooks?.onResourcesRetrieved?.(resourceGroup);
+    } catch (error) {
+      hooks?.onRetrievalFailed?.(resourceGroup, error);
+      managedResources[resourceGroup] = [];
+    }
   }
 
   return managedResources as ManagedResources;

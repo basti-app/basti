@@ -10,6 +10,7 @@ import {
   DbClusterTargetInput,
   DbInstanceTargetInput,
 } from "../../../target/target-input.js";
+import { getErrorDetail } from "../../error/get-error-detail.js";
 
 export type SelectedTargetInput =
   | DbInstanceTargetInput
@@ -99,10 +100,8 @@ async function getTargetResources<T>(
     cli.progressSuccess();
     return resources;
   } catch (error) {
-    const warnText =
-      error instanceof AwsAccessDeniedError
-        ? "Access denied by IAM"
-        : `Unexpected error: ${getErrorMessage(error)}`;
+    const warnText = getErrorDetail(error);
+
     cli.progressWarn({ warnText });
     return [];
   }

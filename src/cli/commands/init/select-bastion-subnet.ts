@@ -17,7 +17,7 @@ export async function selectBastionSubnet({
   );
 
   if (subnets.length === 0) {
-    cli.info(`No subnets found in VPC`);
+    cli.info(`No subnets found in the VPC`);
     process.exit(0);
   }
 

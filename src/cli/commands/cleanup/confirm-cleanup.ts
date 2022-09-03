@@ -49,7 +49,7 @@ function isEmpty(resources: ManagedResources): boolean {
 function printResources(resources: ManagedResources) {
   const subCli = cli.createSubInstance({ indent: 2 });
 
-  cli.out("The following resources will be deleted:");
+  cli.info("The following resources will be deleted:");
 
   ManagedResourceGroups.filter((group) => resources[group].length > 0).forEach(
     (group) => {

@@ -26,11 +26,7 @@ export function detailProvider<T extends Error>(
 }
 
 export const COMMON_DETAIL_PROVIDERS: ErrorMessageProvider[] = [
-  detailProvider(
-    AwsAccessDeniedError,
-    (error) =>
-      "Access denied by IAM" + (error.iamMessage ? `: ${error.iamMessage}` : "")
-  ),
+  detailProvider(AwsAccessDeniedError, (error) => "Access denied by IAM"),
   detailProvider(
     AwsTimeoutError,
     () => "Operation timed out. This looks like an AWS delay. Please try again"
