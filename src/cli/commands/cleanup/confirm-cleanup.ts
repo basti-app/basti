@@ -1,23 +1,23 @@
 import inquirer from "inquirer";
 import {
-  ManagedResourceGroup,
-  ManagedResourceGroups,
+  CLEANUP_ORDER,
   ManagedResources,
 } from "../../../cleanup/managed-resources.js";
 import { cli } from "../../../common/cli.js";
 import { fmt } from "../../../common/fmt.js";
+import { ManagedResourceType } from "../../../common/resource-type.js";
 
 export interface ConfirmCleanupInput {
   resources: ManagedResources;
 }
 
-const RESOURCE_GROUP_TITLES: Record<ManagedResourceGroup, string> = {
-  [ManagedResourceGroup.ACCESS_SECURITY_GROUP]: "Access security groups",
-  [ManagedResourceGroup.BASTION_SECURITY_GROUP]: "Bastion security groups",
-  [ManagedResourceGroup.BASTION_INSTANCE]: "Bastion EC2 instances",
-  [ManagedResourceGroup.BASTION_INSTANCE_PROFILE]:
+const RESOURCE_GROUP_TITLES: Record<ManagedResourceType, string> = {
+  [ManagedResourceType.ACCESS_SECURITY_GROUP]: "Access security groups",
+  [ManagedResourceType.BASTION_SECURITY_GROUP]: "Bastion security groups",
+  [ManagedResourceType.BASTION_INSTANCE]: "Bastion EC2 instances",
+  [ManagedResourceType.BASTION_INSTANCE_PROFILE]:
     "Bastion IAM instance profiles",
-  [ManagedResourceGroup.BASTION_ROLE]: "Bastion IAM roles",
+  [ManagedResourceType.BASTION_ROLE]: "Bastion IAM roles",
 };
 
 export async function confirmCleanup({
@@ -51,7 +51,7 @@ function printResources(resources: ManagedResources) {
 
   cli.info("The following resources are going to be deleted:");
 
-  ManagedResourceGroups.filter((group) => resources[group].length > 0).forEach(
+  CLEANUP_ORDER.filter((group) => resources[group].length > 0).forEach(
     (group) => {
       cli.out(`${RESOURCE_GROUP_TITLES[group]}`);
       subCli.out(fmt.list(resources[group].map(fmt.value)));

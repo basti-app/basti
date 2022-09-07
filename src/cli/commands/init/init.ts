@@ -1,32 +1,33 @@
-import { cli } from "../../../common/cli.js";
-import { fmt } from "../../../common/fmt.js";
-import { handleOperation } from "../common/handle-operation.js";
 import { allowTargetAccess } from "./allow-target-access.js";
 import { assertTargetIsNotInitialized } from "./assert-target-is-not-initiated.js";
 import { createBastion } from "./create-bastion.js";
 import { getBastion } from "./get-bastion.js";
-import { selectBastionSubnet } from "./select-bastion-subnet.js";
+import { getTargetVpc } from "./get-target-vpc.js";
+import { selectBastionSubnetId } from "./select-bastion-subnet.js";
 import { selectInitTarget } from "./select-init-target.js";
 
-export async function handleInit() {
-  const target = await selectInitTarget();
+export type InitInput = {
+  target?:
+    | { rdsInstanceId: string }
+    | { rdsClusterId: string }
+    | { customTargetVpcId: string };
+  bastionSubnet?: string;
+};
+
+export async function handleInit(input: InitInput): Promise<void> {
+  const target = await selectInitTarget(input.target);
+  const targetVpcId = await getTargetVpc(target);
+
+  const bastionSubnet = await selectBastionSubnetId({
+    vpcId: targetVpcId,
+    bastionSubnetInput: input.bastionSubnet,
+  });
 
   await assertTargetIsNotInitialized({ target });
 
-  const targetVpcId = await handleOperation("retrieving target VPC", () =>
-    target.getVpcId()
-  );
-
-  let bastion = await getBastion({ vpcId: targetVpcId });
-
-  if (!bastion) {
-    const bastionSubnet = await selectBastionSubnet({ vpcId: targetVpcId });
-
-    bastion = await createBastion({
-      vpcId: targetVpcId,
-      subnetId: bastionSubnet.id,
-    });
-  }
+  const bastion =
+    (await getBastion({ vpcId: targetVpcId })) ||
+    (await createBastion({ vpcId: targetVpcId, subnetId: bastionSubnet }));
 
   await allowTargetAccess({ target, bastion });
 }

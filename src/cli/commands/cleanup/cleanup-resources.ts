@@ -1,12 +1,10 @@
 import { AwsDependencyViolationError } from "../../../aws/common/aws-error.js";
 import { AwsInvalidRdsStateError } from "../../../aws/rds/rds-client.js";
 import { cleanupManagedResources } from "../../../cleanup/cleanup-managed-resources.js";
-import {
-  ManagedResourceGroup,
-  ManagedResources,
-} from "../../../cleanup/managed-resources.js";
+import { ManagedResources } from "../../../cleanup/managed-resources.js";
 import { cli } from "../../../common/cli.js";
 import { fmt } from "../../../common/fmt.js";
+import { ManagedResourceType } from "../../../common/resource-type.js";
 import { detailProvider } from "../../error/get-error-detail.js";
 import { OperationError } from "../../error/operation-error.js";
 
@@ -14,13 +12,13 @@ export interface CleanupResourcesInput {
   resources: ManagedResources;
 }
 
-const RESOURCE_NAMES: Record<ManagedResourceGroup, string> = {
-  [ManagedResourceGroup.ACCESS_SECURITY_GROUP]: "access security group",
-  [ManagedResourceGroup.BASTION_INSTANCE]: "bastion EC2 instance",
-  [ManagedResourceGroup.BASTION_SECURITY_GROUP]: "bastion security group",
-  [ManagedResourceGroup.BASTION_INSTANCE_PROFILE]:
+const RESOURCE_NAMES: Record<ManagedResourceType, string> = {
+  [ManagedResourceType.ACCESS_SECURITY_GROUP]: "access security group",
+  [ManagedResourceType.BASTION_INSTANCE]: "bastion EC2 instance",
+  [ManagedResourceType.BASTION_SECURITY_GROUP]: "bastion security group",
+  [ManagedResourceType.BASTION_INSTANCE_PROFILE]:
     "bastion IAM instance profile",
-  [ManagedResourceGroup.BASTION_ROLE]: "bastion IAM role",
+  [ManagedResourceType.BASTION_ROLE]: "bastion IAM role",
 };
 
 export async function cleanupResources({
@@ -61,7 +59,7 @@ export async function cleanupResources({
 }
 
 function toPreparationError(
-  group: ManagedResourceGroup,
+  group: ManagedResourceType,
   error: unknown
 ): OperationError {
   return OperationError.from({
@@ -78,7 +76,7 @@ function toPreparationError(
 }
 
 function toCleanupError(
-  group: ManagedResourceGroup,
+  group: ManagedResourceType,
   id: string,
   error: unknown
 ): OperationError {

@@ -5,33 +5,30 @@ import {
   ResourcesCleanupPreparer,
   ResourceCleaner,
 } from "./resource-cleaner.js";
-import {
-  ManagedResourceGroup,
-  ManagedResourceGroups,
-  ManagedResources,
-} from "./managed-resources.js";
+import { CLEANUP_ORDER, ManagedResources } from "./managed-resources.js";
 import {
   accessSecurityGroupReferencesCleaner,
   securityGroupCleaner,
 } from "./security-group-cleaner.js";
+import { ManagedResourceType } from "../common/resource-type.js";
 
 interface CleanupManagedResourcesHooks {
-  onPreparingToCleanup?: (resourceGroup: ManagedResourceGroup) => void;
-  onPreparedToCleanup?: (resourceGroup: ManagedResourceGroup) => void;
+  onPreparingToCleanup?: (resourceGroup: ManagedResourceType) => void;
+  onPreparedToCleanup?: (resourceGroup: ManagedResourceType) => void;
   onPreparationFailed?: (
-    resourceGroup: ManagedResourceGroup,
+    resourceGroup: ManagedResourceType,
     error: unknown
   ) => void;
   onCleaningUpResource?: (
-    resourceGroup: ManagedResourceGroup,
+    resourceGroup: ManagedResourceType,
     resourceId: string
   ) => void;
   onResourceCleanedUp?: (
-    resourceGroup: ManagedResourceGroup,
+    resourceGroup: ManagedResourceType,
     resourceId: string
   ) => void;
   onResourceCleanupFailed?: (
-    resourceGroup: ManagedResourceGroup,
+    resourceGroup: ManagedResourceType,
     resourceId: string,
     error: unknown
   ) => void;
@@ -43,23 +40,23 @@ export interface CleanupManagedResourcesInput {
 }
 
 const RESOURCE_CLEANERS: Record<
-  ManagedResourceGroup,
+  ManagedResourceType,
   { cleaner: ResourceCleaner; preparer?: ResourcesCleanupPreparer }
 > = {
-  [ManagedResourceGroup.ACCESS_SECURITY_GROUP]: {
+  [ManagedResourceType.ACCESS_SECURITY_GROUP]: {
     cleaner: securityGroupCleaner,
     preparer: accessSecurityGroupReferencesCleaner,
   },
-  [ManagedResourceGroup.BASTION_SECURITY_GROUP]: {
+  [ManagedResourceType.BASTION_SECURITY_GROUP]: {
     cleaner: securityGroupCleaner,
   },
-  [ManagedResourceGroup.BASTION_INSTANCE]: {
+  [ManagedResourceType.BASTION_INSTANCE]: {
     cleaner: bastionInstanceCleaner,
   },
-  [ManagedResourceGroup.BASTION_INSTANCE_PROFILE]: {
+  [ManagedResourceType.BASTION_INSTANCE_PROFILE]: {
     cleaner: bastionInstanceProfileCleaner,
   },
-  [ManagedResourceGroup.BASTION_ROLE]: {
+  [ManagedResourceType.BASTION_ROLE]: {
     cleaner: bastionRoleCleaner,
   },
 };
@@ -68,7 +65,7 @@ export async function cleanupManagedResources({
   managedResources,
   hooks,
 }: CleanupManagedResourcesInput): Promise<void> {
-  for (const resourceGroup of ManagedResourceGroups) {
+  for (const resourceGroup of CLEANUP_ORDER) {
     await cleanupResources({
       resourceGroup,
       resourceIds: managedResources[resourceGroup],
@@ -86,7 +83,7 @@ export async function cleanupResources({
   cleanupPreparer,
   hooks,
 }: {
-  resourceGroup: ManagedResourceGroup;
+  resourceGroup: ManagedResourceType;
   resourceIds: string[];
   cleaner: ResourceCleaner;
   cleanupPreparer?: ResourcesCleanupPreparer;

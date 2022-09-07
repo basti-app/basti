@@ -1,7 +1,12 @@
 import { DescribeDBInstancesCommand } from "@aws-sdk/client-rds";
+import { AwsNotFoundError } from "../common/aws-error.js";
 import { parseDbInstanceResponse } from "./parse-rds-response.js";
 import { rdsClient } from "./rds-client.js";
 import { AwsDbInstance } from "./rds-types.js";
+
+export interface GetDbInstanceInput {
+  identifier: string;
+}
 
 export async function getDbInstances(): Promise<AwsDbInstance[]> {
   const { DBInstances } = await rdsClient.send(
@@ -13,4 +18,25 @@ export async function getDbInstances(): Promise<AwsDbInstance[]> {
   }
 
   return DBInstances.map(parseDbInstanceResponse);
+}
+
+export async function getDbInstance({
+  identifier,
+}: GetDbInstanceInput): Promise<AwsDbInstance | undefined> {
+  try {
+    const { DBInstances } = await rdsClient.send(
+      new DescribeDBInstancesCommand({ DBInstanceIdentifier: identifier })
+    );
+
+    if (!DBInstances) {
+      throw new Error(`Invalid response from AWS.`);
+    }
+
+    return DBInstances.map(parseDbInstanceResponse)[0];
+  } catch (error) {
+    if (error instanceof AwsNotFoundError) {
+      return undefined;
+    }
+    throw error;
+  }
 }

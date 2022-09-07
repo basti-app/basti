@@ -1,8 +1,8 @@
 import { Bastion } from "../../../bastion/bastion.js";
 import * as bastionOps from "../../../bastion/get-bastion.js";
+import { ManagedResourceType } from "../../../common/resource-type.js";
 import {
   ResourceNotFoundError,
-  ResourceType,
   UnexpectedStateError,
 } from "../../../common/runtime-error.js";
 import { ConnectTarget } from "../../../target/connect-target.js";
@@ -29,7 +29,10 @@ export async function getBastion({
     throw OperationError.from({
       operationName: "retrieving bastion",
       error: new UnexpectedStateError(
-        new ResourceNotFoundError(ResourceType.BASTION_INSTANCE, bastionId)
+        new ResourceNotFoundError(
+          ManagedResourceType.BASTION_INSTANCE,
+          bastionId
+        )
       ),
     });
   }

@@ -8,18 +8,15 @@ import {
   BASTION_INSTANCE_ROLE_PATH,
   BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
 } from "../bastion/bastion.js";
+import { ManagedResourceType } from "../common/resource-type.js";
 import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from "../target/target-input.js";
-import {
-  ManagedResourceGroup,
-  ManagedResourceGroups,
-  ManagedResources,
-} from "./managed-resources.js";
+import { CLEANUP_ORDER, ManagedResources } from "./managed-resources.js";
 
 interface GetResourcesToCleanupHooks {
-  onRetrievingResources?: (resourceGroup: ManagedResourceGroup) => void;
-  onResourcesRetrieved?: (resourceGroup: ManagedResourceGroup) => void;
+  onRetrievingResources?: (resourceGroup: ManagedResourceType) => void;
+  onResourcesRetrieved?: (resourceGroup: ManagedResourceType) => void;
   onRetrievalFailed?: (
-    resourceGroup: ManagedResourceGroup,
+    resourceGroup: ManagedResourceType,
     error: unknown
   ) => void;
 }
@@ -29,14 +26,14 @@ export interface GetResourcesToCleanupInput {
 }
 
 const RESOURCE_RETRIEVERS: Record<
-  ManagedResourceGroup,
+  ManagedResourceType,
   () => Promise<string[]>
 > = {
-  [ManagedResourceGroup.ACCESS_SECURITY_GROUP]: getAccessSecurityGroups,
-  [ManagedResourceGroup.BASTION_SECURITY_GROUP]: getBastionSecurityGroups,
-  [ManagedResourceGroup.BASTION_INSTANCE]: getBastionInstances,
-  [ManagedResourceGroup.BASTION_INSTANCE_PROFILE]: getBastionInstanceProfiles,
-  [ManagedResourceGroup.BASTION_ROLE]: getBastionRoles,
+  [ManagedResourceType.ACCESS_SECURITY_GROUP]: getAccessSecurityGroups,
+  [ManagedResourceType.BASTION_SECURITY_GROUP]: getBastionSecurityGroups,
+  [ManagedResourceType.BASTION_INSTANCE]: getBastionInstances,
+  [ManagedResourceType.BASTION_INSTANCE_PROFILE]: getBastionInstanceProfiles,
+  [ManagedResourceType.BASTION_ROLE]: getBastionRoles,
 };
 
 export async function getResourcesToCleanup({
@@ -44,7 +41,7 @@ export async function getResourcesToCleanup({
 }: GetResourcesToCleanupInput): Promise<ManagedResources> {
   const managedResources: Partial<ManagedResources> = {};
 
-  for (const resourceGroup of ManagedResourceGroups) {
+  for (const resourceGroup of CLEANUP_ORDER) {
     try {
       hooks?.onRetrievingResources?.(resourceGroup);
       managedResources[resourceGroup] = await RESOURCE_RETRIEVERS[

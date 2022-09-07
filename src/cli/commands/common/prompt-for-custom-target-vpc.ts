@@ -4,7 +4,7 @@ import { cli } from "../../../common/cli.js";
 import { fmt } from "../../../common/fmt.js";
 import { handleOperation } from "./handle-operation.js";
 
-export async function selectCustomTargetVpc(): Promise<string> {
+export async function promptForCustomTargetVpc(): Promise<string> {
   const vpcs = await handleOperation("retrieving VPCs", () => getVpcs());
 
   if (vpcs.length === 0) {

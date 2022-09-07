@@ -1,17 +1,22 @@
 import inquirer from "inquirer";
 import { getSubnets } from "../../../aws/ec2/get-subnets.js";
-import { AwsSubnet } from "../../../aws/ec2/types/aws-vpc.js";
 import { cli } from "../../../common/cli.js";
 import { fmt } from "../../../common/fmt.js";
 import { handleOperation } from "../common/handle-operation.js";
 
 export interface SelectBastionSubnetInput {
   vpcId: string;
+  bastionSubnetInput?: string;
 }
 
-export async function selectBastionSubnet({
+export async function selectBastionSubnetId({
   vpcId,
-}: SelectBastionSubnetInput): Promise<AwsSubnet> {
+  bastionSubnetInput,
+}: SelectBastionSubnetInput): Promise<string> {
+  return bastionSubnetInput || (await promptForBastionSubnetId(vpcId));
+}
+
+async function promptForBastionSubnetId(vpcId: string): Promise<string> {
   const subnets = await handleOperation("retrieving VPC subnets", () =>
     getSubnets({ vpcId })
   );
@@ -27,7 +32,7 @@ export async function selectBastionSubnet({
     message: "Select public network for the bastion",
     choices: subnets.map((subnet) => ({
       name: fmt.resourceName(subnet),
-      value: subnet,
+      value: subnet.id,
     })),
   });
 

@@ -7,6 +7,10 @@ export interface GetSubnetsInput {
   vpcId: string;
 }
 
+export interface GetSubnetInput {
+  subnetId: string;
+}
+
 export async function getSubnets({
   vpcId,
 }: GetSubnetsInput): Promise<AwsSubnet[]> {
@@ -21,4 +25,18 @@ export async function getSubnets({
   }
 
   return Subnets.map(parseSubnetResponse);
+}
+
+export async function getSubnet({
+  subnetId,
+}: GetSubnetInput): Promise<AwsSubnet | undefined> {
+  const { Subnets } = await ec2Client.send(
+    new DescribeSubnetsCommand({ SubnetIds: [subnetId] })
+  );
+
+  if (!Subnets) {
+    throw new Error(`Invalid response from AWS.`);
+  }
+
+  return Subnets.map(parseSubnetResponse)[0];
 }

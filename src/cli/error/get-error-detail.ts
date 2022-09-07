@@ -5,6 +5,11 @@ import {
 import { AwsTimeoutError } from "../../aws/common/waiter-error.js";
 import { getErrorMessage } from "../../common/get-error-message.js";
 import {
+  ManagedResourceType,
+  ResourceType,
+  TargetType,
+} from "../../common/resource-type.js";
+import {
   ResourceDamagedError,
   ResourceNotFoundError,
   RuntimeError,
@@ -25,6 +30,17 @@ export function detailProvider<T extends Error>(
   return { error, detail };
 }
 
+const RESOURCE_TYPE_NAME: Record<ResourceType, string> = {
+  [ManagedResourceType.BASTION_INSTANCE]: "Bastion instance",
+  [ManagedResourceType.BASTION_SECURITY_GROUP]: "Bastion security group",
+  [ManagedResourceType.BASTION_ROLE]: "Bastion role",
+  [ManagedResourceType.ACCESS_SECURITY_GROUP]: "Access security group",
+  [ManagedResourceType.BASTION_INSTANCE_PROFILE]: "Bastion instance profile",
+  [TargetType.RDS_INSTANCE]: "RDS instance",
+  [TargetType.RDS_CLUSTER]: "RDS cluster",
+  [TargetType.CUSTOM]: "Custom target",
+};
+
 export const COMMON_DETAIL_PROVIDERS: ErrorMessageProvider[] = [
   detailProvider(AwsAccessDeniedError, (error) => "Access denied by IAM"),
   detailProvider(
@@ -43,7 +59,7 @@ export const COMMON_DETAIL_PROVIDERS: ErrorMessageProvider[] = [
   detailProvider(
     ResourceNotFoundError,
     (error) =>
-      `${error.resourceType} ${
+      `${RESOURCE_TYPE_NAME[error.resourceType]} ${
         error.resourceId ? `"${error.resourceId}"` : ""
       } was not found`
   ),

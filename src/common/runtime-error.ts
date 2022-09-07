@@ -1,4 +1,5 @@
 import { getErrorMessage } from "./get-error-message.js";
+import { ResourceType } from "./resource-type.js";
 
 export class RuntimeError extends Error {
   public readonly cause?: unknown;
@@ -16,20 +17,12 @@ export class UnexpectedStateError extends RuntimeError {
   }
 }
 
-export const ResourceType = {
-  BASTION_INSTANCE: "Bastion instance",
-  BASTION_SECURITY_GROUP: "Bastion security group",
-  BASTION_ROLE: "Bastion role",
-  ACCESS_SECURITY_GROUP: "Access security group",
-};
-export type ResourceType = typeof ResourceType[keyof typeof ResourceType];
-
 export class ResourceNotFoundError extends RuntimeError {
   public readonly resourceType: ResourceType;
   public readonly resourceId?: string;
 
   constructor(resourceType: ResourceType, resourceId?: string) {
-    super(getResourceNotFoundMessage(resourceType, resourceId));
+    super(`Resource of type ${resourceType} with id "${resourceId}" not found`);
 
     this.resourceType = resourceType;
     this.resourceId = resourceId;
@@ -48,12 +41,4 @@ export class ResourceDamagedError extends RuntimeError {
     this.resourceId = resourceId;
     this.detail = detail;
   }
-}
-
-function getResourceNotFoundMessage(
-  resourceType: string,
-  resourceId: string | undefined
-): string {
-  const resourceIdMessage = resourceId ? `"${resourceId}" ` : "";
-  return `${resourceType} ` + resourceIdMessage + "not found";
 }

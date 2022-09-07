@@ -1,6 +1,10 @@
 import { RDSClient, RDSServiceException } from "@aws-sdk/client-rds";
 import { AwsClient } from "../common/aws-client.js";
-import { AwsAccessDeniedError, AwsError } from "../common/aws-error.js";
+import {
+  AwsAccessDeniedError,
+  AwsError,
+  AwsNotFoundError,
+} from "../common/aws-error.js";
 
 export const rdsClient = new AwsClient({
   client: RDSClient,
@@ -14,7 +18,14 @@ export async function errorHandler<T>(operation: () => Promise<T>): Promise<T> {
     if (error instanceof RDSServiceException && error.name === "AccessDenied") {
       throw new AwsAccessDeniedError();
     }
-
+    if (
+      error instanceof RDSServiceException &&
+      (error.name === "DBClusterNotFoundFault" ||
+        error.name === "DBInstanceNotFoundFault" ||
+        error.name === "DBSubnetGroupNotFoundFault")
+    ) {
+      throw new AwsNotFoundError();
+    }
     if (
       error instanceof RDSServiceException &&
       error.name === "InvalidParameterCombination" &&

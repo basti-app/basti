@@ -4,11 +4,8 @@ import {
   isGroupSecurityGroupSource,
 } from "../aws/ec2/types/aws-security-group.js";
 import { BASTION_INSTANCE_NAME_PREFIX } from "../bastion/bastion.js";
-import {
-  ResourceDamagedError,
-  ResourceType,
-  RuntimeError,
-} from "../common/runtime-error.js";
+import { ManagedResourceType } from "../common/resource-type.js";
+import { ResourceDamagedError, RuntimeError } from "../common/runtime-error.js";
 import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from "./target-input.js";
 
 export interface ConnectTarget {
@@ -48,7 +45,7 @@ export abstract class ConnectTargetBase implements ConnectTarget {
 
     if (!bastionId) {
       throw new ResourceDamagedError(
-        ResourceType.ACCESS_SECURITY_GROUP,
+        ManagedResourceType.ACCESS_SECURITY_GROUP,
         accessSecurityGroup.id,
         "No bastion security group found among the ingress rules"
       );
