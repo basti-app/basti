@@ -5,6 +5,7 @@ import { handleCleanup } from "./commands/cleanup/cleanup.js";
 import { handleConnect } from "./commands/connect/connect.js";
 import { handleInit } from "./commands/init/init.js";
 import { handleAsyncErrors, withErrorHandling } from "./error/handle-error.js";
+import { conflictingOptions } from "./yargs/conflicting-options-check.js";
 
 const pkg: {
   version: string;
@@ -36,7 +37,13 @@ yargs(hideBin(process.argv))
         .option("bastion-subnet", {
           type: "string",
           description: "ID of the public VPC subnet for the bastion instance",
-        }),
+        })
+        .check(
+          conflictingOptions("rds-cluster", "rds-instance", [
+            "custom-target-vpc",
+            "test",
+          ])
+        ),
     withErrorHandling(
       async ({ rdsInstance, rdsCluster, customTargetVpc, bastionSubnet }) => {
         const target = rdsInstance
