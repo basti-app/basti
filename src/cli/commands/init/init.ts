@@ -4,17 +4,17 @@ import { createBastion } from "./create-bastion.js";
 import { getBastion } from "./get-bastion.js";
 import { getTargetVpc } from "./get-target-vpc.js";
 import { selectBastionSubnetId } from "./select-bastion-subnet.js";
-import { selectInitTarget } from "./select-init-target.js";
+import {
+  DehydratedInitTargetInput,
+  selectInitTarget,
+} from "./select-init-target.js";
 
-export type InitInput = {
-  target?:
-    | { rdsInstanceId: string }
-    | { rdsClusterId: string }
-    | { customTargetVpcId: string };
+export type InitCommandInput = {
+  target?: DehydratedInitTargetInput;
   bastionSubnet?: string;
 };
 
-export async function handleInit(input: InitInput): Promise<void> {
+export async function handleInit(input: InitCommandInput): Promise<void> {
   const target = await selectInitTarget(input.target);
   const targetVpcId = await getTargetVpc(target);
 

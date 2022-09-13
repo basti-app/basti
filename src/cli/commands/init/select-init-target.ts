@@ -6,19 +6,18 @@ import {
 import { createInitTarget } from "../../../target/create-init-target.js";
 import { promptForCustomTargetVpc } from "../common/prompt-for-custom-target-vpc.js";
 import { promptForAwsTarget } from "../common/prompt-for-aws-target.js";
-import { getDbInstance } from "../../../aws/rds/get-db-instances.js";
-import { orThrow } from "../common/get-or-throw.js";
-import { TargetType } from "../../../common/resource-type.js";
-import { getDbCluster } from "../../../aws/rds/get-db-clusters.js";
 import { handleOperation } from "../common/handle-operation.js";
+import {
+  DehydratedAwsTargetInput,
+  hydrateAwsTarget,
+} from "../common/hydrate-aws-target.js";
 
-export type InitTargetDehydratedInput =
-  | { rdsInstanceId: string }
-  | { rdsClusterId: string }
+export type DehydratedInitTargetInput =
+  | DehydratedAwsTargetInput
   | { customTargetVpcId: string };
 
 export async function selectInitTarget(
-  dehydratedInput?: InitTargetDehydratedInput
+  dehydratedInput?: DehydratedInitTargetInput
 ): Promise<InitTarget> {
   const targetInput = dehydratedInput
     ? await handleOperation("retrieving specified target", () =>
@@ -30,38 +29,17 @@ export async function selectInitTarget(
 }
 
 async function hydrateInput(
-  dehydratedInput: InitTargetDehydratedInput
+  targetInput: DehydratedInitTargetInput
 ): Promise<InitTargetInput> {
-  if ("rdsInstanceId" in dehydratedInput) {
+  if ("customTargetVpcId" in targetInput) {
     return {
-      dbInstance: await orThrow(
-        () =>
-          getDbInstance({
-            identifier: dehydratedInput.rdsInstanceId,
-          }),
-        TargetType.RDS_INSTANCE,
-        dehydratedInput.rdsInstanceId
-      ),
-    };
-  }
-  if ("rdsClusterId" in dehydratedInput) {
-    return {
-      dbCluster: await orThrow(
-        () =>
-          getDbCluster({
-            identifier: dehydratedInput.rdsClusterId,
-          }),
-        TargetType.RDS_CLUSTER,
-        dehydratedInput.rdsClusterId
-      ),
+      custom: {
+        vpcId: targetInput.customTargetVpcId,
+      },
     };
   }
 
-  return {
-    custom: {
-      vpcId: dehydratedInput.customTargetVpcId,
-    },
-  };
+  return hydrateAwsTarget(targetInput);
 }
 
 async function promptForTarget(): Promise<InitTargetInput> {

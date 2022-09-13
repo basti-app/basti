@@ -1,14 +1,22 @@
 import { assertTargetIsInitialized } from "./assert-target-is-initialized.js";
 import { ensureBastionRunning } from "./ensure-bastion-running.js";
 import { getBastion } from "./get-bastion.js";
-import { selectConnectTarget } from "./select-connect-target.js";
+import {
+  DehydratedConnectTargetInput,
+  selectConnectTarget,
+} from "./select-connect-target.js";
 import { selectPort } from "./select-port.js";
 import { startPortForwarding } from "./start-port-forwarding.js";
 
-export async function handleConnect(): Promise<void> {
-  const target = await selectConnectTarget();
+export type ConnectCommandInput = {
+  target?: DehydratedConnectTargetInput;
+  localPort?: number;
+};
 
-  const localPort = await selectPort("Local port number");
+export async function handleConnect(input: ConnectCommandInput): Promise<void> {
+  const target = await selectConnectTarget(input.target);
+
+  const localPort = input.localPort || (await selectPort("Local port number"));
 
   await assertTargetIsInitialized({ target });
 

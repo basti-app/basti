@@ -29,7 +29,7 @@ async function promptForBastionSubnetId(vpcId: string): Promise<string> {
   const { subnet } = await inquirer.prompt({
     type: "list",
     name: "subnet",
-    message: "Select public network for the bastion",
+    message: "Select public subnet for the bastion",
     choices: subnets.map((subnet) => ({
       name: fmt.resourceName(subnet),
       value: subnet.id,

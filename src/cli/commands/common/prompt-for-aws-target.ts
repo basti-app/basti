@@ -10,12 +10,11 @@ import {
 } from "../../../target/target-input.js";
 import { getErrorDetail } from "../../error/get-error-detail.js";
 
-export type PartialTargetInput =
-  | DbInstanceTargetInput
-  | DbClusterTargetInput
-  | undefined;
+export type AwsTargetInput = DbInstanceTargetInput | DbClusterTargetInput;
 
-export async function promptForAwsTarget(): Promise<PartialTargetInput> {
+export async function promptForAwsTarget(): Promise<
+  AwsTargetInput | undefined
+> {
   const { instances, clusters } = await getTargets();
 
   const { target } = await inquirer.prompt({
@@ -80,9 +79,7 @@ function getCustomChoices(): DistinctChoice[] {
     new inquirer.Separator(),
     {
       name: "Custom",
-      value: {
-        custom: true,
-      },
+      value: undefined,
     },
   ];
 }

@@ -1,6 +1,8 @@
+import { isOptionInArgs, YargsCheck } from "./yargs-check.js";
+
 export function conflictingOptions(
   ...options: (string | string[])[]
-): (args: Record<string, unknown>) => boolean {
+): YargsCheck {
   return (args) => {
     const presentArgumentGroups = options
       .map(toOptionGroup)
@@ -25,13 +27,6 @@ function isOptionGroupInArgs(
   args: Record<string, unknown>
 ): boolean {
   return optionGroup.some((option) => isOptionInArgs(option, args));
-}
-
-function isOptionInArgs(
-  option: string,
-  args: Record<string, unknown>
-): boolean {
-  return args[option] !== undefined;
 }
 
 function formatList(options: (string | string[])[]): string {
