@@ -119,15 +119,20 @@ yargs(hideBin(process.argv))
               customTargetPort,
             }
           : undefined;
-        return handleConnect({ target, localPort });
+        await handleConnect({ target, localPort });
       }
     )
   )
   .command(
     "cleanup",
     "Remove all resources created by Basti",
-    (yargs) => yargs,
-    withErrorHandling(handleCleanup)
+    (yargs) =>
+      yargs.option("confirm", {
+        type: "boolean",
+        alias: ["c", "y"],
+        description: "Automatically confirm cleanup",
+      }),
+    withErrorHandling(async ({ confirm }) => handleCleanup({ confirm }))
   )
   .demandCommand(1)
   .strict()

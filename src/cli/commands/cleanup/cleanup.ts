@@ -2,10 +2,16 @@ import { cleanupResources } from "./cleanup-resources.js";
 import { confirmCleanup } from "./confirm-cleanup.js";
 import { getResourcesToCleanup } from "./get-resources-to-cleanup.js";
 
-export async function handleCleanup(): Promise<void> {
+export interface CleanupCommandInput {
+  confirm?: boolean;
+}
+
+export async function handleCleanup({
+  confirm,
+}: CleanupCommandInput): Promise<void> {
   const resources = await getResourcesToCleanup();
 
-  await confirmCleanup({ resources });
+  confirm || (await confirmCleanup({ resources }));
 
   await cleanupResources({
     resources,
