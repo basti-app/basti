@@ -20,7 +20,7 @@ export async function selectInitTarget(
   dehydratedInput?: DehydratedInitTargetInput
 ): Promise<InitTarget> {
   const targetInput = dehydratedInput
-    ? await handleOperation("retrieving specified target", () =>
+    ? await handleOperation("Retrieving specified target", () =>
         hydrateInput(dehydratedInput)
       )
     : await promptForTarget();

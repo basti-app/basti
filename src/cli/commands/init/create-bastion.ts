@@ -58,7 +58,7 @@ export async function createBastion({
     subCli.progressFailure();
 
     throw OperationError.from({
-      operationName: "setting up bastion",
+      operationName: "Setting up bastion",
       error,
       dirtyOperation: true,
       detailProviders: [

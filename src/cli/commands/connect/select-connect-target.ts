@@ -30,7 +30,7 @@ export async function selectConnectTarget(
   dehydratedInput?: DehydratedConnectTargetInput
 ): Promise<ConnectTarget> {
   const targetInput = dehydratedInput
-    ? await handleOperation("retrieving specified target", () =>
+    ? await handleOperation("Retrieving specified target", () =>
         hydrateInput(dehydratedInput)
       )
     : await promptForTarget();

@@ -57,7 +57,7 @@ export async function allowTargetAccess({
     subCli.progressFailure();
 
     throw OperationError.from({
-      operationName: "configuring target access",
+      operationName: "Configuring target access",
       error,
       dirtyOperation: true,
       detailProviders: [

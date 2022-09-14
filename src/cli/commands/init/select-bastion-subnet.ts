@@ -17,7 +17,7 @@ export async function selectBastionSubnetId({
 }
 
 async function promptForBastionSubnetId(vpcId: string): Promise<string> {
-  const subnets = await handleOperation("retrieving VPC subnets", () =>
+  const subnets = await handleOperation("Retrieving VPC subnets", () =>
     getSubnets({ vpcId })
   );
 

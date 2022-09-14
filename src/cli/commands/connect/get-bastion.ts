@@ -17,17 +17,17 @@ export async function getBastion({
   target,
 }: GetBastionInput): Promise<Bastion> {
   const bastionId = await handleOperation(
-    "retrieving bastion id from target",
+    "Retrieving bastion id from target",
     () => target.getBastionId()
   );
 
-  const bastion = await handleOperation("retrieving bastion", () =>
+  const bastion = await handleOperation("Retrieving bastion", () =>
     bastionOps.getBastion({ bastionId })
   );
 
   if (!bastion) {
     throw OperationError.from({
-      operationName: "retrieving bastion",
+      operationName: "Retrieving bastion",
       error: new UnexpectedStateError(
         new ResourceNotFoundError(
           ManagedResourceType.BASTION_INSTANCE,

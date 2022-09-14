@@ -11,7 +11,7 @@ export async function assertTargetIsInitialized({
   target,
 }: AssertTargetIsInitializedInput): Promise<void> {
   const targetInitialized = await handleOperation(
-    "checking target state",
+    "Checking target state",
     async () => target.isInitialized()
   );
 

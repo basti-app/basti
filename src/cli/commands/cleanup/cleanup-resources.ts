@@ -13,12 +13,12 @@ export interface CleanupResourcesInput {
 }
 
 const RESOURCE_NAMES: Record<ManagedResourceType, string> = {
-  [ManagedResourceType.ACCESS_SECURITY_GROUP]: "access security group",
-  [ManagedResourceType.BASTION_INSTANCE]: "bastion EC2 instance",
-  [ManagedResourceType.BASTION_SECURITY_GROUP]: "bastion security group",
+  [ManagedResourceType.ACCESS_SECURITY_GROUP]: "Access security group",
+  [ManagedResourceType.BASTION_INSTANCE]: "Bastion EC2 instance",
+  [ManagedResourceType.BASTION_SECURITY_GROUP]: "Bastion security group",
   [ManagedResourceType.BASTION_INSTANCE_PROFILE]:
-    "bastion IAM instance profile",
-  [ManagedResourceType.BASTION_ROLE]: "bastion IAM role",
+    "Bastion IAM instance profile",
+  [ManagedResourceType.BASTION_ROLE]: "Bastion IAM role",
 };
 
 export async function cleanupResources({
@@ -30,27 +30,31 @@ export async function cleanupResources({
     managedResources: resources,
     hooks: {
       onPreparingToCleanup: (group) =>
-        cli.progressStart(`Preparing to ${RESOURCE_NAMES[group]} deletion`),
+        cli.progressStart(
+          `Preparing to ${fmt.lower(RESOURCE_NAMES[group])} deletion`
+        ),
       onPreparationFailed: (group, error) => {
         errors.push(toPreparationError(group, error));
         cli.progressFailure(
-          `Failed to prepare to ${RESOURCE_NAMES[group]} deletion`
+          `Failed to prepare to ${fmt.lower(RESOURCE_NAMES[group])} deletion`
         );
       },
 
       onCleaningUpResource: (group, id) =>
         cli.progressStart(
-          `Deleting ${RESOURCE_NAMES[group]}: ${fmt.value(id)}`
+          `Deleting ${fmt.lower(RESOURCE_NAMES[group])}: ${fmt.value(id)}`
         ),
       onResourceCleanupFailed: (group, id, error) => {
         errors.push(toCleanupError(group, id, error));
         cli.progressFailure(
-          `Failed to delete ${RESOURCE_NAMES[group]}: ${fmt.value(id)}`
+          `Failed to delete ${fmt.lower(RESOURCE_NAMES[group])}: ${fmt.value(
+            id
+          )}`
         );
       },
       onResourceCleanedUp: (group, id) =>
         cli.progressSuccess(
-          `${capitalize(RESOURCE_NAMES[group])} deleted: ${fmt.value(id)}`
+          `${fmt.capitalize(RESOURCE_NAMES[group])} deleted: ${fmt.value(id)}`
         ),
     },
   });
@@ -63,7 +67,7 @@ function toPreparationError(
   error: unknown
 ): OperationError {
   return OperationError.from({
-    operationName: `preparing to ${RESOURCE_NAMES[group]} deletion`,
+    operationName: `Preparing to ${fmt.lower(RESOURCE_NAMES[group])} deletion`,
     error,
     detailProviders: [
       detailProvider(
@@ -81,7 +85,7 @@ function toCleanupError(
   error: unknown
 ): OperationError {
   return OperationError.from({
-    operationName: `deleting ${RESOURCE_NAMES[group]} "${id}"`,
+    operationName: `Deleting ${fmt.lower(RESOURCE_NAMES[group])} "${id}"`,
     error,
     detailProviders: [
       detailProvider(

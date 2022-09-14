@@ -41,6 +41,7 @@ function getOperationErrorMessage(
     : "";
 
   return (
-    `Error ${operationName}. ${fmt.capitalize(message)}` + dirtyOperationMessage
+    `Error ${fmt.lower(operationName)}. ${fmt.capitalize(message)}` +
+    dirtyOperationMessage
   );
 }

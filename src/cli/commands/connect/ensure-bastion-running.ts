@@ -35,7 +35,7 @@ export async function ensureBastionRunning({
     cli.progressFailure();
 
     throw OperationError.from({
-      operationName: "starting bastion instance",
+      operationName: "Starting bastion instance",
       error,
       detailProviders: [
         detailProvider(

@@ -5,7 +5,7 @@ import { fmt } from "../../../common/fmt.js";
 import { handleOperation } from "./handle-operation.js";
 
 export async function promptForCustomTargetVpc(): Promise<string> {
-  const vpcs = await handleOperation("retrieving VPCs", () => getVpcs());
+  const vpcs = await handleOperation("Retrieving VPCs", () => getVpcs());
 
   if (vpcs.length === 0) {
     cli.info(`No VPCs found in your account`);

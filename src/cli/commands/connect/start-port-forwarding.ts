@@ -53,7 +53,7 @@ export async function startPortForwarding({
 
 function handleSessionInterruption(error: Error): never {
   throw OperationError.from({
-    operationName: "running port forwarding session",
+    operationName: "Running port forwarding session",
     error,
     detailProviders: [
       detailProvider(
@@ -75,7 +75,7 @@ function handleMarkingError(error: unknown): void {
 
 function handleSessionStartError(error: unknown, localPort: number): never {
   throw OperationError.from({
-    operationName: "starting port forwarding session",
+    operationName: "Starting port forwarding session",
     error,
     detailProviders: [
       detailProvider(

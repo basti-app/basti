@@ -39,6 +39,10 @@ export class Fmt {
     return message.charAt(0).toUpperCase() + message.slice(1);
   }
 
+  lower(message: string): string {
+    return message.charAt(0).toLowerCase() + message.slice(1);
+  }
+
   private getListItemPrefix(indent: number): string {
     return " ".repeat(indent).concat("• ");
   }
