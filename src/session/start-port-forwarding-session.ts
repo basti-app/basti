@@ -64,8 +64,8 @@ async function startSessionWithRetries(
   localPort: number
 ): Promise<AwsSsmSessionDescriptor> {
   return await retry(
-    () =>
-      startSsmPortForwardingSession({
+    async () =>
+      await startSsmPortForwardingSession({
         bastionInstanceId,
         targetHost,
         targetPort,

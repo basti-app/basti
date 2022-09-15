@@ -1,6 +1,5 @@
 import {
   ListAttachedRolePoliciesCommand,
-  ListAttachedRolePoliciesResponse,
   ListRolePoliciesCommand,
   ListRolesCommand,
 } from '@aws-sdk/client-iam';

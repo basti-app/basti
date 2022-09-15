@@ -8,7 +8,7 @@ import {
   BASTION_INSTANCE_ROLE_PATH,
   BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
 } from '../bastion/bastion.js';
-import { ManagedResourceType } from '../common/resource-type.js';
+import { ManagedResourceTypes } from '../common/resource-type.js';
 import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from '../target/target-input.js';
 import { CLEANUP_ORDER, ManagedResources } from './managed-resources.js';
 
@@ -29,11 +29,11 @@ const RESOURCE_RETRIEVERS: Record<
   ManagedResourceType,
   () => Promise<string[]>
 > = {
-  [ManagedResourceType.ACCESS_SECURITY_GROUP]: getAccessSecurityGroups,
-  [ManagedResourceType.BASTION_SECURITY_GROUP]: getBastionSecurityGroups,
-  [ManagedResourceType.BASTION_INSTANCE]: getBastionInstances,
-  [ManagedResourceType.BASTION_INSTANCE_PROFILE]: getBastionInstanceProfiles,
-  [ManagedResourceType.BASTION_ROLE]: getBastionRoles,
+  [ManagedResourceTypes.ACCESS_SECURITY_GROUP]: getAccessSecurityGroups,
+  [ManagedResourceTypes.BASTION_SECURITY_GROUP]: getBastionSecurityGroups,
+  [ManagedResourceTypes.BASTION_INSTANCE]: getBastionInstances,
+  [ManagedResourceTypes.BASTION_INSTANCE_PROFILE]: getBastionInstanceProfiles,
+  [ManagedResourceTypes.BASTION_ROLE]: getBastionRoles,
 };
 
 export async function getResourcesToCleanup({

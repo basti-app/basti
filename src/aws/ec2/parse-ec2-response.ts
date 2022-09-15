@@ -38,7 +38,7 @@ export const parseEc2InstanceResponse: (response: Instance) => AwsEc2Instance =
       const tags = transformTags(response.Tags);
       return {
         id: response.InstanceId,
-        name: tags['Name'],
+        name: tags.Name,
         vpcId: response.VpcId,
         securityGroups: response.SecurityGroups.map(group => ({
           id: group.GroupId,
@@ -56,7 +56,7 @@ export const parseVpcResponse: (response: Vpc) => AwsVpc = z
   })
   .transform(response => {
     const tags = transformTags(response.Tags);
-    return { id: response.VpcId, tags, name: tags['Name'] };
+    return { id: response.VpcId, tags, name: tags.Name };
   }).parse;
 
 export const parseSecurityGroupResponse: (
@@ -97,7 +97,7 @@ export const parseSecurityGroupResponse: (
     ingressRules: response.IpPermissions.map(permission => ({
       ipProtocol: permission.IpProtocol,
       ports:
-        permission.FromPort && permission.ToPort
+        permission.FromPort != null && permission.ToPort != null
           ? {
               from: permission.FromPort,
               to: permission.ToPort,
@@ -121,7 +121,7 @@ export const parseSubnetResponse: (response: Subnet) => AwsSubnet = z
   })
   .transform(response => {
     const tags = transformTags(response.Tags);
-    return { id: response.SubnetId, tags, name: tags['Name'] };
+    return { id: response.SubnetId, tags, name: tags.Name };
   }).parse;
 
 export const parseRouteTableResponse: (response: RouteTable) => AwsRouteTable =

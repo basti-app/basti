@@ -41,6 +41,7 @@ export async function ensureBastionRunning({
       hooks?.onWaitingInstanceToStop?.();
       await waitEc2InstanceIsStopped({ instanceId: instance.id });
 
+    // eslint-disable-next-line no-fallthrough
     case 'stopped':
       hooks?.onStartingInstance?.();
       await startInstance(instance);
@@ -51,7 +52,7 @@ export async function ensureBastionRunning({
       throw new Error(`Unexpected instance state ${instance.state}`);
   }
 }
-async function startInstance(instance: AwsEc2Instance) {
+async function startInstance(instance: AwsEc2Instance): Promise<void> {
   try {
     await startEc2Instance({ instanceId: instance.id });
   } catch (error) {

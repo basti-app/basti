@@ -5,19 +5,22 @@ import {
 } from '../../../cleanup/managed-resources.js';
 import { cli } from '../../../common/cli.js';
 import { fmt } from '../../../common/fmt.js';
-import { ManagedResourceType } from '../../../common/resource-type.js';
+import {
+  ManagedResourceType,
+  ManagedResourceTypes,
+} from '../../../common/resource-type.js';
 
 export interface ConfirmCleanupInput {
   resources: ManagedResources;
 }
 
 const RESOURCE_GROUP_TITLES: Record<ManagedResourceType, string> = {
-  [ManagedResourceType.ACCESS_SECURITY_GROUP]: 'Access security groups',
-  [ManagedResourceType.BASTION_SECURITY_GROUP]: 'Bastion security groups',
-  [ManagedResourceType.BASTION_INSTANCE]: 'Bastion EC2 instances',
-  [ManagedResourceType.BASTION_INSTANCE_PROFILE]:
+  [ManagedResourceTypes.ACCESS_SECURITY_GROUP]: 'Access security groups',
+  [ManagedResourceTypes.BASTION_SECURITY_GROUP]: 'Bastion security groups',
+  [ManagedResourceTypes.BASTION_INSTANCE]: 'Bastion EC2 instances',
+  [ManagedResourceTypes.BASTION_INSTANCE_PROFILE]:
     'Bastion IAM instance profiles',
-  [ManagedResourceType.BASTION_ROLE]: 'Bastion IAM roles',
+  [ManagedResourceTypes.BASTION_ROLE]: 'Bastion IAM roles',
 };
 
 export async function confirmCleanup({
@@ -37,7 +40,7 @@ export async function confirmCleanup({
     default: true,
   });
 
-  if (!confirm) {
+  if (!(confirm as boolean)) {
     process.exit(0);
   }
 }
@@ -46,7 +49,7 @@ function isEmpty(resources: ManagedResources): boolean {
   return Object.values(resources).every(group => group.length === 0);
 }
 
-function printResources(resources: ManagedResources) {
+function printResources(resources: ManagedResources): void {
   const subCli = cli.createSubInstance({ indent: 2 });
 
   cli.info('The following resources are going to be deleted:');

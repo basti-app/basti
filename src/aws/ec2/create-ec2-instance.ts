@@ -47,8 +47,8 @@ export async function createEc2Instance({
   });
 
   const { Instances } = await retry(
-    () =>
-      ec2Client.send(
+    async () =>
+      await ec2Client.send(
         new RunInstancesCommand({
           ImageId: imageId,
           InstanceType: instanceType,
@@ -66,7 +66,10 @@ export async function createEc2Instance({
             },
           ],
 
-          UserData: userData && Buffer.from(userData).toString('base64'),
+          UserData:
+            userData != null
+              ? Buffer.from(userData).toString('base64')
+              : undefined,
 
           TagSpecifications: [
             {
@@ -87,16 +90,17 @@ export async function createEc2Instance({
       shouldRetry: isInstanceProfileNotFoundError,
     }
   );
-  if (!Instances || !Instances[0]) {
+  if (Instances == null || Instances.length === 0) {
     throw new Error(`Invalid response from AWS.`);
   }
   const instance = parseEc2InstanceResponse(Instances[0]);
 
-  await handleWaiterError(() =>
-    waitUntilInstanceRunning(
-      { ...COMMON_WAITER_CONFIG, client: ec2Client.client },
-      { InstanceIds: [instance.id] }
-    )
+  await handleWaiterError(
+    async () =>
+      await waitUntilInstanceRunning(
+        { ...COMMON_WAITER_CONFIG, client: ec2Client.client },
+        { InstanceIds: [instance.id] }
+      )
   );
 
   return instance;

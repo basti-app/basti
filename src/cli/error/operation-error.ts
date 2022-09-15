@@ -34,11 +34,12 @@ function getOperationErrorMessage(
   message: string,
   shouldCleanup?: boolean
 ): string | undefined {
-  const dirtyOperationMessage = shouldCleanup
-    ? `. This operation might have already created AWS resources. Please, run ${fmt.code(
-        'basti cleanup'
-      )} before retrying`
-    : '';
+  const dirtyOperationMessage =
+    shouldCleanup === true
+      ? `. This operation might have already created AWS resources. Please, run ${fmt.code(
+          'basti cleanup'
+        )} before retrying`
+      : '';
 
   return (
     `Error ${fmt.lower(operationName)}. ${fmt.capitalize(message)}` +

@@ -13,12 +13,13 @@ export async function selectBastionSubnetId({
   vpcId,
   bastionSubnetInput,
 }: SelectBastionSubnetInput): Promise<string> {
-  return bastionSubnetInput || (await promptForBastionSubnetId(vpcId));
+  return bastionSubnetInput ?? (await promptForBastionSubnetId(vpcId));
 }
 
 async function promptForBastionSubnetId(vpcId: string): Promise<string> {
-  const subnets = await handleOperation('Retrieving VPC subnets', () =>
-    getSubnets({ vpcId })
+  const subnets = await handleOperation(
+    'Retrieving VPC subnets',
+    async () => await getSubnets({ vpcId })
   );
 
   if (subnets.length === 0) {

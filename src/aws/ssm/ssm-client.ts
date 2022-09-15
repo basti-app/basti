@@ -7,7 +7,7 @@ import {
 } from '../common/aws-error.js';
 
 export const ssmClient = new AwsClient({
-  client: SSMClient,
+  Client: SSMClient,
   errorHandler,
 });
 

@@ -7,7 +7,7 @@ import {
 } from '../common/aws-error.js';
 
 export const ec2Client = new AwsClient({
-  client: EC2Client,
+  Client: EC2Client,
   errorHandler,
 });
 

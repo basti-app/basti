@@ -1,5 +1,6 @@
 import { createEc2Instance } from '../aws/ec2/create-ec2-instance.js';
 import { createSecurityGroup } from '../aws/ec2/create-security-group.js';
+import { AwsEc2Instance } from '../aws/ec2/types/aws-ec2-instance.js';
 import { AwsSecurityGroup } from '../aws/ec2/types/aws-security-group.js';
 import { createIamRole } from '../aws/iam/create-iam-role.js';
 import { AwsRole } from '../aws/iam/types.js';
@@ -71,7 +72,7 @@ export async function createBastion({
   };
 }
 
-async function getBastionImageId(hooks?: CreateBastionHooks) {
+async function getBastionImageId(hooks?: CreateBastionHooks): Promise<string> {
   try {
     const parameterName =
       '/aws/service/ami-amazon-linux-latest/amzn2-ami-kernel-5.10-hvm-x86_64-gp2';
@@ -81,7 +82,7 @@ async function getBastionImageId(hooks?: CreateBastionHooks) {
     const bastionImageId = await getStringSsmParameter({
       name: parameterName,
     });
-    if (!bastionImageId) {
+    if (bastionImageId == null) {
       throw new Error(
         `Bastion image ID not found in SSM parameter ${parameterName}`
       );
@@ -98,7 +99,7 @@ async function getBastionImageId(hooks?: CreateBastionHooks) {
 async function createBastionRole(
   bastionId: string,
   hooks?: CreateBastionHooks
-) {
+): Promise<AwsRole> {
   try {
     hooks?.onCreatingRole?.();
     const bastionRole = await createIamRole({
@@ -121,7 +122,7 @@ async function createBastionSecurityGroup(
   bastionId: string,
   vpcId: string,
   hooks?: CreateBastionHooks
-) {
+): Promise<AwsSecurityGroup> {
   try {
     hooks?.onCreatingSecurityGroup?.();
     const bastionSecurityGroup = await createSecurityGroup({
@@ -145,7 +146,7 @@ async function createBastionInstance(
   subnetId: string,
   bastionSecurityGroup: AwsSecurityGroup,
   hooks?: CreateBastionHooks
-) {
+): Promise<AwsEc2Instance> {
   try {
     hooks?.onCreatingInstance?.();
     const bastionInstance = await createEc2Instance({

@@ -33,7 +33,7 @@ export async function allowTargetAccess({
   try {
     cli.out(`${fmt.green('❯')} Configuring target access:`);
     await target.allowAccess({
-      bastion: bastion,
+      bastion,
       hooks: {
         onCreatingSecurityGroup: () =>
           subCli.progressStart('Creating access security group'),

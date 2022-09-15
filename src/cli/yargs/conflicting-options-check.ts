@@ -1,7 +1,7 @@
 import { isOptionInArgs, YargsCheck } from './yargs-check.js';
 
 export function conflictingOptions(
-  ...options: (string | string[])[]
+  ...options: Array<string | string[]>
 ): YargsCheck {
   return args => {
     const presentArgumentGroups = options
@@ -29,7 +29,7 @@ function isOptionGroupInArgs(
   return optionGroup.some(option => isOptionInArgs(option, args));
 }
 
-function formatList(options: (string | string[])[]): string {
+function formatList(options: Array<string | string[]>): string {
   return options
     .map(option => (Array.isArray(option) ? `[${option.join(', ')}]` : option))
     .join(', ');

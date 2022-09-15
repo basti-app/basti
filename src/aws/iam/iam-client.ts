@@ -3,7 +3,7 @@ import { AwsClient } from '../common/aws-client.js';
 import { AwsAccessDeniedError } from '../common/aws-error.js';
 
 export const iamClient = new AwsClient({
-  client: IAMClient,
+  Client: IAMClient,
   errorHandler,
 });
 

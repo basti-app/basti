@@ -30,8 +30,9 @@ export async function selectConnectTarget(
   dehydratedInput?: DehydratedConnectTargetInput
 ): Promise<ConnectTarget> {
   const targetInput = dehydratedInput
-    ? await handleOperation('Retrieving specified target', () =>
-        hydrateInput(dehydratedInput)
+    ? await handleOperation(
+        'Retrieving specified target',
+        async () => await hydrateInput(dehydratedInput)
       )
     : await promptForTarget();
 
@@ -51,11 +52,11 @@ async function hydrateInput(
     };
   }
 
-  return hydrateAwsTarget(dehydratedInput);
+  return await hydrateAwsTarget(dehydratedInput);
 }
 
 async function promptForTarget(): Promise<ConnectTargetInput> {
-  return (await promptForAwsTarget()) || (await promptForCustomTarget());
+  return (await promptForAwsTarget()) ?? (await promptForCustomTarget());
 }
 
 async function promptForCustomTarget(): Promise<CustomConnectTargetInput> {

@@ -4,7 +4,10 @@ import { cleanupManagedResources } from '../../../cleanup/cleanup-managed-resour
 import { ManagedResources } from '../../../cleanup/managed-resources.js';
 import { cli } from '../../../common/cli.js';
 import { fmt } from '../../../common/fmt.js';
-import { ManagedResourceType } from '../../../common/resource-type.js';
+import {
+  ManagedResourceType,
+  ManagedResourceTypes,
+} from '../../../common/resource-type.js';
 import { detailProvider } from '../../error/get-error-detail.js';
 import { OperationError } from '../../error/operation-error.js';
 
@@ -13,12 +16,12 @@ export interface CleanupResourcesInput {
 }
 
 const RESOURCE_NAMES: Record<ManagedResourceType, string> = {
-  [ManagedResourceType.ACCESS_SECURITY_GROUP]: 'Access security group',
-  [ManagedResourceType.BASTION_INSTANCE]: 'Bastion EC2 instance',
-  [ManagedResourceType.BASTION_SECURITY_GROUP]: 'Bastion security group',
-  [ManagedResourceType.BASTION_INSTANCE_PROFILE]:
+  [ManagedResourceTypes.ACCESS_SECURITY_GROUP]: 'Access security group',
+  [ManagedResourceTypes.BASTION_INSTANCE]: 'Bastion EC2 instance',
+  [ManagedResourceTypes.BASTION_SECURITY_GROUP]: 'Bastion security group',
+  [ManagedResourceTypes.BASTION_INSTANCE_PROFILE]:
     'Bastion IAM instance profile',
-  [ManagedResourceType.BASTION_ROLE]: 'Bastion IAM role',
+  [ManagedResourceTypes.BASTION_ROLE]: 'Bastion IAM role',
 };
 
 export async function cleanupResources({
@@ -107,11 +110,4 @@ function printOutcome(errors: OperationError[]): void {
   cli
     .createSubInstance({ indent: 2 })
     .out(fmt.list(errors.map(error => fmt.red(error.message))));
-}
-
-function capitalize(str: string): string {
-  if (str.length === 0) {
-    return str;
-  }
-  return str.charAt(0).toUpperCase() + str.slice(1);
 }

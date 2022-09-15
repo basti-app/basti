@@ -19,18 +19,18 @@ export interface InitTargetAllowAccessInput {
 }
 
 export interface InitTarget {
-  isInitialized(): Promise<boolean>;
+  isInitialized: () => Promise<boolean>;
 
-  getVpcId(): Promise<string>;
+  getVpcId: () => Promise<string>;
 
-  allowAccess?(input: InitTargetAllowAccessInput): Promise<void>;
+  allowAccess?: (input: InitTargetAllowAccessInput) => Promise<void>;
 }
 
 export abstract class InitTargetBase implements InitTarget {
   abstract getId(): string;
   abstract getVpcId(): Promise<string>;
 
-  async isInitialized() {
+  async isInitialized(): Promise<boolean> {
     const accessSecurityGroup = await this.getAccessSecurityGroup();
     return accessSecurityGroup !== undefined;
   }

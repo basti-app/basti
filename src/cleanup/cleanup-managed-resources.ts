@@ -10,7 +10,10 @@ import {
   accessSecurityGroupReferencesCleaner,
   securityGroupCleaner,
 } from './security-group-cleaner.js';
-import { ManagedResourceType } from '../common/resource-type.js';
+import {
+  ManagedResourceType,
+  ManagedResourceTypes,
+} from '../common/resource-type.js';
 
 interface CleanupManagedResourcesHooks {
   onPreparingToCleanup?: (resourceGroup: ManagedResourceType) => void;
@@ -43,20 +46,20 @@ const RESOURCE_CLEANERS: Record<
   ManagedResourceType,
   { cleaner: ResourceCleaner; preparer?: ResourcesCleanupPreparer }
 > = {
-  [ManagedResourceType.ACCESS_SECURITY_GROUP]: {
+  [ManagedResourceTypes.ACCESS_SECURITY_GROUP]: {
     cleaner: securityGroupCleaner,
     preparer: accessSecurityGroupReferencesCleaner,
   },
-  [ManagedResourceType.BASTION_SECURITY_GROUP]: {
+  [ManagedResourceTypes.BASTION_SECURITY_GROUP]: {
     cleaner: securityGroupCleaner,
   },
-  [ManagedResourceType.BASTION_INSTANCE]: {
+  [ManagedResourceTypes.BASTION_INSTANCE]: {
     cleaner: bastionInstanceCleaner,
   },
-  [ManagedResourceType.BASTION_INSTANCE_PROFILE]: {
+  [ManagedResourceTypes.BASTION_INSTANCE_PROFILE]: {
     cleaner: bastionInstanceProfileCleaner,
   },
-  [ManagedResourceType.BASTION_ROLE]: {
+  [ManagedResourceTypes.BASTION_ROLE]: {
     cleaner: bastionRoleCleaner,
   },
 };

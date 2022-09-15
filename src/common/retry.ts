@@ -33,5 +33,5 @@ export async function retry<T>(
 }
 
 async function delay(timeMs: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, timeMs));
+  return await new Promise(resolve => setTimeout(resolve, timeMs));
 }

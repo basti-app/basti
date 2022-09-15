@@ -9,10 +9,10 @@ import {
   selectInitTarget,
 } from './select-init-target.js';
 
-export type InitCommandInput = {
+export interface InitCommandInput {
   target?: DehydratedInitTargetInput;
   bastionSubnet?: string;
-};
+}
 
 export async function handleInit(input: InitCommandInput): Promise<void> {
   const target = await selectInitTarget(input.target);
@@ -26,7 +26,7 @@ export async function handleInit(input: InitCommandInput): Promise<void> {
   await assertTargetIsNotInitialized({ target });
 
   const bastion =
-    (await getBastion({ vpcId: targetVpcId })) ||
+    (await getBastion({ vpcId: targetVpcId })) ??
     (await createBastion({ vpcId: targetVpcId, subnetId: bastionSubnet }));
 
   await allowTargetAccess({ target, bastion });

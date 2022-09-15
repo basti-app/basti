@@ -1,5 +1,5 @@
 import { getEc2Instances } from '../aws/ec2/get-ec2-instances.js';
-import { ManagedResourceType } from '../common/resource-type.js';
+import { ManagedResourceTypes } from '../common/resource-type.js';
 import {
   ResourceDamagedError,
   UnexpectedStateError,
@@ -10,10 +10,10 @@ import {
   BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
 } from './bastion.js';
 
-export type GetBastionInput = {
+export interface GetBastionInput {
   bastionId?: string;
   vpcId?: string;
-};
+}
 
 export async function getBastion({
   bastionId,
@@ -23,22 +23,22 @@ export async function getBastion({
     tags: [
       {
         key: BASTION_INSTANCE_ID_TAG_NAME,
-        value: bastionId || '*',
+        value: bastionId ?? '*',
       },
     ],
     states: ['pending', 'running', 'stopping', 'stopped'],
     vpcId,
   });
 
-  if (!instance) {
+  if (instance == null) {
     return;
   }
 
   const id = instance.tags[BASTION_INSTANCE_ID_TAG_NAME];
-  if (!id) {
+  if (id == null) {
     throw new UnexpectedStateError(
       new ResourceDamagedError(
-        ManagedResourceType.BASTION_INSTANCE,
+        ManagedResourceTypes.BASTION_INSTANCE,
         instance.id,
         `"${BASTION_INSTANCE_ID_TAG_NAME}" tag is missing`
       )
@@ -51,7 +51,7 @@ export async function getBastion({
   if (!securityGroup) {
     throw new UnexpectedStateError(
       new ResourceDamagedError(
-        ManagedResourceType.BASTION_INSTANCE,
+        ManagedResourceTypes.BASTION_INSTANCE,
         instance.id,
         `No bastion security group associated with the instance`
       )

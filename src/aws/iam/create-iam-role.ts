@@ -37,15 +37,16 @@ export async function createIamRole({
 
   const role = parseRoleResponse(Role);
 
-  await handleWaiterError(() =>
-    waitUntilRoleExists(
-      { ...COMMON_WAITER_CONFIG, client: iamClient.client },
-      { RoleName: role.name }
-    )
+  await handleWaiterError(
+    async () =>
+      await waitUntilRoleExists(
+        { ...COMMON_WAITER_CONFIG, client: iamClient.client },
+        { RoleName: role.name }
+      )
   );
 
   for (const policyName of managedPolicies) {
-    iamClient.send(
+    void iamClient.send(
       new AttachRolePolicyCommand({
         RoleName: role.name,
         PolicyArn: formatManagedPolicyArn(policyName),

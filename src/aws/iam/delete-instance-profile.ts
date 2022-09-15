@@ -19,13 +19,14 @@ export async function deleteInstanceProfile({
   }
 
   await Promise.all(
-    instanceProfile.roles.map(role =>
-      iamClient.send(
-        new RemoveRoleFromInstanceProfileCommand({
-          InstanceProfileName: name,
-          RoleName: role.name,
-        })
-      )
+    instanceProfile.roles.map(
+      async role =>
+        await iamClient.send(
+          new RemoveRoleFromInstanceProfileCommand({
+            InstanceProfileName: name,
+            RoleName: role.name,
+          })
+        )
     )
   );
 

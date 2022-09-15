@@ -5,7 +5,7 @@ export class RuntimeError extends Error {
   public readonly cause?: unknown;
 
   constructor(message: string, cause?: unknown) {
-    super(cause ? `${message}. ${getErrorMessage(cause)}` : message);
+    super(cause != null ? `${message}. ${getErrorMessage(cause)}` : message);
 
     this.cause = cause;
   }
@@ -22,7 +22,11 @@ export class ResourceNotFoundError extends RuntimeError {
   public readonly resourceId?: string;
 
   constructor(resourceType: ResourceType, resourceId?: string) {
-    super(`Resource of type ${resourceType} with id "${resourceId}" not found`);
+    super(
+      `Resource of type ${resourceType} with id "${
+        resourceId ?? 'unknown'
+      }" not found`
+    );
 
     this.resourceType = resourceType;
     this.resourceId = resourceId;

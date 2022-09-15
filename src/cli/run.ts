@@ -16,7 +16,7 @@ const pkg: {
 
 handleAsyncErrors();
 
-yargs(hideBin(process.argv))
+void yargs(hideBin(process.argv))
   .version(pkg.version)
   .command(
     'init',
@@ -44,14 +44,15 @@ yargs(hideBin(process.argv))
         ),
     withErrorHandling(
       async ({ rdsInstance, rdsCluster, customTargetVpc, bastionSubnet }) => {
-        const target = rdsInstance
-          ? { rdsInstanceId: rdsInstance }
-          : rdsCluster
-          ? { rdsClusterId: rdsCluster }
-          : customTargetVpc
-          ? { customTargetVpcId: customTargetVpc }
-          : undefined;
-        await handleInit({ target: target, bastionSubnet });
+        const target =
+          rdsInstance != null
+            ? { rdsInstanceId: rdsInstance }
+            : rdsCluster != null
+            ? { rdsClusterId: rdsCluster }
+            : customTargetVpc != null
+            ? { customTargetVpcId: customTargetVpc }
+            : undefined;
+        await handleInit({ target, bastionSubnet });
       }
     )
   )
@@ -108,17 +109,20 @@ yargs(hideBin(process.argv))
         customTargetPort,
         localPort,
       }) => {
-        const target = rdsInstance
-          ? { rdsInstanceId: rdsInstance }
-          : rdsCluster
-          ? { rdsClusterId: rdsCluster }
-          : customTargetVpc && customTargetHost && customTargetPort
-          ? {
-              customTargetVpcId: customTargetVpc,
-              customTargetHost,
-              customTargetPort,
-            }
-          : undefined;
+        const target =
+          rdsInstance != null
+            ? { rdsInstanceId: rdsInstance }
+            : rdsCluster != null
+            ? { rdsClusterId: rdsCluster }
+            : customTargetVpc != null &&
+              customTargetHost != null &&
+              customTargetPort != null
+            ? {
+                customTargetVpcId: customTargetVpc,
+                customTargetHost,
+                customTargetPort,
+              }
+            : undefined;
         await handleConnect({ target, localPort });
       }
     )
@@ -132,7 +136,7 @@ yargs(hideBin(process.argv))
         alias: ['c', 'y'],
         description: 'Automatically confirm cleanup',
       }),
-    withErrorHandling(async ({ confirm }) => handleCleanup({ confirm }))
+    withErrorHandling(async ({ confirm }) => await handleCleanup({ confirm }))
   )
   .demandCommand(1)
   .strict()

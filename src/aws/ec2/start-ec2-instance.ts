@@ -18,12 +18,13 @@ export async function startEc2Instance({
       InstanceIds: [instanceId],
     })
   );
-  await handleWaiterError(() =>
-    waitUntilInstanceRunning(
-      { ...COMMON_WAITER_CONFIG, client: ec2Client.client },
-      {
-        InstanceIds: [instanceId],
-      }
-    )
+  await handleWaiterError(
+    async () =>
+      await waitUntilInstanceRunning(
+        { ...COMMON_WAITER_CONFIG, client: ec2Client.client },
+        {
+          InstanceIds: [instanceId],
+        }
+      )
   );
 }

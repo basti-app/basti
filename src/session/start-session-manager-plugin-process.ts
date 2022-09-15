@@ -30,7 +30,7 @@ export async function startSessionManagerPluginProcess({
     );
   });
 
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     sessionManager.onLine(line => isPortOpened(line) && resolve());
 
     sessionManager.onLine(

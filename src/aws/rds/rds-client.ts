@@ -7,7 +7,7 @@ import {
 } from '../common/aws-error.js';
 
 export const rdsClient = new AwsClient({
-  client: RDSClient,
+  Client: RDSClient,
   errorHandler,
 });
 

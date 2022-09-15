@@ -18,7 +18,7 @@ export const accessSecurityGroupReferencesCleaner: ResourcesCleanupPreparer =
   };
 
 export const securityGroupCleaner: ResourceCleaner = async groupId => {
-  await retry(() => deleteSecurityGroup({ groupId }), {
+  await retry(async () => await deleteSecurityGroup({ groupId }), {
     delay: 3000,
     maxRetries: 15,
     shouldRetry: error => error instanceof AwsDependencyViolationError,

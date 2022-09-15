@@ -1,6 +1,6 @@
 import { Bastion } from '../../../bastion/bastion.js';
 import * as bastionOps from '../../../bastion/get-bastion.js';
-import { ManagedResourceType } from '../../../common/resource-type.js';
+import { ManagedResourceTypes } from '../../../common/resource-type.js';
 import {
   ResourceNotFoundError,
   UnexpectedStateError,
@@ -18,11 +18,12 @@ export async function getBastion({
 }: GetBastionInput): Promise<Bastion> {
   const bastionId = await handleOperation(
     'Retrieving bastion id from target',
-    () => target.getBastionId()
+    async () => await target.getBastionId()
   );
 
-  const bastion = await handleOperation('Retrieving bastion', () =>
-    bastionOps.getBastion({ bastionId })
+  const bastion = await handleOperation(
+    'Retrieving bastion',
+    async () => await bastionOps.getBastion({ bastionId })
   );
 
   if (!bastion) {
@@ -30,7 +31,7 @@ export async function getBastion({
       operationName: 'Retrieving bastion',
       error: new UnexpectedStateError(
         new ResourceNotFoundError(
-          ManagedResourceType.BASTION_INSTANCE,
+          ManagedResourceTypes.BASTION_INSTANCE,
           bastionId
         )
       ),

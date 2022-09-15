@@ -13,18 +13,18 @@ export class AwsClient<T extends Client> {
   private readonly errorHandler?: ErrorHandler<ReturnType<T['send']>>;
 
   constructor({
-    client,
+    Client,
     errorHandler,
   }: {
-    client: ClientConstructor<T>;
+    Client: ClientConstructor<T>;
     errorHandler?: ErrorHandler<ReturnType<T['send']>>;
   }) {
-    this.client = new client({ region: 'us-east-1' });
+    this.client = new Client({ region: 'us-east-1' });
     this.errorHandler = errorHandler;
   }
 
-  send: T['send'] = (...args) =>
-    this.errorHandler
-      ? this.errorHandler(() => this.client.send(...args))
-      : this.client.send(...args);
+  send: T['send'] = async (...args) =>
+    this.errorHandler != null
+      ? await this.errorHandler(async () => await this.client.send(...args))
+      : await this.client.send(...args);
 }

@@ -11,7 +11,7 @@ export async function handleCleanup({
 }: CleanupCommandInput): Promise<void> {
   const resources = await getResourcesToCleanup();
 
-  confirm || (await confirmCleanup({ resources }));
+  confirm === true || (await confirmCleanup({ resources }));
 
   await cleanupResources({
     resources,

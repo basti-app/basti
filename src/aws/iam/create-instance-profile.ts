@@ -33,11 +33,12 @@ export async function createIamInstanceProfile({
 
   const instanceProfile = parseIamInstanceProfileResponse(InstanceProfile);
 
-  await handleWaiterError(() =>
-    waitUntilInstanceProfileExists(
-      { ...COMMON_WAITER_CONFIG, client: iamClient.client },
-      { InstanceProfileName: instanceProfile.name }
-    )
+  await handleWaiterError(
+    async () =>
+      await waitUntilInstanceProfileExists(
+        { ...COMMON_WAITER_CONFIG, client: iamClient.client },
+        { InstanceProfileName: instanceProfile.name }
+      )
   );
 
   for (const roleName of roleNames) {

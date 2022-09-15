@@ -13,21 +13,23 @@ export interface WaitEc2InstanceInput {
 export async function waitEc2InstanceIsRunning({
   instanceId,
 }: WaitEc2InstanceInput): Promise<void> {
-  await handleWaiterError(() =>
-    waitUntilInstanceRunning(
-      { ...COMMON_WAITER_CONFIG, client: ec2Client.client },
-      { InstanceIds: [instanceId] }
-    )
+  await handleWaiterError(
+    async () =>
+      await waitUntilInstanceRunning(
+        { ...COMMON_WAITER_CONFIG, client: ec2Client.client },
+        { InstanceIds: [instanceId] }
+      )
   );
 }
 
 export async function waitEc2InstanceIsStopped({
   instanceId,
 }: WaitEc2InstanceInput): Promise<void> {
-  await handleWaiterError(() =>
-    waitUntilInstanceStopped(
-      { ...COMMON_WAITER_CONFIG, client: ec2Client.client },
-      { InstanceIds: [instanceId] }
-    )
+  await handleWaiterError(
+    async () =>
+      await waitUntilInstanceStopped(
+        { ...COMMON_WAITER_CONFIG, client: ec2Client.client },
+        { InstanceIds: [instanceId] }
+      )
   );
 }

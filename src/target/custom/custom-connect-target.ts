@@ -20,7 +20,7 @@ export class CustomConnectTarget implements ConnectTarget {
     this.port = port;
   }
 
-  async isInitialized() {
+  async isInitialized(): Promise<boolean> {
     const bastion = await getBastion({ vpcId: this.vpcId });
     return bastion !== undefined;
   }

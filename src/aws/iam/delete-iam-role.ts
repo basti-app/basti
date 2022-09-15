@@ -19,26 +19,28 @@ export async function deleteIamRole({
   const policyNames = await getIamRolePolicies({ roleName });
 
   await Promise.all(
-    policyNames.map(policyName =>
-      iamClient.send(
-        new DeleteRolePolicyCommand({
-          RoleName: roleName,
-          PolicyName: policyName,
-        })
-      )
+    policyNames.map(
+      async policyName =>
+        await iamClient.send(
+          new DeleteRolePolicyCommand({
+            RoleName: roleName,
+            PolicyName: policyName,
+          })
+        )
     )
   );
 
   const attachedPolicies = await getIamRoleAttachedPolicies({ roleName });
 
   await Promise.all(
-    attachedPolicies.map(policy =>
-      iamClient.send(
-        new DetachRolePolicyCommand({
-          RoleName: roleName,
-          PolicyArn: policy.arn,
-        })
-      )
+    attachedPolicies.map(
+      async policy =>
+        await iamClient.send(
+          new DetachRolePolicyCommand({
+            RoleName: roleName,
+            PolicyArn: policy.arn,
+          })
+        )
     )
   );
 

@@ -28,15 +28,16 @@ export async function createSecurityGroup({
     })
   );
 
-  if (!GroupId) {
+  if (GroupId == null) {
     throw new Error(`Invalid response from AWS.`);
   }
 
-  await handleWaiterError(() =>
-    waitUntilSecurityGroupExists(
-      { ...COMMON_WAITER_CONFIG, client: ec2Client.client },
-      { GroupIds: [GroupId] }
-    )
+  await handleWaiterError(
+    async () =>
+      await waitUntilSecurityGroupExists(
+        { ...COMMON_WAITER_CONFIG, client: ec2Client.client },
+        { GroupIds: [GroupId] }
+      )
   );
 
   if (ingressRules.length > 0) {

@@ -5,9 +5,9 @@ import {
 import { AwsTimeoutError } from '../../aws/common/waiter-error.js';
 import { getErrorMessage } from '../../common/get-error-message.js';
 import {
-  ManagedResourceType,
+  ManagedResourceTypes,
   ResourceType,
-  TargetType,
+  TargetTypes,
 } from '../../common/resource-type.js';
 import {
   ResourceDamagedError,
@@ -31,18 +31,18 @@ export function detailProvider<T extends Error>(
 }
 
 const RESOURCE_TYPE_NAME: Record<ResourceType, string> = {
-  [ManagedResourceType.BASTION_INSTANCE]: 'Bastion instance',
-  [ManagedResourceType.BASTION_SECURITY_GROUP]: 'Bastion security group',
-  [ManagedResourceType.BASTION_ROLE]: 'Bastion role',
-  [ManagedResourceType.ACCESS_SECURITY_GROUP]: 'Access security group',
-  [ManagedResourceType.BASTION_INSTANCE_PROFILE]: 'Bastion instance profile',
-  [TargetType.RDS_INSTANCE]: 'RDS instance',
-  [TargetType.RDS_CLUSTER]: 'RDS cluster',
-  [TargetType.CUSTOM]: 'Custom target',
+  [ManagedResourceTypes.BASTION_INSTANCE]: 'Bastion instance',
+  [ManagedResourceTypes.BASTION_SECURITY_GROUP]: 'Bastion security group',
+  [ManagedResourceTypes.BASTION_ROLE]: 'Bastion role',
+  [ManagedResourceTypes.ACCESS_SECURITY_GROUP]: 'Access security group',
+  [ManagedResourceTypes.BASTION_INSTANCE_PROFILE]: 'Bastion instance profile',
+  [TargetTypes.RDS_INSTANCE]: 'RDS instance',
+  [TargetTypes.RDS_CLUSTER]: 'RDS cluster',
+  [TargetTypes.CUSTOM]: 'Custom target',
 };
 
 export const COMMON_DETAIL_PROVIDERS: ErrorMessageProvider[] = [
-  detailProvider(AwsAccessDeniedError, error => 'Access denied by IAM'),
+  detailProvider(AwsAccessDeniedError, () => 'Access denied by IAM'),
   detailProvider(
     AwsTimeoutError,
     () => 'Operation timed out. This looks like an AWS delay. Please try again'
@@ -60,7 +60,7 @@ export const COMMON_DETAIL_PROVIDERS: ErrorMessageProvider[] = [
     ResourceNotFoundError,
     error =>
       `${RESOURCE_TYPE_NAME[error.resourceType]} ${
-        error.resourceId ? `"${error.resourceId}"` : ''
+        error.resourceId != null ? `"${error.resourceId}"` : ''
       } was not found`
   ),
   detailProvider(
@@ -74,19 +74,19 @@ export function getErrorDetail(
   error: unknown,
   detailProviders?: ErrorMessageProvider[]
 ): string {
-  const allProviders = [...(detailProviders || []), ...COMMON_DETAIL_PROVIDERS];
+  const allProviders = [...(detailProviders ?? []), ...COMMON_DETAIL_PROVIDERS];
 
   const detail = allProviders
     .find(provider => isMatchingProvider(provider, error))
     ?.detail(error);
 
-  if (!detail) {
+  if (detail == null) {
     return `Unexpected error: ${getErrorMessage(error)}`;
   }
 
   const cause = error instanceof RuntimeError ? error.cause : undefined;
 
-  return cause
+  return cause != null
     ? `${detail}. ${getErrorDetail(cause, detailProviders)}`
     : detail;
 }

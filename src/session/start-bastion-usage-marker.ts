@@ -14,11 +14,10 @@ export function startBastionUsageMarker({
   bastionInstanceId,
   hooks,
 }: StartBastionUsageMarkerInput): () => void {
-  markBastionUsage(bastionInstanceId);
-  const interval = setInterval(
-    () => markBastionUsage(bastionInstanceId, hooks),
-    60_000
-  );
+  void markBastionUsage(bastionInstanceId);
+  const interval = setInterval(() => {
+    void markBastionUsage(bastionInstanceId, hooks);
+  }, 60_000);
 
   return () => clearInterval(interval);
 }

@@ -21,9 +21,9 @@ export async function getEc2Instances({
   tags,
 }: GetEc2InstancesInput): Promise<AwsEc2Instance[]> {
   const filters: Filter[] = [
-    ...(vpcId ? [getVpcIdFilter(vpcId)] : []),
-    ...(states ? [getStateFilter(states)] : []),
-    ...(tags ? tags.map(getTagFilter) : []),
+    ...(vpcId != null ? [getVpcIdFilter(vpcId)] : []),
+    ...(states != null ? [getStateFilter(states)] : []),
+    ...(tags != null ? tags.map(getTagFilter) : []),
   ];
   const { Reservations } = await ec2Client.send(
     new DescribeInstancesCommand({
@@ -35,7 +35,7 @@ export async function getEc2Instances({
     throw new Error(`Invalid response from AWS.`);
   }
 
-  return Reservations.flatMap(reservation => reservation.Instances || []).map(
+  return Reservations.flatMap(reservation => reservation.Instances ?? []).map(
     parseEc2InstanceResponse
   );
 }

@@ -40,13 +40,13 @@ async function getTargets(): Promise<{
   cli.out(`${fmt.green('❯')} Retrieving connection targets:`);
 
   const instances = await getTargetResources(
-    () => getDbInstances(),
+    async () => await getDbInstances(),
     'DB instances',
     subCli
   );
 
   const clusters = await getTargetResources(
-    () => getDbClusters(),
+    async () => await getDbClusters(),
     'DB clusters',
     subCli
   );

@@ -8,15 +8,15 @@ import {
 import { selectPort } from './select-port.js';
 import { startPortForwarding } from './start-port-forwarding.js';
 
-export type ConnectCommandInput = {
+export interface ConnectCommandInput {
   target?: DehydratedConnectTargetInput;
   localPort?: number;
-};
+}
 
 export async function handleConnect(input: ConnectCommandInput): Promise<void> {
   const target = await selectConnectTarget(input.target);
 
-  const localPort = input.localPort || (await selectPort('Local port number'));
+  const localPort = input.localPort ?? (await selectPort('Local port number'));
 
   await assertTargetIsInitialized({ target });
 

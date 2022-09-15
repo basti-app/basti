@@ -20,8 +20,9 @@ export async function selectInitTarget(
   dehydratedInput?: DehydratedInitTargetInput
 ): Promise<InitTarget> {
   const targetInput = dehydratedInput
-    ? await handleOperation('Retrieving specified target', () =>
-        hydrateInput(dehydratedInput)
+    ? await handleOperation(
+        'Retrieving specified target',
+        async () => await hydrateInput(dehydratedInput)
       )
     : await promptForTarget();
 
@@ -39,11 +40,11 @@ async function hydrateInput(
     };
   }
 
-  return hydrateAwsTarget(targetInput);
+  return await hydrateAwsTarget(targetInput);
 }
 
 async function promptForTarget(): Promise<InitTargetInput> {
-  return (await promptForAwsTarget()) || promptForCustomTarget();
+  return (await promptForAwsTarget()) ?? (await promptForCustomTarget());
 }
 
 async function promptForCustomTarget(): Promise<CustomInitTargetInput> {

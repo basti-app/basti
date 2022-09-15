@@ -2,7 +2,7 @@ import { GetParameterCommand } from '@aws-sdk/client-ssm';
 import { AwsError, AwsNotFoundError } from '../common/aws-error.js';
 import { parseSsmParameter } from './parse-ssm-response.js';
 import { ssmClient } from './ssm-client.js';
-import { AwsSsmParameter, AwsSsmParameterType } from './types.js';
+import { AwsSsmParameter, AwsSsmParameterTypes } from './types.js';
 
 export interface GetSsmParameterInput {
   name: string;
@@ -42,7 +42,7 @@ export async function getStringSsmParameter(
 
   if (parameter.type !== 'string') {
     throw new AwsWrongSsmParameterTypeError(
-      AwsSsmParameterType.STRING,
+      AwsSsmParameterTypes.STRING,
       parameter.name,
       parameter.type
     );

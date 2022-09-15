@@ -19,8 +19,8 @@ export class Cli {
   private context?: CliContext;
 
   private constructor({ indent, spinner }: CliPrivateInput) {
-    this.indent = indent || 0;
-    this.spinner = spinner || ora();
+    this.indent = indent ?? 0;
+    this.spinner = spinner ?? ora();
   }
 
   static create(input: CliInput = {}): Cli {
@@ -30,12 +30,13 @@ export class Cli {
   createSubInstance(input: CliInput = {}): Cli {
     const { indent } = input;
 
-    const subInput = indent
-      ? {
-          ...input,
-          spinner: ora({ indent }),
-        }
-      : input;
+    const subInput =
+      indent != null
+        ? {
+            ...input,
+            spinner: ora({ indent }),
+          }
+        : input;
 
     return new Cli(subInput);
   }
@@ -88,7 +89,7 @@ export class Cli {
   progressSuccess(text?: string, symbol?: string): void {
     this.context = undefined;
 
-    symbol
+    symbol != null
       ? this.spinner.stopAndPersist({ symbol })
       : this.spinner.succeed(text);
   }
@@ -104,7 +105,7 @@ export class Cli {
 
     const currentText = this.spinner.text;
     const text =
-      input && `${input.text || currentText} - ${fmt.yellow(input.warnText)}`;
+      input && `${input.text ?? currentText} - ${fmt.yellow(input.warnText)}`;
 
     this.spinner.stopAndPersist({
       symbol: fmt.yellow('⚠'),

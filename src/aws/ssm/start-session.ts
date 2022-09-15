@@ -45,10 +45,9 @@ async function getSsmClientRegion(): Promise<string> {
 }
 
 async function getSsmClientEndpoint(): Promise<string> {
-  const { protocol, hostname, port, path, query } =
+  const { protocol, hostname, port, path } =
     await ssmClient.client.config.endpoint();
 
-  const portPart = port ? `:${port}` : '';
-  const queryPart = query ? `:${query}` : '';
-  return `${protocol}://${hostname}${portPart}${path}${queryPart}`;
+  const portPart = port != null ? `:${port}` : '';
+  return `${protocol}://${hostname}${portPart}${path}`;
 }
