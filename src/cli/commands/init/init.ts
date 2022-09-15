@@ -1,13 +1,13 @@
-import { allowTargetAccess } from "./allow-target-access.js";
-import { assertTargetIsNotInitialized } from "./assert-target-is-not-initiated.js";
-import { createBastion } from "./create-bastion.js";
-import { getBastion } from "./get-bastion.js";
-import { getTargetVpc } from "./get-target-vpc.js";
-import { selectBastionSubnetId } from "./select-bastion-subnet.js";
+import { allowTargetAccess } from './allow-target-access.js';
+import { assertTargetIsNotInitialized } from './assert-target-is-not-initiated.js';
+import { createBastion } from './create-bastion.js';
+import { getBastion } from './get-bastion.js';
+import { getTargetVpc } from './get-target-vpc.js';
+import { selectBastionSubnetId } from './select-bastion-subnet.js';
 import {
   DehydratedInitTargetInput,
   selectInitTarget,
-} from "./select-init-target.js";
+} from './select-init-target.js';
 
 export type InitCommandInput = {
   target?: DehydratedInitTargetInput;

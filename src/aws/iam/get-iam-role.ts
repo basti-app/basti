@@ -3,13 +3,13 @@ import {
   ListAttachedRolePoliciesResponse,
   ListRolePoliciesCommand,
   ListRolesCommand,
-} from "@aws-sdk/client-iam";
-import { iamClient } from "./iam-client.js";
+} from '@aws-sdk/client-iam';
+import { iamClient } from './iam-client.js';
 import {
   parseRoleAttachedPolicyResponse,
   parseRoleResponse,
-} from "./parse-iam-response.js";
-import { AwsRole, AwsRoleAttachedPolicy } from "./types.js";
+} from './parse-iam-response.js';
+import { AwsRole, AwsRoleAttachedPolicy } from './types.js';
 
 export interface GetIamRoleInput {
   path: string;

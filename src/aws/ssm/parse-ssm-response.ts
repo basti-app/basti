@@ -1,8 +1,8 @@
-import { Parameter, StartSessionResponse } from "@aws-sdk/client-ssm";
-import { z } from "zod";
-import { AwsSsmParameter, AwsSsmParameterType } from "./types.js";
+import { Parameter, StartSessionResponse } from '@aws-sdk/client-ssm';
+import { z } from 'zod';
+import { AwsSsmParameter, AwsSsmParameterType } from './types.js';
 
-const ParameterTypeParser = z.enum(["String", "SecureString", "StringList"]);
+const ParameterTypeParser = z.enum(['String', 'SecureString', 'StringList']);
 
 type ParameterType = z.infer<typeof ParameterTypeParser>;
 
@@ -12,7 +12,7 @@ export const parseSsmParameter: (response: Parameter) => AwsSsmParameter = z
     Value: z.string(),
     Type: ParameterTypeParser,
   })
-  .transform((response) => ({
+  .transform(response => ({
     name: response.Name,
     value: response.Value,
     type: transformParameterType(response.Type),
@@ -21,9 +21,9 @@ export const parseSsmParameter: (response: Parameter) => AwsSsmParameter = z
 function transformParameterType(type: ParameterType): AwsSsmParameterType {
   return (
     {
-      String: "string",
-      SecureString: "string",
-      StringList: "string-list",
+      String: 'string',
+      SecureString: 'string',
+      StringList: 'string-list',
     } as const
   )[type];
 }

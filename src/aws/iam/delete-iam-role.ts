@@ -2,12 +2,12 @@ import {
   DeleteRoleCommand,
   DeleteRolePolicyCommand,
   DetachRolePolicyCommand,
-} from "@aws-sdk/client-iam";
+} from '@aws-sdk/client-iam';
 import {
   getIamRoleAttachedPolicies,
   getIamRolePolicies,
-} from "./get-iam-role.js";
-import { iamClient } from "./iam-client.js";
+} from './get-iam-role.js';
+import { iamClient } from './iam-client.js';
 
 export interface DeleteIamRoleInput {
   roleName: string;
@@ -19,7 +19,7 @@ export async function deleteIamRole({
   const policyNames = await getIamRolePolicies({ roleName });
 
   await Promise.all(
-    policyNames.map((policyName) =>
+    policyNames.map(policyName =>
       iamClient.send(
         new DeleteRolePolicyCommand({
           RoleName: roleName,
@@ -32,7 +32,7 @@ export async function deleteIamRole({
   const attachedPolicies = await getIamRoleAttachedPolicies({ roleName });
 
   await Promise.all(
-    attachedPolicies.map((policy) =>
+    attachedPolicies.map(policy =>
       iamClient.send(
         new DetachRolePolicyCommand({
           RoleName: roleName,

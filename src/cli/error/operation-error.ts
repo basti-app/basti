@@ -1,5 +1,5 @@
-import { fmt } from "../../common/fmt.js";
-import { ErrorMessageProvider, getErrorDetail } from "./get-error-detail.js";
+import { fmt } from '../../common/fmt.js';
+import { ErrorMessageProvider, getErrorDetail } from './get-error-detail.js';
 
 export class OperationError extends Error {
   constructor(
@@ -36,9 +36,9 @@ function getOperationErrorMessage(
 ): string | undefined {
   const dirtyOperationMessage = shouldCleanup
     ? `. This operation might have already created AWS resources. Please, run ${fmt.code(
-        "basti cleanup"
+        'basti cleanup'
       )} before retrying`
-    : "";
+    : '';
 
   return (
     `Error ${fmt.lower(operationName)}. ${fmt.capitalize(message)}` +

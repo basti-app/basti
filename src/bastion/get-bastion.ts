@@ -1,14 +1,14 @@
-import { getEc2Instances } from "../aws/ec2/get-ec2-instances.js";
-import { ManagedResourceType } from "../common/resource-type.js";
+import { getEc2Instances } from '../aws/ec2/get-ec2-instances.js';
+import { ManagedResourceType } from '../common/resource-type.js';
 import {
   ResourceDamagedError,
   UnexpectedStateError,
-} from "../common/runtime-error.js";
+} from '../common/runtime-error.js';
 import {
   Bastion,
   BASTION_INSTANCE_ID_TAG_NAME,
   BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
-} from "./bastion.js";
+} from './bastion.js';
 
 export type GetBastionInput = {
   bastionId?: string;
@@ -23,10 +23,10 @@ export async function getBastion({
     tags: [
       {
         key: BASTION_INSTANCE_ID_TAG_NAME,
-        value: bastionId || "*",
+        value: bastionId || '*',
       },
     ],
-    states: ["pending", "running", "stopping", "stopped"],
+    states: ['pending', 'running', 'stopping', 'stopped'],
     vpcId,
   });
 
@@ -45,7 +45,7 @@ export async function getBastion({
     );
   }
 
-  const securityGroup = instance.securityGroups.find((group) =>
+  const securityGroup = instance.securityGroups.find(group =>
     group.name.startsWith(BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX)
   );
   if (!securityGroup) {

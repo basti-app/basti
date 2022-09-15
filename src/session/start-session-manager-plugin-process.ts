@@ -1,9 +1,9 @@
-import { AwsSsmSessionDescriptor } from "../aws/ssm/types.js";
+import { AwsSsmSessionDescriptor } from '../aws/ssm/types.js';
 import {
   OutputOptimizedChildProcess,
   spawnProcess,
-} from "../common/child-process.js";
-import { RuntimeError } from "../common/runtime-error.js";
+} from '../common/child-process.js';
+import { RuntimeError } from '../common/runtime-error.js';
 
 export type ProcessExitedHook = (error: Error) => void;
 
@@ -20,7 +20,7 @@ export async function startSessionManagerPluginProcess({
 }: StartSessionManagerPluginInput): Promise<void> {
   const sessionManager = spawnPluginProcess(sessionDescriptor);
 
-  sessionManager.process.on("exit", (code, signal) => {
+  sessionManager.process.on('exit', (code, signal) => {
     hooks?.onProcessExited?.(
       new SessionManagerPluginUnexpectedExitError(
         (code ?? signal)!,
@@ -31,13 +31,13 @@ export async function startSessionManagerPluginProcess({
   });
 
   return new Promise((resolve, reject) => {
-    sessionManager.onLine((line) => isPortOpened(line) && resolve());
+    sessionManager.onLine(line => isPortOpened(line) && resolve());
 
     sessionManager.onLine(
-      (line) =>
+      line =>
         isPortInUse(line) && reject(new SessionManagerPluginPortInUseError())
     );
-    sessionManager.process.on("error", (error) =>
+    sessionManager.process.on('error', error =>
       reject(parseProcessError(error))
     );
   });
@@ -45,13 +45,13 @@ export async function startSessionManagerPluginProcess({
 
 export class SessionManagerPluginNonInstalledError extends RuntimeError {
   constructor() {
-    super("session-manager-plugin is not installed");
+    super('session-manager-plugin is not installed');
   }
 }
 
 export class SessionManagerPluginPortInUseError extends RuntimeError {
   constructor() {
-    super("Port is already in use");
+    super('Port is already in use');
   }
 }
 
@@ -65,7 +65,7 @@ export class SessionManagerPluginUnexpectedExitError extends RuntimeError {
     output: string,
     errorOutput: string
   ) {
-    super("session-manager-plugin exited unexpectedly");
+    super('session-manager-plugin exited unexpectedly');
 
     this.reason = reason;
     this.output = output;
@@ -81,17 +81,17 @@ function spawnPluginProcess(
   const args = [
     JSON.stringify(sessionDescriptor.response),
     sessionDescriptor.region,
-    "StartSession",
-    "",
+    'StartSession',
+    '',
     JSON.stringify(sessionDescriptor.request),
     sessionDescriptor.endpoint,
   ];
 
-  return spawnProcess("session-manager-plugin", args);
+  return spawnProcess('session-manager-plugin', args);
 }
 
 function parseProcessError(error: NodeJS.ErrnoException): Error {
-  if (error.code === "ENOENT") {
+  if (error.code === 'ENOENT') {
     return new SessionManagerPluginNonInstalledError();
   } else {
     return error;
@@ -99,9 +99,9 @@ function parseProcessError(error: NodeJS.ErrnoException): Error {
 }
 
 function isPortOpened(line: string): boolean {
-  return line.toLowerCase().includes("waiting for connection");
+  return line.toLowerCase().includes('waiting for connection');
 }
 
 function isPortInUse(line: string): boolean {
-  return line.toLowerCase().includes("address already in use");
+  return line.toLowerCase().includes('address already in use');
 }

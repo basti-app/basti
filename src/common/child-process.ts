@@ -1,5 +1,5 @@
-import * as cp from "child_process";
-import * as readline from "readline";
+import * as cp from 'child_process';
+import * as readline from 'readline';
 
 export class OutputOptimizedChildProcess {
   readonly process: cp.ChildProcessWithoutNullStreams;
@@ -18,28 +18,28 @@ export class OutputOptimizedChildProcess {
       input: this.process.stderr,
     });
 
-    this.outputLines.on("line", (line) => this.output.push(line));
-    this.errorOutputLines.on("line", (line) => this.errorOutput.push(line));
+    this.outputLines.on('line', line => this.output.push(line));
+    this.errorOutputLines.on('line', line => this.errorOutput.push(line));
   }
 
   onLine(listener: (line: string) => void): this {
-    this.outputLines.on("line", listener);
+    this.outputLines.on('line', listener);
 
     return this;
   }
 
   onErrorLine(listener: (line: string) => void): this {
-    this.errorOutputLines.on("line", listener);
+    this.errorOutputLines.on('line', listener);
 
     return this;
   }
 
   collectOutput(): string {
-    return this.output.join("\n");
+    return this.output.join('\n');
   }
 
   collectErrorOutput(): string {
-    return this.errorOutput.join("\n");
+    return this.errorOutput.join('\n');
   }
 }
 
@@ -47,7 +47,7 @@ export function spawnProcess(
   command: string,
   args: string[]
 ): OutputOptimizedChildProcess {
-  const childProcess = cp.spawn(command, args, { stdio: "pipe" });
+  const childProcess = cp.spawn(command, args, { stdio: 'pipe' });
 
   return new OutputOptimizedChildProcess(childProcess);
 }

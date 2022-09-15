@@ -1,10 +1,10 @@
-import { AwsInstanceProfileNotFoundError } from "../../../aws/ec2/ec2-client.js";
-import { Bastion } from "../../../bastion/bastion.js";
-import * as bastionOps from "../../../bastion/create-bastion.js";
-import { cli } from "../../../common/cli.js";
-import { fmt } from "../../../common/fmt.js";
-import { detailProvider } from "../../error/get-error-detail.js";
-import { OperationError } from "../../error/operation-error.js";
+import { AwsInstanceProfileNotFoundError } from '../../../aws/ec2/ec2-client.js';
+import { Bastion } from '../../../bastion/bastion.js';
+import * as bastionOps from '../../../bastion/create-bastion.js';
+import { cli } from '../../../common/cli.js';
+import { fmt } from '../../../common/fmt.js';
+import { detailProvider } from '../../error/get-error-detail.js';
+import { OperationError } from '../../error/operation-error.js';
 
 export interface CreateBastionInput {
   vpcId: string;
@@ -18,34 +18,34 @@ export async function createBastion({
   const subCli = cli.createSubInstance({ indent: 2 });
 
   try {
-    cli.out(`${fmt.green("❯")} Setting up bastion:`);
+    cli.out(`${fmt.green('❯')} Setting up bastion:`);
     const bastion = await bastionOps.createBastion({
       vpcId,
       subnetId,
       hooks: {
         onRetrievingImageId: () =>
-          subCli.progressStart("Retrieving the latest EC2 AMI"),
-        onImageIdRetrieved: (imageId) =>
+          subCli.progressStart('Retrieving the latest EC2 AMI'),
+        onImageIdRetrieved: imageId =>
           subCli.progressSuccess(
             `Bastion EC2 AMI to be used: ${fmt.value(imageId)}`
           ),
 
-        onCreatingRole: () => subCli.progressStart("Creating bastion IAM role"),
-        onRoleCreated: (roleName) =>
+        onCreatingRole: () => subCli.progressStart('Creating bastion IAM role'),
+        onRoleCreated: roleName =>
           subCli.progressSuccess(
             `Bastion IAM role created: ${fmt.value(roleName)}`
           ),
 
         onCreatingSecurityGroup: () =>
-          subCli.progressStart("Creating bastion security group"),
-        onSecurityGroupCreated: (sgId) =>
+          subCli.progressStart('Creating bastion security group'),
+        onSecurityGroupCreated: sgId =>
           subCli.progressSuccess(
             `Bastion security group created: ${fmt.value(sgId)}`
           ),
 
         onCreatingInstance: () =>
-          subCli.progressStart("Creating bastion EC2 instance"),
-        onInstanceCreated: (instanceId) =>
+          subCli.progressStart('Creating bastion EC2 instance'),
+        onInstanceCreated: instanceId =>
           subCli.progressSuccess(
             `Bastion EC2 instance created: ${fmt.value(instanceId)}`
           ),
@@ -58,7 +58,7 @@ export async function createBastion({
     subCli.progressFailure();
 
     throw OperationError.from({
-      operationName: "Setting up bastion",
+      operationName: 'Setting up bastion',
       error,
       dirtyOperation: true,
       detailProviders: [
@@ -81,7 +81,7 @@ export async function createBastion({
         detailProvider(
           AwsInstanceProfileNotFoundError,
           () =>
-            "Instance profile not found. This looks like an AWS delay. Please try again"
+            'Instance profile not found. This looks like an AWS delay. Please try again'
         ),
       ],
     });

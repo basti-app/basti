@@ -3,16 +3,16 @@ import {
   CreateSecurityGroupCommand,
   IpPermission,
   waitUntilSecurityGroupExists,
-} from "@aws-sdk/client-ec2";
-import { COMMON_WAITER_CONFIG } from "../common/waiter-config.js";
-import { handleWaiterError } from "../common/waiter-error.js";
-import { ec2Client } from "./ec2-client.js";
+} from '@aws-sdk/client-ec2';
+import { COMMON_WAITER_CONFIG } from '../common/waiter-config.js';
+import { handleWaiterError } from '../common/waiter-error.js';
+import { ec2Client } from './ec2-client.js';
 import {
   AwsSecurityGroup,
   SecurityGroupIngressRule,
-} from "./types/aws-security-group.js";
+} from './types/aws-security-group.js';
 
-export type CreateSecurityGroupInput = Omit<AwsSecurityGroup, "id">;
+export type CreateSecurityGroupInput = Omit<AwsSecurityGroup, 'id'>;
 
 export async function createSecurityGroup({
   name,
@@ -59,10 +59,10 @@ export async function createSecurityGroup({
 
 function toIpPermission(rule: SecurityGroupIngressRule): IpPermission {
   const sources = rule.sources.reduce<
-    Required<Pick<IpPermission, "IpRanges" | "UserIdGroupPairs">>
+    Required<Pick<IpPermission, 'IpRanges' | 'UserIdGroupPairs'>>
   >(
     (acc, source) => {
-      "cidrIp" in source
+      'cidrIp' in source
         ? acc.IpRanges.push({ CidrIp: source.cidrIp })
         : acc.UserIdGroupPairs.push({ GroupId: source.securityGroupId });
       return acc;

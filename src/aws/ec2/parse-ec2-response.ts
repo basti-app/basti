@@ -4,12 +4,12 @@ import {
   SecurityGroup,
   Subnet,
   Vpc,
-} from "@aws-sdk/client-ec2";
-import { z } from "zod";
-import { AwsTagParser, transformTags } from "../tags/parse-tags-response.js";
-import { AwsEc2Instance } from "./types/aws-ec2-instance.js";
-import { AwsSecurityGroup } from "./types/aws-security-group.js";
-import { AwsVpc, AwsSubnet, AwsRouteTable } from "./types/aws-vpc.js";
+} from '@aws-sdk/client-ec2';
+import { z } from 'zod';
+import { AwsTagParser, transformTags } from '../tags/parse-tags-response.js';
+import { AwsEc2Instance } from './types/aws-ec2-instance.js';
+import { AwsSecurityGroup } from './types/aws-security-group.js';
+import { AwsVpc, AwsSubnet, AwsRouteTable } from './types/aws-vpc.js';
 
 export const parseEc2InstanceResponse: (response: Instance) => AwsEc2Instance =
   z
@@ -24,23 +24,23 @@ export const parseEc2InstanceResponse: (response: Instance) => AwsEc2Instance =
       ),
       State: z.object({
         Name: z.enum([
-          "pending",
-          "running",
-          "shutting-down",
-          "stopped",
-          "stopping",
-          "terminated",
+          'pending',
+          'running',
+          'shutting-down',
+          'stopped',
+          'stopping',
+          'terminated',
         ] as const),
       }),
       Tags: z.array(AwsTagParser).optional(),
     })
-    .transform((response) => {
+    .transform(response => {
       const tags = transformTags(response.Tags);
       return {
         id: response.InstanceId,
-        name: tags["Name"],
+        name: tags['Name'],
         vpcId: response.VpcId,
-        securityGroups: response.SecurityGroups.map((group) => ({
+        securityGroups: response.SecurityGroups.map(group => ({
           id: group.GroupId,
           name: group.GroupName,
         })),
@@ -54,9 +54,9 @@ export const parseVpcResponse: (response: Vpc) => AwsVpc = z
     VpcId: z.string(),
     Tags: z.array(AwsTagParser).optional(),
   })
-  .transform((response) => {
+  .transform(response => {
     const tags = transformTags(response.Tags);
-    return { id: response.VpcId, tags, name: tags["Name"] };
+    return { id: response.VpcId, tags, name: tags['Name'] };
   }).parse;
 
 export const parseSecurityGroupResponse: (
@@ -87,14 +87,14 @@ export const parseSecurityGroupResponse: (
       })
     ),
   })
-  .transform((response) => ({
+  .transform(response => ({
     id: response.GroupId,
     name: response.GroupName,
     description: response.Description,
 
     vpcId: response.VpcId,
 
-    ingressRules: response.IpPermissions.map((permission) => ({
+    ingressRules: response.IpPermissions.map(permission => ({
       ipProtocol: permission.IpProtocol,
       ports:
         permission.FromPort && permission.ToPort
@@ -104,10 +104,10 @@ export const parseSecurityGroupResponse: (
             }
           : undefined,
       sources: [
-        ...permission.IpRanges.map((ipRange) => ({
+        ...permission.IpRanges.map(ipRange => ({
           cidrIp: ipRange.CidrIp,
         })),
-        ...permission.UserIdGroupPairs.map((group) => ({
+        ...permission.UserIdGroupPairs.map(group => ({
           securityGroupId: group.GroupId,
         })),
       ],
@@ -119,9 +119,9 @@ export const parseSubnetResponse: (response: Subnet) => AwsSubnet = z
     SubnetId: z.string(),
     Tags: z.array(AwsTagParser).optional(),
   })
-  .transform((response) => {
+  .transform(response => {
     const tags = transformTags(response.Tags);
-    return { id: response.SubnetId, tags, name: tags["Name"] };
+    return { id: response.SubnetId, tags, name: tags['Name'] };
   }).parse;
 
 export const parseRouteTableResponse: (response: RouteTable) => AwsRouteTable =
@@ -129,4 +129,4 @@ export const parseRouteTableResponse: (response: RouteTable) => AwsRouteTable =
     .object({
       RouteTableId: z.string(),
     })
-    .transform((response) => ({ id: response.RouteTableId })).parse;
+    .transform(response => ({ id: response.RouteTableId })).parse;

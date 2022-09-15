@@ -1,4 +1,4 @@
-import { AwsEc2Instance } from "../aws/ec2/types/aws-ec2-instance.js";
+import { AwsEc2Instance } from '../aws/ec2/types/aws-ec2-instance.js';
 
 export interface Bastion {
   id: string;
@@ -14,12 +14,12 @@ export interface BastionState {
   instance: AwsEc2Instance;
 }
 
-export const BASTION_INSTANCE_NAME_PREFIX = "basti-instance";
+export const BASTION_INSTANCE_NAME_PREFIX = 'basti-instance';
 export const BASTION_INSTANCE_ROLE_NAME_PREFIX = BASTION_INSTANCE_NAME_PREFIX;
 export const BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX =
   BASTION_INSTANCE_NAME_PREFIX;
 export const BASTION_INSTANCE_ROLE_PATH = `/basti/`;
 export const BASTION_INSTANCE_PROFILE_PATH = BASTION_INSTANCE_ROLE_PATH;
 
-export const BASTION_INSTANCE_ID_TAG_NAME = "basti:id";
-export const BASTION_INSTANCE_IN_USE_TAG_NAME = "basti:in-use";
+export const BASTION_INSTANCE_ID_TAG_NAME = 'basti:id';
+export const BASTION_INSTANCE_IN_USE_TAG_NAME = 'basti:in-use';

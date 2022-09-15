@@ -26,6 +26,7 @@
   "devDependencies": {
     "@types/inquirer": "^8.2.1",
     "@types/yargs": "^17.0.10",
+    "prettier": "^2.7.1",
     "ts-node": "^10.8.1",
     "typescript": "^4.7.4"
   },

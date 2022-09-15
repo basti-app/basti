@@ -1,4 +1,4 @@
-import chalk from "chalk";
+import chalk from 'chalk';
 
 export class Fmt {
   value(message: string): string {
@@ -12,7 +12,7 @@ export class Fmt {
   list(items: string[], indent: number = 0): string {
     const prefix = this.getListItemPrefix(indent);
 
-    return prefix + items.join("\n" + prefix);
+    return prefix + items.join('\n' + prefix);
   }
 
   code(message: string): string {
@@ -44,7 +44,7 @@ export class Fmt {
   }
 
   private getListItemPrefix(indent: number): string {
-    return " ".repeat(indent).concat("• ");
+    return ' '.repeat(indent).concat('• ');
   }
 }
 

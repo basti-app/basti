@@ -1,11 +1,11 @@
-import inquirer from "inquirer";
-import { getVpcs } from "../../../aws/ec2/get-vpcs.js";
-import { cli } from "../../../common/cli.js";
-import { fmt } from "../../../common/fmt.js";
-import { handleOperation } from "./handle-operation.js";
+import inquirer from 'inquirer';
+import { getVpcs } from '../../../aws/ec2/get-vpcs.js';
+import { cli } from '../../../common/cli.js';
+import { fmt } from '../../../common/fmt.js';
+import { handleOperation } from './handle-operation.js';
 
 export async function promptForCustomTargetVpc(): Promise<string> {
-  const vpcs = await handleOperation("Retrieving VPCs", () => getVpcs());
+  const vpcs = await handleOperation('Retrieving VPCs', () => getVpcs());
 
   if (vpcs.length === 0) {
     cli.info(`No VPCs found in your account`);
@@ -13,10 +13,10 @@ export async function promptForCustomTargetVpc(): Promise<string> {
   }
 
   const { vpcId } = await inquirer.prompt({
-    type: "list",
-    name: "vpcId",
-    message: "Select target VPC",
-    choices: vpcs.map((vpc) => ({
+    type: 'list',
+    name: 'vpcId',
+    message: 'Select target VPC',
+    choices: vpcs.map(vpc => ({
       name: fmt.resourceName(vpc),
       value: vpc.id,
     })),

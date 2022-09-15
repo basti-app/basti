@@ -1,16 +1,16 @@
-import { AttachedPolicy, InstanceProfile, Role } from "@aws-sdk/client-iam";
-import { z } from "zod";
+import { AttachedPolicy, InstanceProfile, Role } from '@aws-sdk/client-iam';
+import { z } from 'zod';
 import {
   AwsIamInstanceProfile,
   AwsRole,
   AwsRoleAttachedPolicy,
-} from "./types.js";
+} from './types.js';
 
 const RoleParser = z
   .object({
     RoleName: z.string(),
   })
-  .transform((response) => ({ name: response.RoleName }));
+  .transform(response => ({ name: response.RoleName }));
 
 export const parseRoleResponse: (response: Role) => AwsRole = RoleParser.parse;
 
@@ -21,7 +21,7 @@ export const parseRoleAttachedPolicyResponse: (
     PolicyName: z.string(),
     PolicyArn: z.string(),
   })
-  .transform((response) => ({
+  .transform(response => ({
     name: response.PolicyName,
     arn: response.PolicyArn,
   })).parse;
@@ -34,7 +34,7 @@ export const parseIamInstanceProfileResponse: (
     Arn: z.string(),
     Roles: z.array(RoleParser),
   })
-  .transform((response) => ({
+  .transform(response => ({
     name: response.InstanceProfileName,
     arn: response.Arn,
     roles: response.Roles,

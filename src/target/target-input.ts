@@ -1,4 +1,4 @@
-import { AwsDbCluster, AwsDbInstance } from "../aws/rds/rds-types.js";
+import { AwsDbCluster, AwsDbInstance } from '../aws/rds/rds-types.js';
 
 export type InitTargetInput =
   | DbClusterTargetInput
@@ -32,4 +32,4 @@ export interface CustomConnectTargetInput {
   };
 }
 
-export const TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX = "basti-access";
+export const TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX = 'basti-access';

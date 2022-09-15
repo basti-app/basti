@@ -1,9 +1,9 @@
-import * as bastionOps from "../../../bastion/ensure-bastion-running.js";
-import { Bastion } from "../../../bastion/bastion.js";
-import { cli } from "../../../common/cli.js";
-import { OperationError } from "../../error/operation-error.js";
-import { detailProvider } from "../../error/get-error-detail.js";
-import { AwsNoRootVolumeAttachedError } from "../../../aws/ec2/ec2-client.js";
+import * as bastionOps from '../../../bastion/ensure-bastion-running.js';
+import { Bastion } from '../../../bastion/bastion.js';
+import { cli } from '../../../common/cli.js';
+import { OperationError } from '../../error/operation-error.js';
+import { detailProvider } from '../../error/get-error-detail.js';
+import { AwsNoRootVolumeAttachedError } from '../../../aws/ec2/ec2-client.js';
 
 export interface EnsureBastionRunningInput {
   bastion: Bastion;
@@ -35,12 +35,12 @@ export async function ensureBastionRunning({
     cli.progressFailure();
 
     throw OperationError.from({
-      operationName: "Starting bastion instance",
+      operationName: 'Starting bastion instance',
       error,
       detailProviders: [
         detailProvider(
           bastionOps.StartingInstanceError,
-          (error) => `Can't start bastion instance ${error.instanceId}`
+          error => `Can't start bastion instance ${error.instanceId}`
         ),
         detailProvider(
           AwsNoRootVolumeAttachedError,

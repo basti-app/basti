@@ -1,7 +1,7 @@
-import { ModifyDBClusterCommand } from "@aws-sdk/client-rds";
-import { parseDbClusterResponse } from "./parse-rds-response.js";
-import { rdsClient } from "./rds-client.js";
-import { AwsDbCluster } from "./rds-types.js";
+import { ModifyDBClusterCommand } from '@aws-sdk/client-rds';
+import { parseDbClusterResponse } from './parse-rds-response.js';
+import { rdsClient } from './rds-client.js';
+import { AwsDbCluster } from './rds-types.js';
 
 export interface ModifyDbClusterInput {
   identifier: string;

@@ -1,5 +1,5 @@
-import { upsertTags } from "../aws/ec2/upsert-tags.js";
-import { BASTION_INSTANCE_IN_USE_TAG_NAME } from "../bastion/bastion.js";
+import { upsertTags } from '../aws/ec2/upsert-tags.js';
+import { BASTION_INSTANCE_IN_USE_TAG_NAME } from '../bastion/bastion.js';
 
 export interface StartBastionUsageMarkerHooks {
   onMarkingError?: (error: unknown) => void;

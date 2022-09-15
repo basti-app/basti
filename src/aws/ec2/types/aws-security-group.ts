@@ -36,11 +36,11 @@ export interface SecurityGroupIngressPortRange {
 export function isGroupSecurityGroupSource(
   source: SecurityGroupIngressSource
 ): source is GroupSecurityGroupIngressSource {
-  return "securityGroupId" in source;
+  return 'securityGroupId' in source;
 }
 
 export function isIpRangeSecurityGroupSource(
   source: SecurityGroupIngressSource
 ): source is IpRangeSecurityGroupIngressSource {
-  return "cidrIp" in source;
+  return 'cidrIp' in source;
 }

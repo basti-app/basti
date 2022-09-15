@@ -1,7 +1,7 @@
-import { DescribeSubnetsCommand } from "@aws-sdk/client-ec2";
-import { ec2Client } from "./ec2-client.js";
-import { parseSubnetResponse } from "./parse-ec2-response.js";
-import { AwsSubnet } from "./types/aws-vpc.js";
+import { DescribeSubnetsCommand } from '@aws-sdk/client-ec2';
+import { ec2Client } from './ec2-client.js';
+import { parseSubnetResponse } from './parse-ec2-response.js';
+import { AwsSubnet } from './types/aws-vpc.js';
 
 export interface GetSubnetsInput {
   vpcId: string;
@@ -16,7 +16,7 @@ export async function getSubnets({
 }: GetSubnetsInput): Promise<AwsSubnet[]> {
   const { Subnets } = await ec2Client.send(
     new DescribeSubnetsCommand({
-      Filters: [{ Name: "vpc-id", Values: [vpcId] }],
+      Filters: [{ Name: 'vpc-id', Values: [vpcId] }],
     })
   );
 

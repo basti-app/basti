@@ -1,6 +1,6 @@
-import { cleanupResources } from "./cleanup-resources.js";
-import { confirmCleanup } from "./confirm-cleanup.js";
-import { getResourcesToCleanup } from "./get-resources-to-cleanup.js";
+import { cleanupResources } from './cleanup-resources.js';
+import { confirmCleanup } from './confirm-cleanup.js';
+import { getResourcesToCleanup } from './get-resources-to-cleanup.js';
 
 export interface CleanupCommandInput {
   confirm?: boolean;

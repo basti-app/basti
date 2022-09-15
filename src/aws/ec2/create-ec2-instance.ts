@@ -1,15 +1,15 @@
 import {
   RunInstancesCommand,
   waitUntilInstanceRunning,
-} from "@aws-sdk/client-ec2";
-import { retry } from "../../common/retry.js";
-import { handleWaiterError } from "../common/waiter-error.js";
-import { COMMON_WAITER_CONFIG } from "../common/waiter-config.js";
-import { createIamInstanceProfile } from "../iam/create-instance-profile.js";
-import { AwsTag } from "../tags/types.js";
-import { AwsInstanceProfileNotFoundError, ec2Client } from "./ec2-client.js";
-import { parseEc2InstanceResponse } from "./parse-ec2-response.js";
-import { AwsEc2Instance } from "./types/aws-ec2-instance.js";
+} from '@aws-sdk/client-ec2';
+import { retry } from '../../common/retry.js';
+import { handleWaiterError } from '../common/waiter-error.js';
+import { COMMON_WAITER_CONFIG } from '../common/waiter-config.js';
+import { createIamInstanceProfile } from '../iam/create-instance-profile.js';
+import { AwsTag } from '../tags/types.js';
+import { AwsInstanceProfileNotFoundError, ec2Client } from './ec2-client.js';
+import { parseEc2InstanceResponse } from './parse-ec2-response.js';
+import { AwsEc2Instance } from './types/aws-ec2-instance.js';
 
 export interface CreateEc2InstanceInput {
   imageId: string;
@@ -66,14 +66,14 @@ export async function createEc2Instance({
             },
           ],
 
-          UserData: userData && Buffer.from(userData).toString("base64"),
+          UserData: userData && Buffer.from(userData).toString('base64'),
 
           TagSpecifications: [
             {
-              ResourceType: "instance",
+              ResourceType: 'instance',
               Tags: tags
-                .map((tag) => ({ Key: tag.key, Value: tag.value }))
-                .concat({ Key: "Name", Value: name }),
+                .map(tag => ({ Key: tag.key, Value: tag.value }))
+                .concat({ Key: 'Name', Value: name }),
             },
           ],
 

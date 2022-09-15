@@ -1,5 +1,5 @@
-import { DeleteSecurityGroupCommand } from "@aws-sdk/client-ec2";
-import { ec2Client } from "./ec2-client.js";
+import { DeleteSecurityGroupCommand } from '@aws-sdk/client-ec2';
+import { ec2Client } from './ec2-client.js';
 
 export interface DeleteSecurityGroupInput {
   groupId: string;

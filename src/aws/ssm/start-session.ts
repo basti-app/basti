@@ -1,7 +1,7 @@
-import { StartSessionCommand } from "@aws-sdk/client-ssm";
-import { parseStartSsmSessionResponse } from "./parse-ssm-response.js";
-import { ssmClient } from "./ssm-client.js";
-import { AwsSsmSessionDescriptor } from "./types.js";
+import { StartSessionCommand } from '@aws-sdk/client-ssm';
+import { parseStartSsmSessionResponse } from './parse-ssm-response.js';
+import { ssmClient } from './ssm-client.js';
+import { AwsSsmSessionDescriptor } from './types.js';
 
 export interface StartSsmPortForwardingSession {
   bastionInstanceId: string;
@@ -20,7 +20,7 @@ export async function startSsmPortForwardingSession({
 }: StartSsmPortForwardingSession): Promise<AwsSsmSessionDescriptor> {
   const request = {
     Target: bastionInstanceId,
-    DocumentName: "AWS-StartPortForwardingSessionToRemoteHost",
+    DocumentName: 'AWS-StartPortForwardingSessionToRemoteHost',
     Parameters: {
       host: [targetHost],
       portNumber: [String(targetPort)],
@@ -41,14 +41,14 @@ export async function startSsmPortForwardingSession({
 async function getSsmClientRegion(): Promise<string> {
   const clientRegion = ssmClient.client.config.region;
 
-  return typeof clientRegion === "string" ? clientRegion : await clientRegion();
+  return typeof clientRegion === 'string' ? clientRegion : await clientRegion();
 }
 
 async function getSsmClientEndpoint(): Promise<string> {
   const { protocol, hostname, port, path, query } =
     await ssmClient.client.config.endpoint();
 
-  const portPart = port ? `:${port}` : "";
-  const queryPart = query ? `:${query}` : "";
+  const portPart = port ? `:${port}` : '';
+  const queryPart = query ? `:${query}` : '';
   return `${protocol}://${hostname}${portPart}${path}${queryPart}`;
 }

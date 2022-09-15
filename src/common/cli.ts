@@ -1,16 +1,16 @@
-import ora, { Ora } from "ora";
-import { fmt } from "./fmt.js";
+import ora, { Ora } from 'ora';
+import { fmt } from './fmt.js';
 
 interface CliPrivateInput {
   spinner?: Ora;
   indent?: number;
 }
 
-export type CliInput = Omit<CliPrivateInput, "spinner">;
+export type CliInput = Omit<CliPrivateInput, 'spinner'>;
 
 const NEW_LINE_REGEX = /(\r\n|\r|\n)/g;
 
-type CliContext = "info" | "warn" | "error" | "progress" | "success";
+type CliContext = 'info' | 'warn' | 'error' | 'progress' | 'success';
 
 export class Cli {
   private readonly indent: number;
@@ -46,38 +46,38 @@ export class Cli {
     console.log(this.indentText(text));
   }
 
-  info(text: string, symbol: string = fmt.blue("ⓘ")): void {
-    this.enterContext("info");
+  info(text: string, symbol: string = fmt.blue('ⓘ')): void {
+    this.enterContext('info');
 
     this.out(`${symbol} ${text}`);
   }
 
   success(text: string): void {
-    this.enterContext("success");
+    this.enterContext('success');
 
-    this.out(`${fmt.green("✔")} ${text}`);
+    this.out(`${fmt.green('✔')} ${text}`);
   }
 
   warn(text: string): void {
-    this.enterContext("warn");
+    this.enterContext('warn');
 
     this.out(fmt.yellow(`⚠ ${text}`));
   }
 
   error(text: string): void {
-    this.enterContext("error");
+    this.enterContext('error');
 
     this.out(fmt.red(`❌ ${text}`));
   }
 
   progressStart(text: string): void {
-    this.context = "progress";
+    this.context = 'progress';
 
     this.spinner.start(text);
   }
 
   progressStop(): void {
-    if (this.context !== "progress") {
+    if (this.context !== 'progress') {
       return;
     }
     this.context = undefined;
@@ -107,14 +107,14 @@ export class Cli {
       input && `${input.text || currentText} - ${fmt.yellow(input.warnText)}`;
 
     this.spinner.stopAndPersist({
-      symbol: fmt.yellow("⚠"),
+      symbol: fmt.yellow('⚠'),
       text,
     });
   }
 
   private enterContext(context: CliContext): void {
     if (this.context !== context) {
-      this.out("\n");
+      this.out('\n');
     }
     this.context = context;
   }
@@ -122,12 +122,12 @@ export class Cli {
   private indentText(text: string): string {
     return (
       this.getIndentStr() +
-      text.replace(NEW_LINE_REGEX, (newLine) => newLine + this.getIndentStr())
+      text.replace(NEW_LINE_REGEX, newLine => newLine + this.getIndentStr())
     );
   }
 
   private getIndentStr(): string {
-    return " ".repeat(this.indent);
+    return ' '.repeat(this.indent);
   }
 }
 

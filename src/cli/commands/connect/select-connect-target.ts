@@ -1,18 +1,18 @@
-import inquirer from "inquirer";
-import { ConnectTarget } from "../../../target/connect-target.js";
-import { createConnectTarget } from "../../../target/create-connect-target.js";
+import inquirer from 'inquirer';
+import { ConnectTarget } from '../../../target/connect-target.js';
+import { createConnectTarget } from '../../../target/create-connect-target.js';
 import {
   ConnectTargetInput,
   CustomConnectTargetInput,
-} from "../../../target/target-input.js";
-import { promptForCustomTargetVpc } from "../common/prompt-for-custom-target-vpc.js";
-import { promptForAwsTarget } from "../common/prompt-for-aws-target.js";
-import { selectPort } from "./select-port.js";
+} from '../../../target/target-input.js';
+import { promptForCustomTargetVpc } from '../common/prompt-for-custom-target-vpc.js';
+import { promptForAwsTarget } from '../common/prompt-for-aws-target.js';
+import { selectPort } from './select-port.js';
 import {
   DehydratedAwsTargetInput,
   hydrateAwsTarget,
-} from "../common/hydrate-aws-target.js";
-import { handleOperation } from "../common/handle-operation.js";
+} from '../common/hydrate-aws-target.js';
+import { handleOperation } from '../common/handle-operation.js';
 
 const IP_REGEX = /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/;
 const DOMAIN_NAME_REGEX =
@@ -30,7 +30,7 @@ export async function selectConnectTarget(
   dehydratedInput?: DehydratedConnectTargetInput
 ): Promise<ConnectTarget> {
   const targetInput = dehydratedInput
-    ? await handleOperation("Retrieving specified target", () =>
+    ? await handleOperation('Retrieving specified target', () =>
         hydrateInput(dehydratedInput)
       )
     : await promptForTarget();
@@ -41,7 +41,7 @@ export async function selectConnectTarget(
 async function hydrateInput(
   dehydratedInput: DehydratedConnectTargetInput
 ): Promise<ConnectTargetInput> {
-  if ("customTargetVpcId" in dehydratedInput) {
+  if ('customTargetVpcId' in dehydratedInput) {
     return {
       custom: {
         vpcId: dehydratedInput.customTargetVpcId,
@@ -62,13 +62,13 @@ async function promptForCustomTarget(): Promise<CustomConnectTargetInput> {
   const vpcId = await promptForCustomTargetVpc();
 
   const { host } = await inquirer.prompt({
-    type: "input",
-    name: "host",
-    message: "Target host name / IP address",
+    type: 'input',
+    name: 'host',
+    message: 'Target host name / IP address',
     validate: validateHost,
   });
 
-  const port = await selectPort("Target port number");
+  const port = await selectPort('Target port number');
 
   return { custom: { vpcId, host, port } };
 }
@@ -76,10 +76,10 @@ async function promptForCustomTarget(): Promise<CustomConnectTargetInput> {
 function validateHost(input: unknown): boolean | string {
   if (
     input == null ||
-    typeof input !== "string" ||
+    typeof input !== 'string' ||
     (!IP_REGEX.test(input) && !DOMAIN_NAME_REGEX.test(input))
   ) {
-    return "Invalid host name / IP address";
+    return 'Invalid host name / IP address';
   }
 
   return true;

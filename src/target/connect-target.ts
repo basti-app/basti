@@ -1,12 +1,12 @@
-import { getSecurityGroups } from "../aws/ec2/get-security-groups.js";
+import { getSecurityGroups } from '../aws/ec2/get-security-groups.js';
 import {
   AwsSecurityGroup,
   isGroupSecurityGroupSource,
-} from "../aws/ec2/types/aws-security-group.js";
-import { BASTION_INSTANCE_NAME_PREFIX } from "../bastion/bastion.js";
-import { ManagedResourceType } from "../common/resource-type.js";
-import { ResourceDamagedError, RuntimeError } from "../common/runtime-error.js";
-import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from "./target-input.js";
+} from '../aws/ec2/types/aws-security-group.js';
+import { BASTION_INSTANCE_NAME_PREFIX } from '../bastion/bastion.js';
+import { ManagedResourceType } from '../common/resource-type.js';
+import { ResourceDamagedError, RuntimeError } from '../common/runtime-error.js';
+import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from './target-input.js';
 
 export interface ConnectTarget {
   isInitialized(): Promise<boolean>;
@@ -30,24 +30,24 @@ export abstract class ConnectTargetBase implements ConnectTarget {
     }
 
     const sourceSecurityGroupIds = accessSecurityGroup.ingressRules
-      .flatMap((rule) => rule.sources)
+      .flatMap(rule => rule.sources)
       .filter(isGroupSecurityGroupSource)
-      .map((source) => source.securityGroupId);
+      .map(source => source.securityGroupId);
 
     const sourceSecurityGroups = await getSecurityGroups({
       securityGroupIds: sourceSecurityGroupIds,
     });
 
     const bastionId = sourceSecurityGroups
-      .map((group) => group.name)
-      .find((name) => name.startsWith(BASTION_INSTANCE_NAME_PREFIX))
+      .map(group => group.name)
+      .find(name => name.startsWith(BASTION_INSTANCE_NAME_PREFIX))
       ?.substring(BASTION_INSTANCE_NAME_PREFIX.length + 1); // Prefix and ID are separated with a dash.
 
     if (!bastionId) {
       throw new ResourceDamagedError(
         ManagedResourceType.ACCESS_SECURITY_GROUP,
         accessSecurityGroup.id,
-        "No bastion security group found among the ingress rules"
+        'No bastion security group found among the ingress rules'
       );
     }
 
@@ -64,7 +64,7 @@ export abstract class ConnectTargetBase implements ConnectTarget {
 
     const securityGroups = await getSecurityGroups({ securityGroupIds });
 
-    return securityGroups.find((group) =>
+    return securityGroups.find(group =>
       group.name.startsWith(TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX)
     );
   }
@@ -74,6 +74,6 @@ export abstract class ConnectTargetBase implements ConnectTarget {
 
 export class TargetNotInitializedError extends RuntimeError {
   constructor() {
-    super("Target is not initialized");
+    super('Target is not initialized');
   }
 }

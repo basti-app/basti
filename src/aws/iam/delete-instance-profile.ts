@@ -1,9 +1,9 @@
 import {
   DeleteInstanceProfileCommand,
   RemoveRoleFromInstanceProfileCommand,
-} from "@aws-sdk/client-iam";
-import { getInstanceProfile } from "./get-instance-profiles.js";
-import { iamClient } from "./iam-client.js";
+} from '@aws-sdk/client-iam';
+import { getInstanceProfile } from './get-instance-profiles.js';
+import { iamClient } from './iam-client.js';
 
 export interface DeleteInstanceProfileInput {
   name: string;
@@ -15,11 +15,11 @@ export async function deleteInstanceProfile({
   const instanceProfile = await getInstanceProfile({ name });
 
   if (!instanceProfile) {
-    throw new Error("Instance profile not found");
+    throw new Error('Instance profile not found');
   }
 
   await Promise.all(
-    instanceProfile.roles.map((role) =>
+    instanceProfile.roles.map(role =>
       iamClient.send(
         new RemoveRoleFromInstanceProfileCommand({
           InstanceProfileName: name,

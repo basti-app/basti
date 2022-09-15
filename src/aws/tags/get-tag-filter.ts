@@ -1,5 +1,5 @@
-import { Filter } from "@aws-sdk/client-ec2";
-import { AwsTag } from "./types.js";
+import { Filter } from '@aws-sdk/client-ec2';
+import { AwsTag } from './types.js';
 
 export function getTagFilter(tag: AwsTag): Filter {
   return {

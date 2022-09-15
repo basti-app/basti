@@ -1,6 +1,6 @@
-import { cli } from "../../common/cli.js";
-import { getErrorMessage } from "../../common/get-error-message.js";
-import { OperationError } from "./operation-error.js";
+import { cli } from '../../common/cli.js';
+import { getErrorMessage } from '../../common/get-error-message.js';
+import { OperationError } from './operation-error.js';
 
 export function withErrorHandling<T extends unknown[], R>(
   handler: (...args: T) => Promise<R>
@@ -15,7 +15,7 @@ export function withErrorHandling<T extends unknown[], R>(
 }
 
 export function handleAsyncErrors(): void {
-  process.on("uncaughtException", (error) => {
+  process.on('uncaughtException', error => {
     handleError(error);
   });
 }

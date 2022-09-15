@@ -1,5 +1,5 @@
-import { TerminateInstancesCommand } from "@aws-sdk/client-ec2";
-import { ec2Client } from "./ec2-client.js";
+import { TerminateInstancesCommand } from '@aws-sdk/client-ec2';
+import { ec2Client } from './ec2-client.js';
 
 export interface TerminateEc2InstancesInput {
   instanceIds: string[];

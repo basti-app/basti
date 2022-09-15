@@ -1,4 +1,4 @@
-import { AwsError } from "./aws-error.js";
+import { AwsError } from './aws-error.js';
 
 export async function handleWaiterError(
   waiter: () => Promise<unknown>
@@ -8,7 +8,7 @@ export async function handleWaiterError(
   } catch (error) {
     if (
       error instanceof Error &&
-      error.message.toLowerCase().includes("timed out")
+      error.message.toLowerCase().includes('timed out')
     ) {
       throw new AwsTimeoutError();
     }
@@ -17,6 +17,6 @@ export async function handleWaiterError(
 
 export class AwsTimeoutError extends AwsError {
   constructor() {
-    super("Operation timed out");
+    super('Operation timed out');
   }
 }

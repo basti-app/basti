@@ -1,10 +1,10 @@
-import { SSMClient, SSMServiceException } from "@aws-sdk/client-ssm";
-import { AwsClient } from "../common/aws-client.js";
+import { SSMClient, SSMServiceException } from '@aws-sdk/client-ssm';
+import { AwsClient } from '../common/aws-client.js';
 import {
   AwsAccessDeniedError,
   AwsError,
   AwsNotFoundError,
-} from "../common/aws-error.js";
+} from '../common/aws-error.js';
 
 export const ssmClient = new AwsClient({
   client: SSMClient,
@@ -17,19 +17,19 @@ export async function errorHandler<T>(operation: () => Promise<T>): Promise<T> {
   } catch (error) {
     if (
       error instanceof SSMServiceException &&
-      error.name === "AccessDeniedException"
+      error.name === 'AccessDeniedException'
     ) {
       throw new AwsAccessDeniedError();
     }
     if (
       error instanceof SSMServiceException &&
-      error.name === "ParameterNotFound"
+      error.name === 'ParameterNotFound'
     ) {
       throw new AwsNotFoundError();
     }
     if (
       error instanceof SSMServiceException &&
-      error.message.toLocaleLowerCase().includes("not connected")
+      error.message.toLocaleLowerCase().includes('not connected')
     ) {
       throw new AwsSsmInstanceNotConnectedError();
     }
@@ -39,6 +39,6 @@ export async function errorHandler<T>(operation: () => Promise<T>): Promise<T> {
 
 export class AwsSsmInstanceNotConnectedError extends AwsError {
   constructor() {
-    super("Instance is not connected to SSM");
+    super('Instance is not connected to SSM');
   }
 }

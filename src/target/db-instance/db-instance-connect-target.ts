@@ -1,5 +1,5 @@
-import { AwsDbInstance } from "../../aws/rds/rds-types.js";
-import { ConnectTargetBase } from "../connect-target.js";
+import { AwsDbInstance } from '../../aws/rds/rds-types.js';
+import { ConnectTargetBase } from '../connect-target.js';
 
 export class DbInstanceConnectTarget extends ConnectTargetBase {
   private readonly dbInstance: AwsDbInstance;

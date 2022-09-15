@@ -1,14 +1,14 @@
-import inquirer, { DistinctChoice } from "inquirer";
-import { getDbClusters } from "../../../aws/rds/get-db-clusters.js";
-import { getDbInstances } from "../../../aws/rds/get-db-instances.js";
-import { AwsDbCluster, AwsDbInstance } from "../../../aws/rds/rds-types.js";
-import { Cli, cli } from "../../../common/cli.js";
-import { fmt } from "../../../common/fmt.js";
+import inquirer, { DistinctChoice } from 'inquirer';
+import { getDbClusters } from '../../../aws/rds/get-db-clusters.js';
+import { getDbInstances } from '../../../aws/rds/get-db-instances.js';
+import { AwsDbCluster, AwsDbInstance } from '../../../aws/rds/rds-types.js';
+import { Cli, cli } from '../../../common/cli.js';
+import { fmt } from '../../../common/fmt.js';
 import {
   DbClusterTargetInput,
   DbInstanceTargetInput,
-} from "../../../target/target-input.js";
-import { getErrorDetail } from "../../error/get-error-detail.js";
+} from '../../../target/target-input.js';
+import { getErrorDetail } from '../../error/get-error-detail.js';
 
 export type AwsTargetInput = DbInstanceTargetInput | DbClusterTargetInput;
 
@@ -18,9 +18,9 @@ export async function promptForAwsTarget(): Promise<
   const { instances, clusters } = await getTargets();
 
   const { target } = await inquirer.prompt({
-    type: "list",
-    name: "target",
-    message: "Select target to connect to",
+    type: 'list',
+    name: 'target',
+    message: 'Select target to connect to',
     choices: [
       ...toInstanceChoices(instances),
       ...toClusterChoices(clusters),
@@ -37,17 +37,17 @@ async function getTargets(): Promise<{
 }> {
   const subCli = cli.createSubInstance({ indent: 2 });
 
-  cli.out(`${fmt.green("❯")} Retrieving connection targets:`);
+  cli.out(`${fmt.green('❯')} Retrieving connection targets:`);
 
   const instances = await getTargetResources(
     () => getDbInstances(),
-    "DB instances",
+    'DB instances',
     subCli
   );
 
   const clusters = await getTargetResources(
     () => getDbClusters(),
-    "DB clusters",
+    'DB clusters',
     subCli
   );
 
@@ -59,7 +59,7 @@ function toInstanceChoices(instances: AwsDbInstance[]): DistinctChoice[] {
     return [];
   }
   return [
-    new inquirer.Separator("Database instances:"),
+    new inquirer.Separator('Database instances:'),
     ...instances.map(toInstanceChoice),
   ];
 }
@@ -69,7 +69,7 @@ function toClusterChoices(clusters: AwsDbCluster[]): DistinctChoice[] {
     return [];
   }
   return [
-    new inquirer.Separator("Database clusters:"),
+    new inquirer.Separator('Database clusters:'),
     ...clusters.map(toClusterChoice),
   ];
 }
@@ -78,7 +78,7 @@ function getCustomChoices(): DistinctChoice[] {
   return [
     new inquirer.Separator(),
     {
-      name: "Custom",
+      name: 'Custom',
       value: undefined,
     },
   ];

@@ -1,12 +1,12 @@
-import { isOptionInArgs, YargsCheck } from "./yargs-check.js";
+import { isOptionInArgs, YargsCheck } from './yargs-check.js';
 
 export function conflictingOptions(
   ...options: (string | string[])[]
 ): YargsCheck {
-  return (args) => {
+  return args => {
     const presentArgumentGroups = options
       .map(toOptionGroup)
-      .filter((group) => isOptionGroupInArgs(group, args));
+      .filter(group => isOptionGroupInArgs(group, args));
 
     if (presentArgumentGroups.length > 1) {
       throw new Error(
@@ -26,13 +26,11 @@ function isOptionGroupInArgs(
   optionGroup: string[],
   args: Record<string, unknown>
 ): boolean {
-  return optionGroup.some((option) => isOptionInArgs(option, args));
+  return optionGroup.some(option => isOptionInArgs(option, args));
 }
 
 function formatList(options: (string | string[])[]): string {
   return options
-    .map((option) =>
-      Array.isArray(option) ? `[${option.join(", ")}]` : option
-    )
-    .join(", ");
+    .map(option => (Array.isArray(option) ? `[${option.join(', ')}]` : option))
+    .join(', ');
 }

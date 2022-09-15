@@ -1,6 +1,6 @@
-import { DBCluster, DBInstance, DBSubnetGroup } from "@aws-sdk/client-rds";
-import { z } from "zod";
-import { AwsDbCluster, AwsDbSubnetGroup, AwsDbInstance } from "./rds-types.js";
+import { DBCluster, DBInstance, DBSubnetGroup } from '@aws-sdk/client-rds';
+import { z } from 'zod';
+import { AwsDbCluster, AwsDbSubnetGroup, AwsDbInstance } from './rds-types.js';
 
 export const parseDbInstanceResponse: (response?: DBInstance) => AwsDbInstance =
   z
@@ -20,12 +20,12 @@ export const parseDbInstanceResponse: (response?: DBInstance) => AwsDbInstance =
         Port: z.number(),
       }),
     })
-    .transform((response) => ({
+    .transform(response => ({
       identifier: response.DBInstanceIdentifier,
       clusterIdentifier: response.DBClusterIdentifier,
       vpcId: response.DBSubnetGroup.VpcId,
       securityGroupIds: response.VpcSecurityGroups.map(
-        (sg) => sg.VpcSecurityGroupId
+        sg => sg.VpcSecurityGroupId
       ),
       host: response.Endpoint.Address,
       port: response.Endpoint.Port,
@@ -43,11 +43,11 @@ export const parseDbClusterResponse: (response?: DBCluster) => AwsDbCluster = z
     Endpoint: z.string(),
     Port: z.number(),
   })
-  .transform((response) => ({
+  .transform(response => ({
     identifier: response.DBClusterIdentifier,
     dbSubnetGroupName: response.DBSubnetGroup,
     securityGroupIds: response.VpcSecurityGroups.map(
-      (sg) => sg.VpcSecurityGroupId
+      sg => sg.VpcSecurityGroupId
     ),
     host: response.Endpoint,
     port: response.Port,
@@ -60,7 +60,7 @@ export const parseDbSubnetGroup: (
     DBSubnetGroupName: z.string(),
     VpcId: z.string(),
   })
-  .transform((response) => ({
+  .transform(response => ({
     name: response.DBSubnetGroupName,
     vpcId: response.VpcId,
   })).parse;

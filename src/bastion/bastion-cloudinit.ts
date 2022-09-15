@@ -1,4 +1,4 @@
-import { BASTION_INSTANCE_IN_USE_TAG_NAME } from "./bastion.js";
+import { BASTION_INSTANCE_IN_USE_TAG_NAME } from './bastion.js';
 
 export const BASTION_INSTANCE_CLOUD_INIT = `
 #cloud-config

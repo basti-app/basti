@@ -1,7 +1,7 @@
-import { getDbSubnetGroup } from "../../aws/rds/get-db-subnet-group.js";
-import { modifyDBCluster } from "../../aws/rds/modify-db-cluster.js";
-import { AwsDbCluster } from "../../aws/rds/rds-types.js";
-import { InitTargetBase } from "../init-target.js";
+import { getDbSubnetGroup } from '../../aws/rds/get-db-subnet-group.js';
+import { modifyDBCluster } from '../../aws/rds/modify-db-cluster.js';
+import { AwsDbCluster } from '../../aws/rds/rds-types.js';
+import { InitTargetBase } from '../init-target.js';
 
 export class DbClusterInitTarget extends InitTargetBase {
   private dbCluster: AwsDbCluster;

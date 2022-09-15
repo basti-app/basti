@@ -1,16 +1,16 @@
-import { InitTarget } from "../../../target/init-target.js";
+import { InitTarget } from '../../../target/init-target.js';
 import {
   CustomInitTargetInput,
   InitTargetInput,
-} from "../../../target/target-input.js";
-import { createInitTarget } from "../../../target/create-init-target.js";
-import { promptForCustomTargetVpc } from "../common/prompt-for-custom-target-vpc.js";
-import { promptForAwsTarget } from "../common/prompt-for-aws-target.js";
-import { handleOperation } from "../common/handle-operation.js";
+} from '../../../target/target-input.js';
+import { createInitTarget } from '../../../target/create-init-target.js';
+import { promptForCustomTargetVpc } from '../common/prompt-for-custom-target-vpc.js';
+import { promptForAwsTarget } from '../common/prompt-for-aws-target.js';
+import { handleOperation } from '../common/handle-operation.js';
 import {
   DehydratedAwsTargetInput,
   hydrateAwsTarget,
-} from "../common/hydrate-aws-target.js";
+} from '../common/hydrate-aws-target.js';
 
 export type DehydratedInitTargetInput =
   | DehydratedAwsTargetInput
@@ -20,7 +20,7 @@ export async function selectInitTarget(
   dehydratedInput?: DehydratedInitTargetInput
 ): Promise<InitTarget> {
   const targetInput = dehydratedInput
-    ? await handleOperation("Retrieving specified target", () =>
+    ? await handleOperation('Retrieving specified target', () =>
         hydrateInput(dehydratedInput)
       )
     : await promptForTarget();
@@ -31,7 +31,7 @@ export async function selectInitTarget(
 async function hydrateInput(
   targetInput: DehydratedInitTargetInput
 ): Promise<InitTargetInput> {
-  if ("customTargetVpcId" in targetInput) {
+  if ('customTargetVpcId' in targetInput) {
     return {
       custom: {
         vpcId: targetInput.customTargetVpcId,

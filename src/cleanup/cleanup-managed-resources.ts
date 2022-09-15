@@ -1,16 +1,16 @@
-import { bastionInstanceCleaner } from "./bastion-instance-cleaner.js";
-import { bastionInstanceProfileCleaner } from "./bastion-instance-profile-cleaner.js";
-import { bastionRoleCleaner } from "./bastion-role-cleaner.js";
+import { bastionInstanceCleaner } from './bastion-instance-cleaner.js';
+import { bastionInstanceProfileCleaner } from './bastion-instance-profile-cleaner.js';
+import { bastionRoleCleaner } from './bastion-role-cleaner.js';
 import {
   ResourcesCleanupPreparer,
   ResourceCleaner,
-} from "./resource-cleaner.js";
-import { CLEANUP_ORDER, ManagedResources } from "./managed-resources.js";
+} from './resource-cleaner.js';
+import { CLEANUP_ORDER, ManagedResources } from './managed-resources.js';
 import {
   accessSecurityGroupReferencesCleaner,
   securityGroupCleaner,
-} from "./security-group-cleaner.js";
-import { ManagedResourceType } from "../common/resource-type.js";
+} from './security-group-cleaner.js';
+import { ManagedResourceType } from '../common/resource-type.js';
 
 interface CleanupManagedResourcesHooks {
   onPreparingToCleanup?: (resourceGroup: ManagedResourceType) => void;

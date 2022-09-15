@@ -1,12 +1,12 @@
-import { AwsNoRootVolumeAttachedError } from "../aws/ec2/ec2-client.js";
-import { startEc2Instance } from "../aws/ec2/start-ec2-instance.js";
-import { AwsEc2Instance } from "../aws/ec2/types/aws-ec2-instance.js";
+import { AwsNoRootVolumeAttachedError } from '../aws/ec2/ec2-client.js';
+import { startEc2Instance } from '../aws/ec2/start-ec2-instance.js';
+import { AwsEc2Instance } from '../aws/ec2/types/aws-ec2-instance.js';
 import {
   waitEc2InstanceIsRunning,
   waitEc2InstanceIsStopped,
-} from "../aws/ec2/wait-ec2-instance.js";
-import { RuntimeError, UnexpectedStateError } from "../common/runtime-error.js";
-import { Bastion } from "./bastion.js";
+} from '../aws/ec2/wait-ec2-instance.js';
+import { RuntimeError, UnexpectedStateError } from '../common/runtime-error.js';
+import { Bastion } from './bastion.js';
 
 interface EnsureBastionRunningHooks {
   onWaitingInstanceToStart?: () => void;
@@ -27,21 +27,21 @@ export async function ensureBastionRunning({
   const { instance } = bastion;
 
   switch (instance.state) {
-    case "running":
+    case 'running':
       hooks?.onInstanceStarted?.();
       return;
 
-    case "pending":
+    case 'pending':
       hooks?.onWaitingInstanceToStart?.();
       await waitEc2InstanceIsRunning({ instanceId: instance.id });
       hooks?.onInstanceStarted?.();
       return;
 
-    case "stopping":
+    case 'stopping':
       hooks?.onWaitingInstanceToStop?.();
       await waitEc2InstanceIsStopped({ instanceId: instance.id });
 
-    case "stopped":
+    case 'stopped':
       hooks?.onStartingInstance?.();
       await startInstance(instance);
       hooks?.onInstanceStarted?.();

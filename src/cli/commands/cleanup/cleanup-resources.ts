@@ -1,24 +1,24 @@
-import { AwsDependencyViolationError } from "../../../aws/common/aws-error.js";
-import { AwsInvalidRdsStateError } from "../../../aws/rds/rds-client.js";
-import { cleanupManagedResources } from "../../../cleanup/cleanup-managed-resources.js";
-import { ManagedResources } from "../../../cleanup/managed-resources.js";
-import { cli } from "../../../common/cli.js";
-import { fmt } from "../../../common/fmt.js";
-import { ManagedResourceType } from "../../../common/resource-type.js";
-import { detailProvider } from "../../error/get-error-detail.js";
-import { OperationError } from "../../error/operation-error.js";
+import { AwsDependencyViolationError } from '../../../aws/common/aws-error.js';
+import { AwsInvalidRdsStateError } from '../../../aws/rds/rds-client.js';
+import { cleanupManagedResources } from '../../../cleanup/cleanup-managed-resources.js';
+import { ManagedResources } from '../../../cleanup/managed-resources.js';
+import { cli } from '../../../common/cli.js';
+import { fmt } from '../../../common/fmt.js';
+import { ManagedResourceType } from '../../../common/resource-type.js';
+import { detailProvider } from '../../error/get-error-detail.js';
+import { OperationError } from '../../error/operation-error.js';
 
 export interface CleanupResourcesInput {
   resources: ManagedResources;
 }
 
 const RESOURCE_NAMES: Record<ManagedResourceType, string> = {
-  [ManagedResourceType.ACCESS_SECURITY_GROUP]: "Access security group",
-  [ManagedResourceType.BASTION_INSTANCE]: "Bastion EC2 instance",
-  [ManagedResourceType.BASTION_SECURITY_GROUP]: "Bastion security group",
+  [ManagedResourceType.ACCESS_SECURITY_GROUP]: 'Access security group',
+  [ManagedResourceType.BASTION_INSTANCE]: 'Bastion EC2 instance',
+  [ManagedResourceType.BASTION_SECURITY_GROUP]: 'Bastion security group',
   [ManagedResourceType.BASTION_INSTANCE_PROFILE]:
-    "Bastion IAM instance profile",
-  [ManagedResourceType.BASTION_ROLE]: "Bastion IAM role",
+    'Bastion IAM instance profile',
+  [ManagedResourceType.BASTION_ROLE]: 'Bastion IAM role',
 };
 
 export async function cleanupResources({
@@ -29,7 +29,7 @@ export async function cleanupResources({
   await cleanupManagedResources({
     managedResources: resources,
     hooks: {
-      onPreparingToCleanup: (group) =>
+      onPreparingToCleanup: group =>
         cli.progressStart(
           `Preparing to ${fmt.lower(RESOURCE_NAMES[group])} deletion`
         ),
@@ -73,7 +73,7 @@ function toPreparationError(
       detailProvider(
         AwsInvalidRdsStateError,
         () =>
-          "Database is in state that does not allow deletion. Please, try again later"
+          'Database is in state that does not allow deletion. Please, try again later'
       ),
     ],
   });
@@ -91,7 +91,7 @@ function toCleanupError(
       detailProvider(
         AwsDependencyViolationError,
         () =>
-          "Other resources depend on the resource. This might happen if the Basti-managed resource has been used outside of Basti or due to previous cleanup steps failures. Please, try again after manually removing the unexpected dependencies"
+          'Other resources depend on the resource. This might happen if the Basti-managed resource has been used outside of Basti or due to previous cleanup steps failures. Please, try again after manually removing the unexpected dependencies'
       ),
     ],
   });
@@ -99,14 +99,14 @@ function toCleanupError(
 
 function printOutcome(errors: OperationError[]): void {
   if (errors.length === 0) {
-    cli.success("Basti-managed resources deleted");
+    cli.success('Basti-managed resources deleted');
     return;
   }
 
-  cli.error("Cleanup errors:");
+  cli.error('Cleanup errors:');
   cli
     .createSubInstance({ indent: 2 })
-    .out(fmt.list(errors.map((error) => fmt.red(error.message))));
+    .out(fmt.list(errors.map(error => fmt.red(error.message))));
 }
 
 function capitalize(str: string): string {
