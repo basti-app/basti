@@ -8,7 +8,7 @@ repo_upgrade: all
 write_files:
   - path: /opt/basti/stop-if-not-used.sh
     owner: root:root
-    permissions: "0777"
+    permissions: "0544"
     content: |
       #!/bin/bash
       set -e;
@@ -34,9 +34,11 @@ write_files:
 
   - path: /var/log/basti/stop-if-not-used.log
     owner: root:root
+    permissions: "0644"
     content: ""
 
   - path: /etc/cron.d/stop-if-not-used
     owner: root:root
+    permissions: "0444"
     content: "* * * * * root /bin/bash /opt/basti/stop-if-not-used.sh &>> /var/log/basti/stop-if-not-used.log\\n"
 `;
