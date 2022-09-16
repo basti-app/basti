@@ -2,7 +2,10 @@ import * as cleanupOps from '../../../cleanup/get-resources-to-cleanup.js';
 import { ManagedResources } from '../../../cleanup/managed-resources.js';
 import { cli } from '../../../common/cli.js';
 import { fmt } from '../../../common/fmt.js';
-import { ManagedResourceTypes } from '../../../common/resource-type.js';
+import {
+  ManagedResourceType,
+  ManagedResourceTypes,
+} from '../../../common/resource-type.js';
 import { getErrorDetail } from '../../error/get-error-detail.js';
 
 const RESOURCE_GROUP_NAMES: Record<ManagedResourceType, string> = {

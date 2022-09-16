@@ -11,8 +11,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "check:types": "tsc --noEmit --skipLibCheck",
-    "check:style": "eslint ."
+    "check-types": "tsc --noEmit --skipLibCheck",
+    "check-style": "eslint ."
   },
   "repository": {
     "type": "git",
