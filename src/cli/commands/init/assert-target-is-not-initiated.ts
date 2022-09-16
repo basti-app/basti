@@ -1,6 +1,6 @@
-import { cli } from '../../../common/cli.js';
 import { fmt } from '../../../common/fmt.js';
 import { InitTarget } from '../../../target/init-target.js';
+import { EarlyExitError } from '../../error/early-exit-error.js';
 import { handleOperation } from '../common/handle-operation.js';
 
 export interface AssertTargetIsNotInitiatedInput {
@@ -16,11 +16,10 @@ export async function assertTargetIsNotInitialized({
   );
 
   if (targetInitialized) {
-    cli.info(
+    throw new EarlyExitError(
       `The selected target has already been initialized. If you'd like to re-initialize Basti, please, clean up your account first by running ${fmt.code(
         'basti cleanup'
       )}`
     );
-    process.exit(0);
   }
 }

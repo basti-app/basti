@@ -1,6 +1,6 @@
-import { cli } from '../../../common/cli.js';
 import { fmt } from '../../../common/fmt.js';
 import { ConnectTarget } from '../../../target/connect-target.js';
+import { EarlyExitError } from '../../error/early-exit-error.js';
 import { handleOperation } from '../common/handle-operation.js';
 
 export interface AssertTargetIsInitializedInput {
@@ -16,11 +16,10 @@ export async function assertTargetIsInitialized({
   );
 
   if (!targetInitialized) {
-    cli.info(
+    throw new EarlyExitError(
       `The selected target has not been initialized to use with Basti. Please, use ${fmt.code(
         'basti init'
       )} to initialize the target`
     );
-    process.exit(0);
   }
 }

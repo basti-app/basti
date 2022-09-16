@@ -1,26 +1,41 @@
 import ora, { Ora } from 'ora';
 import { fmt } from './fmt.js';
 
+type CliContext = 'info' | 'warn' | 'error' | 'progress' | 'success' | 'none';
+
+type ContextChangeHook = (context: CliContext) => void;
+
 interface CliPrivateInput {
   spinner?: Ora;
   indent?: number;
+  context?: CliContext;
+  onContextChange?: ContextChangeHook;
 }
 
-export type CliInput = Omit<CliPrivateInput, 'spinner'>;
+export type CliInput = Omit<
+  CliPrivateInput,
+  'spinner' | 'context' | 'onContextChange'
+>;
 
 const NEW_LINE_REGEX = /(\r\n|\r|\n)/g;
-
-type CliContext = 'info' | 'warn' | 'error' | 'progress' | 'success';
 
 export class Cli {
   private readonly indent: number;
   private readonly spinner: Ora;
 
-  private context?: CliContext;
+  private context: CliContext;
+  private readonly onContextChange?: ContextChangeHook;
 
-  private constructor({ indent, spinner }: CliPrivateInput) {
+  private constructor({
+    indent,
+    spinner,
+    context,
+    onContextChange,
+  }: CliPrivateInput) {
     this.indent = indent ?? 0;
     this.spinner = spinner ?? ora();
+    this.context = context ?? 'none';
+    this.onContextChange = onContextChange;
   }
 
   static create(input: CliInput = {}): Cli {
@@ -28,23 +43,21 @@ export class Cli {
   }
 
   createSubInstance(input: CliInput = {}): Cli {
-    const { indent } = input;
+    const subSpinner =
+      input.indent !== undefined ? ora({ indent: input.indent }) : this.spinner;
 
-    const subInput =
-      indent !== undefined
-        ? {
-            ...input,
-            spinner: ora({ indent }),
-          }
-        : input;
-
-    return new Cli(subInput);
+    return new Cli({
+      ...input,
+      spinner: subSpinner,
+      context: this.context,
+      onContextChange: context => this.changeContext(context),
+    });
   }
 
   out(text: string): void {
-    this.progressStop();
+    this.changeContext('none');
 
-    console.log(this.indentText(text));
+    this.print(text);
   }
 
   info(text: string, symbol: string = fmt.blue('ⓘ')): void {
@@ -72,7 +85,7 @@ export class Cli {
   }
 
   progressStart(text: string): void {
-    this.context = 'progress';
+    this.changeContext('progress');
 
     this.spinner.start(text);
   }
@@ -81,13 +94,13 @@ export class Cli {
     if (this.context !== 'progress') {
       return;
     }
-    this.context = undefined;
+    this.changeContext('none');
 
     this.spinner.stop();
   }
 
   progressSuccess(text?: string, symbol?: string): void {
-    this.context = undefined;
+    this.changeContext('none');
 
     symbol !== undefined
       ? this.spinner.stopAndPersist({ symbol })
@@ -95,13 +108,13 @@ export class Cli {
   }
 
   progressFailure(text?: string): void {
-    this.context = undefined;
+    this.changeContext('none');
 
     this.spinner.fail(text);
   }
 
   progressWarn(input?: { text?: string; warnText: string }): void {
-    this.context = undefined;
+    this.changeContext('none');
 
     const currentText = this.spinner.text;
     const text =
@@ -113,11 +126,17 @@ export class Cli {
     });
   }
 
+  private print(text: string): void {
+    this.progressStop();
+
+    console.log(this.indentText(text));
+  }
+
   private enterContext(context: CliContext): void {
     if (this.context !== context) {
       this.out('\n');
     }
-    this.context = context;
+    this.changeContext(context);
   }
 
   private indentText(text: string): string {
@@ -125,6 +144,11 @@ export class Cli {
       this.getIndentStr() +
       text.replace(NEW_LINE_REGEX, newLine => newLine + this.getIndentStr())
     );
+  }
+
+  private changeContext(context: CliContext): void {
+    this.context = context;
+    this.onContextChange?.(context);
   }
 
   private getIndentStr(): string {

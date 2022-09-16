@@ -30,9 +30,6 @@
     ],
 
     "unicorn/prevent-abbreviations": "off",
-    // Waiting for https://lightrun.com/answers/sindresorhus-eslint-plugin-unicorn-no-array-callback-reference-rule-is-not-compatible-with-typescript-type-guards
-    // to be resolved
-    // "unicorn/no-array-callback-reference": "off",
     "unicorn/prefer-spread": "off",
     "unicorn/no-array-for-each": "off"
   }

@@ -1,7 +1,7 @@
 import inquirer from 'inquirer';
 import { getSubnets } from '../../../aws/ec2/get-subnets.js';
-import { cli } from '../../../common/cli.js';
 import { fmt } from '../../../common/fmt.js';
+import { EarlyExitError } from '../../error/early-exit-error.js';
 import { handleOperation } from '../common/handle-operation.js';
 
 export interface SelectBastionSubnetInput {
@@ -23,8 +23,9 @@ async function promptForBastionSubnetId(vpcId: string): Promise<string> {
   );
 
   if (subnets.length === 0) {
-    cli.error(`No subnets found in the VPC`);
-    process.exit(0);
+    throw new EarlyExitError(
+      'No subnets found in the VPC. Vpc must have at least one public subnet for the bastion to be set up'
+    );
   }
 
   const { subnet } = await inquirer.prompt({

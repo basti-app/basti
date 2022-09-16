@@ -9,6 +9,7 @@ import {
   ManagedResourceType,
   ManagedResourceTypes,
 } from '../../../common/resource-type.js';
+import { EarlyExitError } from '../../error/early-exit-error.js';
 
 export interface ConfirmCleanupInput {
   resources: ManagedResources;
@@ -27,8 +28,9 @@ export async function confirmCleanup({
   resources,
 }: ConfirmCleanupInput): Promise<void> {
   if (isEmpty(resources)) {
-    cli.success('No Basti-managed resources found in your account');
-    process.exit(0);
+    throw new EarlyExitError(
+      'No Basti-managed resources found in your account'
+    );
   }
 
   printResources(resources);
@@ -41,7 +43,7 @@ export async function confirmCleanup({
   });
 
   if (!(confirm as boolean)) {
-    process.exit(0);
+    throw new EarlyExitError('Cleanup aborted');
   }
 }
 
