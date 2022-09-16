@@ -60,7 +60,7 @@ export const COMMON_DETAIL_PROVIDERS: ErrorMessageProvider[] = [
     ResourceNotFoundError,
     error =>
       `${RESOURCE_TYPE_NAME[error.resourceType]} ${
-        error.resourceId != null ? `"${error.resourceId}"` : ''
+        error.resourceId !== undefined ? `"${error.resourceId}"` : ''
       } was not found`
   ),
   detailProvider(
@@ -80,13 +80,13 @@ export function getErrorDetail(
     .find(provider => isMatchingProvider(provider, error))
     ?.detail(error);
 
-  if (detail == null) {
+  if (detail === undefined) {
     return `Unexpected error: ${getErrorMessage(error)}`;
   }
 
   const cause = error instanceof RuntimeError ? error.cause : undefined;
 
-  return cause != null
+  return cause !== undefined
     ? `${detail}. ${getErrorDetail(cause, detailProviders)}`
     : detail;
 }

@@ -17,7 +17,7 @@ export async function getDbInstances(): Promise<AwsDbInstance[]> {
     throw new Error(`Invalid response from AWS.`);
   }
 
-  return DBInstances.map(parseDbInstanceResponse);
+  return DBInstances.map(instance => parseDbInstanceResponse(instance));
 }
 
 export async function getDbInstance({
@@ -32,7 +32,7 @@ export async function getDbInstance({
       throw new Error(`Invalid response from AWS.`);
     }
 
-    return DBInstances.map(parseDbInstanceResponse)[0];
+    return DBInstances.map(instance => parseDbInstanceResponse(instance))[0];
   } catch (error) {
     if (error instanceof AwsNotFoundError) {
       return undefined;

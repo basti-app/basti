@@ -35,7 +35,7 @@ export async function getIamRoles({
     throw new Error(`Invalid response from AWS.`);
   }
 
-  return Roles.map(parseRoleResponse);
+  return Roles.map(role => parseRoleResponse(role));
 }
 
 export async function getIamRolePolicies({
@@ -67,5 +67,7 @@ export async function getIamRoleAttachedPolicies({
     throw new Error(`Invalid response from AWS.`);
   }
 
-  return AttachedPolicies.map(parseRoleAttachedPolicyResponse);
+  return AttachedPolicies.map(policy =>
+    parseRoleAttachedPolicyResponse(policy)
+  );
 }

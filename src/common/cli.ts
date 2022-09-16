@@ -31,7 +31,7 @@ export class Cli {
     const { indent } = input;
 
     const subInput =
-      indent != null
+      indent !== undefined
         ? {
             ...input,
             spinner: ora({ indent }),
@@ -89,7 +89,7 @@ export class Cli {
   progressSuccess(text?: string, symbol?: string): void {
     this.context = undefined;
 
-    symbol != null
+    symbol !== undefined
       ? this.spinner.stopAndPersist({ symbol })
       : this.spinner.succeed(text);
   }

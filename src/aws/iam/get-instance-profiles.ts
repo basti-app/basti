@@ -27,7 +27,9 @@ export async function getInstanceProfiles({
     throw new Error(`Invalid response from AWS.`);
   }
 
-  return InstanceProfiles.map(parseIamInstanceProfileResponse);
+  return InstanceProfiles.map(profile =>
+    parseIamInstanceProfileResponse(profile)
+  );
 }
 
 export async function getInstanceProfile({

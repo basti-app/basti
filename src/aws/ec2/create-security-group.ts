@@ -28,7 +28,7 @@ export async function createSecurityGroup({
     })
   );
 
-  if (GroupId == null) {
+  if (GroupId === undefined) {
     throw new Error(`Invalid response from AWS.`);
   }
 
@@ -44,7 +44,7 @@ export async function createSecurityGroup({
     await ec2Client.send(
       new AuthorizeSecurityGroupIngressCommand({
         GroupId,
-        IpPermissions: ingressRules.map(toIpPermission),
+        IpPermissions: ingressRules.map(rule => toIpPermission(rule)),
       })
     );
   }
@@ -59,20 +59,19 @@ export async function createSecurityGroup({
 }
 
 function toIpPermission(rule: SecurityGroupIngressRule): IpPermission {
-  const sources = rule.sources.reduce<
-    Required<Pick<IpPermission, 'IpRanges' | 'UserIdGroupPairs'>>
-  >(
-    (acc, source) => {
-      'cidrIp' in source
-        ? acc.IpRanges.push({ CidrIp: source.cidrIp })
-        : acc.UserIdGroupPairs.push({ GroupId: source.securityGroupId });
-      return acc;
-    },
-    {
-      IpRanges: [],
-      UserIdGroupPairs: [],
-    }
-  );
+  const IpRanges = rule.sources
+    // eslint-disable-next-line unicorn/no-array-callback-reference -- breaks type guard
+    .filter(isIpRangeSource)
+    .map(source => ({ CidrIp: source.cidrIp }));
+  const UserIdGroupPairs = rule.sources
+    // eslint-disable-next-line unicorn/no-array-callback-reference -- breaks type guard
+    .filter(isSecurityGroupSource)
+    .map(source => ({ GroupId: source.securityGroupId }));
+
+  const sources = {
+    IpRanges,
+    UserIdGroupPairs,
+  };
 
   return {
     FromPort: rule?.ports?.from,
@@ -81,4 +80,16 @@ function toIpPermission(rule: SecurityGroupIngressRule): IpPermission {
     IpProtocol: rule.ipProtocol,
     ...sources,
   };
+}
+
+function isIpRangeSource(
+  source: SecurityGroupIngressRule['sources'][number]
+): source is { cidrIp: string } {
+  return 'cidrIp' in source;
+}
+
+function isSecurityGroupSource(
+  source: SecurityGroupIngressRule['sources'][number]
+): source is { securityGroupId: string } {
+  return 'securityGroupId' in source;
 }

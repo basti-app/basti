@@ -67,7 +67,7 @@ export async function createEc2Instance({
           ],
 
           UserData:
-            userData != null
+            userData !== undefined
               ? Buffer.from(userData).toString('base64')
               : undefined,
 
@@ -90,7 +90,7 @@ export async function createEc2Instance({
       shouldRetry: isInstanceProfileNotFoundError,
     }
   );
-  if (Instances == null || Instances.length === 0) {
+  if (Instances === undefined || Instances[0] === undefined) {
     throw new Error(`Invalid response from AWS.`);
   }
   const instance = parseEc2InstanceResponse(Instances[0]);

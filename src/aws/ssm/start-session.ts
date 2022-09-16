@@ -48,6 +48,6 @@ async function getSsmClientEndpoint(): Promise<string> {
   const { protocol, hostname, port, path } =
     await ssmClient.client.config.endpoint();
 
-  const portPart = port != null ? `:${port}` : '';
+  const portPart = port !== undefined ? `:${port}` : '';
   return `${protocol}://${hostname}${portPart}${path}`;
 }

@@ -8,7 +8,10 @@ import {
   BASTION_INSTANCE_ROLE_PATH,
   BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
 } from '../bastion/bastion.js';
-import { ManagedResourceTypes } from '../common/resource-type.js';
+import {
+  ManagedResourceType,
+  ManagedResourceTypes,
+} from '../common/resource-type.js';
 import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from '../target/target-input.js';
 import { CLEANUP_ORDER, ManagedResources } from './managed-resources.js';
 
@@ -58,43 +61,40 @@ export async function getResourcesToCleanup({
 }
 
 async function getAccessSecurityGroups(): Promise<string[]> {
-  return (
-    await getSecurityGroups({
-      names: [`${TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX}*`],
-    })
-  ).map(securityGroup => securityGroup.id);
+  const securityGroups = await getSecurityGroups({
+    names: [`${TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX}*`],
+  });
+  return securityGroups.map(securityGroup => securityGroup.id);
 }
 
 async function getBastionSecurityGroups(): Promise<string[]> {
-  return (
-    await getSecurityGroups({
-      names: [`${BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX}*`],
-    })
-  ).map(securityGroup => securityGroup.id);
+  const securityGroups = await getSecurityGroups({
+    names: [`${BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX}*`],
+  });
+  return securityGroups.map(securityGroup => securityGroup.id);
 }
 
 async function getBastionInstances(): Promise<string[]> {
-  return (
-    await getEc2Instances({
-      tags: [
-        {
-          key: BASTION_INSTANCE_ID_TAG_NAME,
-          value: '*',
-        },
-      ],
-      states: ['pending', 'running', 'stopping', 'stopped'],
-    })
-  ).map(instance => instance.id);
+  const bastionInstances = await getEc2Instances({
+    tags: [
+      {
+        key: BASTION_INSTANCE_ID_TAG_NAME,
+        value: '*',
+      },
+    ],
+    states: ['pending', 'running', 'stopping', 'stopped'],
+  });
+  return bastionInstances.map(instance => instance.id);
 }
 
 async function getBastionRoles(): Promise<string[]> {
-  return (await getIamRoles({ path: BASTION_INSTANCE_ROLE_PATH })).map(
-    role => role.name
-  );
+  const iamRoles = await getIamRoles({ path: BASTION_INSTANCE_ROLE_PATH });
+  return iamRoles.map(role => role.name);
 }
 
 async function getBastionInstanceProfiles(): Promise<string[]> {
-  return (
-    await getInstanceProfiles({ path: BASTION_INSTANCE_PROFILE_PATH })
-  ).map(profile => profile.name);
+  const instanceProfiles = await getInstanceProfiles({
+    path: BASTION_INSTANCE_PROFILE_PATH,
+  });
+  return instanceProfiles.map(profile => profile.name);
 }

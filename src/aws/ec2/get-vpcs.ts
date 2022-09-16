@@ -14,7 +14,7 @@ export async function getVpcs(): Promise<AwsVpc[]> {
     throw new Error(`Invalid response from AWS.`);
   }
 
-  return Vpcs.map(parseVpcResponse);
+  return Vpcs.map(vpc => parseVpcResponse(vpc));
 }
 
 export async function getVpc({
@@ -28,5 +28,5 @@ export async function getVpc({
     throw new Error(`Invalid response from AWS.`);
   }
 
-  return Vpcs.map(parseVpcResponse)[0];
+  return Vpcs.map(vpc => parseVpcResponse(vpc))[0];
 }

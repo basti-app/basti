@@ -1,5 +1,5 @@
-import * as cp from 'child_process';
-import * as readline from 'readline';
+import * as cp from 'node:child_process';
+import * as readline from 'node:readline';
 
 export class OutputOptimizedChildProcess {
   readonly process: cp.ChildProcessWithoutNullStreams;

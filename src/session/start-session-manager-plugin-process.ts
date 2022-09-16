@@ -91,11 +91,9 @@ function spawnPluginProcess(
 }
 
 function parseProcessError(error: NodeJS.ErrnoException): Error {
-  if (error.code === 'ENOENT') {
-    return new SessionManagerPluginNonInstalledError();
-  } else {
-    return error;
-  }
+  return error.code === 'ENOENT'
+    ? new SessionManagerPluginNonInstalledError()
+    : error;
 }
 
 function isPortOpened(line: string): boolean {

@@ -82,7 +82,7 @@ async function getBastionImageId(hooks?: CreateBastionHooks): Promise<string> {
     const bastionImageId = await getStringSsmParameter({
       name: parameterName,
     });
-    if (bastionImageId == null) {
+    if (bastionImageId === undefined) {
       throw new Error(
         `Bastion image ID not found in SSM parameter ${parameterName}`
       );

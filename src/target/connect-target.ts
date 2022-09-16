@@ -31,6 +31,7 @@ export abstract class ConnectTargetBase implements ConnectTarget {
 
     const sourceSecurityGroupIds = accessSecurityGroup.ingressRules
       .flatMap(rule => rule.sources)
+      // eslint-disable-next-line unicorn/no-array-callback-reference -- breaks type guard usage
       .filter(isGroupSecurityGroupSource)
       .map(source => source.securityGroupId);
 
@@ -41,9 +42,9 @@ export abstract class ConnectTargetBase implements ConnectTarget {
     const bastionId = sourceSecurityGroups
       .map(group => group.name)
       .find(name => name.startsWith(BASTION_INSTANCE_NAME_PREFIX))
-      ?.substring(BASTION_INSTANCE_NAME_PREFIX.length + 1); // Prefix and ID are separated with a dash.
+      ?.slice(Math.max(0, BASTION_INSTANCE_NAME_PREFIX.length + 1)); // Prefix and ID are separated with a dash.
 
-    if (bastionId == null) {
+    if (bastionId === undefined) {
       throw new ResourceDamagedError(
         ManagedResourceTypes.ACCESS_SECURITY_GROUP,
         accessSecurityGroup.id,

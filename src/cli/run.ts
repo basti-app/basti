@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { handleCleanup } from './commands/cleanup/cleanup.js';
@@ -45,11 +45,11 @@ void yargs(hideBin(process.argv))
     withErrorHandling(
       async ({ rdsInstance, rdsCluster, customTargetVpc, bastionSubnet }) => {
         const target =
-          rdsInstance != null
+          rdsInstance !== undefined
             ? { rdsInstanceId: rdsInstance }
-            : rdsCluster != null
+            : rdsCluster !== undefined
             ? { rdsClusterId: rdsCluster }
-            : customTargetVpc != null
+            : customTargetVpc !== undefined
             ? { customTargetVpcId: customTargetVpc }
             : undefined;
         await handleInit({ target, bastionSubnet });
@@ -110,13 +110,13 @@ void yargs(hideBin(process.argv))
         localPort,
       }) => {
         const target =
-          rdsInstance != null
+          rdsInstance !== undefined
             ? { rdsInstanceId: rdsInstance }
-            : rdsCluster != null
+            : rdsCluster !== undefined
             ? { rdsClusterId: rdsCluster }
-            : customTargetVpc != null &&
-              customTargetHost != null &&
-              customTargetPort != null
+            : customTargetVpc !== undefined &&
+              customTargetHost !== undefined &&
+              customTargetPort !== undefined
             ? {
                 customTargetVpcId: customTargetVpc,
                 customTargetHost,

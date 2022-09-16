@@ -5,7 +5,7 @@ export function conflictingOptions(
 ): YargsCheck {
   return args => {
     const presentArgumentGroups = options
-      .map(toOptionGroup)
+      .map(option => toOptionGroup(option))
       .filter(group => isOptionGroupInArgs(group, args));
 
     if (presentArgumentGroups.length > 1) {

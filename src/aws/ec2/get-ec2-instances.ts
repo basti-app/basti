@@ -21,9 +21,9 @@ export async function getEc2Instances({
   tags,
 }: GetEc2InstancesInput): Promise<AwsEc2Instance[]> {
   const filters: Filter[] = [
-    ...(vpcId != null ? [getVpcIdFilter(vpcId)] : []),
-    ...(states != null ? [getStateFilter(states)] : []),
-    ...(tags != null ? tags.map(getTagFilter) : []),
+    ...(vpcId !== undefined ? [getVpcIdFilter(vpcId)] : []),
+    ...(states !== undefined ? [getStateFilter(states)] : []),
+    ...(tags !== undefined ? tags.map(tag => getTagFilter(tag)) : []),
   ];
   const { Reservations } = await ec2Client.send(
     new DescribeInstancesCommand({
@@ -36,7 +36,7 @@ export async function getEc2Instances({
   }
 
   return Reservations.flatMap(reservation => reservation.Instances ?? []).map(
-    parseEc2InstanceResponse
+    instance => parseEc2InstanceResponse(instance)
   );
 }
 

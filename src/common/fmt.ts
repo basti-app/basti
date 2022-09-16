@@ -6,7 +6,7 @@ export class Fmt {
   }
 
   resourceName({ id, name }: { id: string; name?: string }): string {
-    return name != null ? `${id} - ${name}` : id;
+    return name !== undefined ? `${id} - ${name}` : id;
   }
 
   list(items: string[], indent: number = 0): string {

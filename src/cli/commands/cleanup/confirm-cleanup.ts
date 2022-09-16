@@ -56,6 +56,6 @@ function printResources(resources: ManagedResources): void {
 
   CLEANUP_ORDER.filter(group => resources[group].length > 0).forEach(group => {
     cli.out(`${RESOURCE_GROUP_TITLES[group]}`);
-    subCli.out(fmt.list(resources[group].map(fmt.value)));
+    subCli.out(fmt.list(resources[group].map(resource => fmt.value(resource))));
   });
 }

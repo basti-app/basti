@@ -11,7 +11,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "check:types": "tsc --noEmit --skipLibCheck"
+    "check:types": "tsc --noEmit --skipLibCheck",
+    "check:style": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -34,6 +35,7 @@
     "eslint-plugin-n": "^15.2.5",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-promise": "^6.0.1",
+    "eslint-plugin-unicorn": "^43.0.2",
     "prettier": "^2.7.1",
     "ts-node": "^10.8.1",
     "typescript": "^4.8.3"

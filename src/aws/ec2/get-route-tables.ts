@@ -9,7 +9,7 @@ export interface GetRoutingTableInput {
 
 export async function getRouteTable({
   subnetId,
-}: GetRoutingTableInput): Promise<AwsRouteTable> {
+}: GetRoutingTableInput): Promise<AwsRouteTable | undefined> {
   const { RouteTables } = await ec2Client.send(
     new DescribeRouteTablesCommand({
       Filters: [{ Name: 'association.subnet-id', Values: [subnetId] }],
@@ -20,5 +20,5 @@ export async function getRouteTable({
     throw new Error(`Invalid response from AWS.`);
   }
 
-  return RouteTables.map(parseRouteTableResponse)[0];
+  return RouteTables.map(table => parseRouteTableResponse(table))[0];
 }

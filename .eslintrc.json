@@ -3,7 +3,11 @@
     "es2021": true,
     "node": true
   },
-  "extends": ["standard-with-typescript", "plugin:prettier/recommended"],
+  "extends": [
+    "standard-with-typescript",
+    "plugin:unicorn/recommended",
+    "plugin:prettier/recommended"
+  ],
   "overrides": [],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -11,9 +15,10 @@
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
-  "plugins": ["prettier"],
+  "plugins": ["prettier", "unicorn"],
   "rules": {
-    "prettier/prettier": "error",
+    "no-ex-assign": "off",
+
     "@typescript-eslint/strict-boolean-expressions": [
       "error",
       { "allowNullableObject": true }
@@ -23,6 +28,12 @@
       "error",
       { "ignoreDeclarationMerge": true }
     ],
-    "no-ex-assign": "off"
+
+    "unicorn/prevent-abbreviations": "off",
+    // Waiting for https://lightrun.com/answers/sindresorhus-eslint-plugin-unicorn-no-array-callback-reference-rule-is-not-compatible-with-typescript-type-guards
+    // to be resolved
+    // "unicorn/no-array-callback-reference": "off",
+    "unicorn/prefer-spread": "off",
+    "unicorn/no-array-for-each": "off"
   }
 }

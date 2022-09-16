@@ -24,7 +24,7 @@ export async function getSubnets({
     throw new Error(`Invalid response from AWS.`);
   }
 
-  return Subnets.map(parseSubnetResponse);
+  return Subnets.map(subnet => parseSubnetResponse(subnet));
 }
 
 export async function getSubnet({
@@ -38,5 +38,5 @@ export async function getSubnet({
     throw new Error(`Invalid response from AWS.`);
   }
 
-  return Subnets.map(parseSubnetResponse)[0];
+  return Subnets.map(subnet => parseSubnetResponse(subnet))[0];
 }

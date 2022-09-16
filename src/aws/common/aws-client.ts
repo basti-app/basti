@@ -24,7 +24,7 @@ export class AwsClient<T extends Client> {
   }
 
   send: T['send'] = async (...args) =>
-    this.errorHandler != null
+    this.errorHandler !== undefined
       ? await this.errorHandler(async () => await this.client.send(...args))
       : await this.client.send(...args);
 }

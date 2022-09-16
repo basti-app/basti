@@ -17,7 +17,7 @@ export async function getDbClusters(): Promise<AwsDbCluster[]> {
     throw new Error(`Invalid response from AWS.`);
   }
 
-  return DBClusters.map(parseDbClusterResponse);
+  return DBClusters.map(cluster => parseDbClusterResponse(cluster));
 }
 
 export async function getDbCluster({
@@ -32,7 +32,7 @@ export async function getDbCluster({
       throw new Error(`Invalid response from AWS.`);
     }
 
-    return DBClusters.map(parseDbClusterResponse)[0];
+    return DBClusters.map(cluster => parseDbClusterResponse(cluster))[0];
   } catch (error) {
     if (error instanceof AwsNotFoundError) {
       return undefined;

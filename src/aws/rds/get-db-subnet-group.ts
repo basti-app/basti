@@ -22,7 +22,7 @@ export async function getDbSubnetGroup({
       throw new Error(`Invalid response from AWS.`);
     }
 
-    return DBSubnetGroups.map(parseDbSubnetGroup)[0];
+    return DBSubnetGroups.map(group => parseDbSubnetGroup(group))[0];
   } catch (error) {
     if (error instanceof AwsNotFoundError) {
       return undefined;

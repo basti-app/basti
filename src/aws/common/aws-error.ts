@@ -6,7 +6,7 @@ export class AwsAccessDeniedError extends AwsError {
   constructor(public readonly iamMessage?: string) {
     super(
       'User is not allowed to perform the operation' +
-        (iamMessage == null ? '' : `. ${iamMessage}`)
+        (iamMessage === undefined ? '' : `. ${iamMessage}`)
     );
   }
 }

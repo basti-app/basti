@@ -55,22 +55,22 @@ async function getTargets(): Promise<{
 }
 
 function toInstanceChoices(instances: AwsDbInstance[]): DistinctChoice[] {
-  if (!instances.length) {
+  if (instances.length === 0) {
     return [];
   }
   return [
     new inquirer.Separator('Database instances:'),
-    ...instances.map(toInstanceChoice),
+    ...instances.map(instance => toInstanceChoice(instance)),
   ];
 }
 
 function toClusterChoices(clusters: AwsDbCluster[]): DistinctChoice[] {
-  if (!clusters.length) {
+  if (clusters.length === 0) {
     return [];
   }
   return [
     new inquirer.Separator('Database clusters:'),
-    ...clusters.map(toClusterChoice),
+    ...clusters.map(cluster => toClusterChoice(cluster)),
   ];
 }
 

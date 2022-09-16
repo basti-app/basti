@@ -5,7 +5,9 @@ export class RuntimeError extends Error {
   public readonly cause?: unknown;
 
   constructor(message: string, cause?: unknown) {
-    super(cause != null ? `${message}. ${getErrorMessage(cause)}` : message);
+    super(
+      cause !== undefined ? `${message}. ${getErrorMessage(cause)}` : message
+    );
 
     this.cause = cause;
   }

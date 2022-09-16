@@ -30,12 +30,12 @@ export async function getBastion({
     vpcId,
   });
 
-  if (instance == null) {
+  if (instance === undefined) {
     return;
   }
 
   const id = instance.tags[BASTION_INSTANCE_ID_TAG_NAME];
-  if (id == null) {
+  if (id === undefined) {
     throw new UnexpectedStateError(
       new ResourceDamagedError(
         ManagedResourceTypes.BASTION_INSTANCE,

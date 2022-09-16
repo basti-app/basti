@@ -33,7 +33,7 @@ async function cleanupDbInstanceReferences(
   const dbInstancesWithReferences = dbInstances.filter(instance =>
     arrayContains(instance.securityGroupIds, securityGroupIds)
   );
-  if (!dbInstancesWithReferences.length) {
+  if (dbInstancesWithReferences.length === 0) {
     return;
   }
 
@@ -56,7 +56,7 @@ async function cleanupDbClusterReferences(
   const dbClustersWithReferences = dbClusters.filter(cluster =>
     arrayContains(cluster.securityGroupIds, securityGroupsIds)
   );
-  if (!dbClustersWithReferences.length) {
+  if (dbClustersWithReferences.length === 0) {
     return;
   }
 

@@ -16,7 +16,7 @@ import { handleOperation } from '../common/handle-operation.js';
 
 const IP_REGEX = /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/;
 const DOMAIN_NAME_REGEX =
-  /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/;
+  /^(?:[\da-z](?:[\da-z-]{0,61}[\da-z])?\.)+[\da-z][\da-z-]{0,61}[\da-z]$/;
 
 export type DehydratedConnectTargetInput =
   | DehydratedAwsTargetInput
@@ -76,7 +76,7 @@ async function promptForCustomTarget(): Promise<CustomConnectTargetInput> {
 
 function validateHost(input: unknown): boolean | string {
   if (
-    input == null ||
+    input === undefined ||
     typeof input !== 'string' ||
     (!IP_REGEX.test(input) && !DOMAIN_NAME_REGEX.test(input))
   ) {

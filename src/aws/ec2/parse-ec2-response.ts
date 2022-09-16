@@ -97,7 +97,7 @@ export const parseSecurityGroupResponse: (
     ingressRules: response.IpPermissions.map(permission => ({
       ipProtocol: permission.IpProtocol,
       ports:
-        permission.FromPort != null && permission.ToPort != null
+        permission.FromPort !== undefined && permission.ToPort !== undefined
           ? {
               from: permission.FromPort,
               to: permission.ToPort,

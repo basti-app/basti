@@ -14,7 +14,7 @@ export async function selectPort(message: string): Promise<number> {
 function validatePort(input: unknown): boolean | string {
   const inputNumber = Number(input);
 
-  if (isNaN(inputNumber) || inputNumber < 1 || inputNumber > 65535) {
+  if (Number.isNaN(inputNumber) || inputNumber < 1 || inputNumber > 65_535) {
     return 'Invalid port number';
   }
 

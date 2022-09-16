@@ -16,7 +16,7 @@ export async function getSecurityGroups({
   tags,
   names,
 }: GetSecurityGroupsInput): Promise<AwsSecurityGroup[]> {
-  if (securityGroupIds && !securityGroupIds.length) {
+  if (securityGroupIds?.length === 0) {
     return [];
   }
 
@@ -24,7 +24,7 @@ export async function getSecurityGroups({
     new DescribeSecurityGroupsCommand({
       GroupIds: securityGroupIds,
       Filters: [
-        ...(tags ? tags.map(getTagFilter) : []),
+        ...(tags ? tags.map(tag => getTagFilter(tag)) : []),
         ...(names ? [getNamesFilter(names)] : []),
       ],
     })
@@ -34,7 +34,7 @@ export async function getSecurityGroups({
     throw new Error(`Invalid response from AWS.`);
   }
 
-  return SecurityGroups.map(parseSecurityGroupResponse);
+  return SecurityGroups.map(group => parseSecurityGroupResponse(group));
 }
 
 function getNamesFilter(names: string[]): Filter {
