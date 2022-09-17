@@ -1,7 +1,7 @@
-import inquirer from 'inquirer';
+import { cli } from '../../../common/cli.js';
 
 export async function selectPort(message: string): Promise<number> {
-  const { localPort } = await inquirer.prompt({
+  const { localPort } = await cli.prompt({
     type: 'input',
     name: 'localPort',
     message,

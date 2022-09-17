@@ -17,7 +17,7 @@ export async function promptForAwsTarget(): Promise<
 > {
   const { instances, clusters } = await getTargets();
 
-  const { target } = await inquirer.prompt({
+  const { target } = await cli.prompt({
     type: 'list',
     name: 'target',
     message: 'Select target to connect to',

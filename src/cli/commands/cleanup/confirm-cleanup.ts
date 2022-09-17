@@ -1,4 +1,3 @@
-import inquirer from 'inquirer';
 import {
   CLEANUP_ORDER,
   ManagedResources,
@@ -35,7 +34,7 @@ export async function confirmCleanup({
 
   printResources(resources);
 
-  const { confirm } = await inquirer.prompt({
+  const { confirm } = await cli.prompt({
     type: 'confirm',
     name: 'confirm',
     message: 'Proceed to cleanup?',

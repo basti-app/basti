@@ -1,3 +1,4 @@
+import inquirer from 'inquirer';
 import ora, { Ora } from 'ora';
 import { fmt } from './fmt.js';
 
@@ -17,9 +18,9 @@ export type CliInput = Omit<
   'spinner' | 'context' | 'onContextChange'
 >;
 
-const NEW_LINE_REGEX = /(\r\n|\r|\n)/g;
-
 export class Cli {
+  private static readonly NEW_LINE_REGEXP = /(\r\n|\r|\n)/g;
+
   private readonly indent: number;
   private readonly spinner: Ora;
 
@@ -63,25 +64,25 @@ export class Cli {
   info(text: string, symbol: string = fmt.blue('ⓘ')): void {
     this.enterContext('info');
 
-    this.out(`${symbol} ${text}`);
+    this.print(`${symbol} ${text}`);
   }
 
   success(text: string): void {
     this.enterContext('success');
 
-    this.out(`${fmt.green('✔')} ${text}`);
+    this.print(`${fmt.green('✔')} ${text}`);
   }
 
   warn(text: string): void {
     this.enterContext('warn');
 
-    this.out(fmt.yellow(`⚠ ${text}`));
+    this.print(fmt.yellow(`⚠ ${text}`));
   }
 
   error(text: string): void {
     this.enterContext('error');
 
-    this.out(fmt.red(`❌ ${text}`));
+    this.print(fmt.red(`❌ ${text}`));
   }
 
   progressStart(text: string): void {
@@ -100,6 +101,9 @@ export class Cli {
   }
 
   progressSuccess(text?: string, symbol?: string): void {
+    if (this.context !== 'progress') {
+      return;
+    }
     this.changeContext('none');
 
     symbol !== undefined
@@ -108,12 +112,18 @@ export class Cli {
   }
 
   progressFailure(text?: string): void {
+    if (this.context !== 'progress') {
+      return;
+    }
     this.changeContext('none');
 
     this.spinner.fail(text);
   }
 
   progressWarn(input?: { text?: string; warnText: string }): void {
+    if (this.context !== 'progress') {
+      return;
+    }
     this.changeContext('none');
 
     const currentText = this.spinner.text;
@@ -124,6 +134,13 @@ export class Cli {
       symbol: fmt.yellow('⚠'),
       text,
     });
+  }
+
+  prompt<T extends inquirer.Answers>(
+    ...params: Parameters<typeof inquirer.prompt<T>>
+  ): ReturnType<typeof inquirer.prompt<T>> {
+    this.changeContext('none');
+    return inquirer.prompt(...params);
   }
 
   private print(text: string): void {
@@ -142,7 +159,10 @@ export class Cli {
   private indentText(text: string): string {
     return (
       this.getIndentStr() +
-      text.replace(NEW_LINE_REGEX, newLine => newLine + this.getIndentStr())
+      text.replace(
+        Cli.NEW_LINE_REGEXP,
+        newLine => newLine + this.getIndentStr()
+      )
     );
   }
 

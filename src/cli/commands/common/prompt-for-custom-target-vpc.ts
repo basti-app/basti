@@ -1,5 +1,5 @@
-import inquirer from 'inquirer';
 import { getVpcs } from '../../../aws/ec2/get-vpcs.js';
+import { cli } from '../../../common/cli.js';
 import { fmt } from '../../../common/fmt.js';
 import { EarlyExitError } from '../../error/early-exit-error.js';
 import { handleOperation } from './handle-operation.js';
@@ -14,7 +14,7 @@ export async function promptForCustomTargetVpc(): Promise<string> {
     throw new EarlyExitError(`No VPCs found in your account`);
   }
 
-  const { vpcId } = await inquirer.prompt({
+  const { vpcId } = await cli.prompt({
     type: 'list',
     name: 'vpcId',
     message: 'Select target VPC',

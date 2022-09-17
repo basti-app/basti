@@ -94,7 +94,7 @@ function toCleanupError(
       detailProvider(
         AwsDependencyViolationError,
         () =>
-          'Other resources depend on the resource. This might happen if the Basti-managed resource has been used outside of Basti or due to previous cleanup steps failures. Please, try again after manually removing the unexpected dependencies'
+          'Other resources depend on the resource. This might happen if the Basti-managed resource has been used outside of Basti or due to previous cleanup step failures. Please, try again after manually removing the unexpected dependencies'
       ),
     ],
   });

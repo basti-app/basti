@@ -1,5 +1,5 @@
-import inquirer from 'inquirer';
 import { getSubnets } from '../../../aws/ec2/get-subnets.js';
+import { cli } from '../../../common/cli.js';
 import { fmt } from '../../../common/fmt.js';
 import { EarlyExitError } from '../../error/early-exit-error.js';
 import { handleOperation } from '../common/handle-operation.js';
@@ -28,7 +28,7 @@ async function promptForBastionSubnetId(vpcId: string): Promise<string> {
     );
   }
 
-  const { subnet } = await inquirer.prompt({
+  const { subnet } = await cli.prompt({
     type: 'list',
     name: 'subnet',
     message: 'Select public subnet for the bastion',

@@ -1,4 +1,3 @@
-import inquirer from 'inquirer';
 import { ConnectTarget } from '../../../target/connect-target.js';
 import { createConnectTarget } from '../../../target/create-connect-target.js';
 import {
@@ -13,6 +12,7 @@ import {
   hydrateAwsTarget,
 } from '../common/hydrate-aws-target.js';
 import { handleOperation } from '../common/handle-operation.js';
+import { cli } from '../../../common/cli.js';
 
 const IP_REGEX = /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/;
 const DOMAIN_NAME_REGEX =
@@ -62,7 +62,7 @@ async function promptForTarget(): Promise<ConnectTargetInput> {
 async function promptForCustomTarget(): Promise<CustomConnectTargetInput> {
   const vpcId = await promptForCustomTargetVpc();
 
-  const { host } = await inquirer.prompt({
+  const { host } = await cli.prompt({
     type: 'input',
     name: 'host',
     message: 'Target host name / IP address',
