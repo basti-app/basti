@@ -1,20 +1,20 @@
 import {
   AwsAccessDeniedError,
   AwsDependencyViolationError,
-} from '../../aws/common/aws-error.js';
-import { AwsTimeoutError } from '../../aws/common/waiter-error.js';
-import { getErrorMessage } from '../../common/get-error-message.js';
+} from '~/aws/common/aws-error.js';
+import { AwsTimeoutError } from '~/aws/common/waiter-error.js';
+import { getErrorMessage } from '~/common/get-error-message.js';
 import {
   ManagedResourceTypes,
   ResourceType,
   TargetTypes,
-} from '../../common/resource-type.js';
+} from '~/common/resource-type.js';
 import {
   ResourceDamagedError,
   ResourceNotFoundError,
   RuntimeError,
   UnexpectedStateError,
-} from '../../common/runtime-error.js';
+} from '~/common/runtime-error.js';
 
 type Constructor<T> = new (...args: any) => T;
 

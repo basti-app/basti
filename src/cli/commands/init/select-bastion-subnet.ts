@@ -1,6 +1,6 @@
-import { getSubnets } from '../../../aws/ec2/get-subnets.js';
-import { cli } from '../../../common/cli.js';
-import { fmt } from '../../../common/fmt.js';
+import { getSubnets } from '~/aws/ec2/get-subnets.js';
+import { cli } from '~/common/cli.js';
+import { fmt } from '~/common/fmt.js';
 import { EarlyExitError } from '../../error/early-exit-error.js';
 import { handleOperation } from '../common/handle-operation.js';
 

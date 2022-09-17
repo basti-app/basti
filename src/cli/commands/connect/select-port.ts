@@ -1,4 +1,4 @@
-import { cli } from '../../../common/cli.js';
+import { cli } from '~/common/cli.js';
 
 export async function selectPort(message: string): Promise<number> {
   const { localPort } = await cli.prompt({

@@ -1,13 +1,13 @@
-import { AwsDependencyViolationError } from '../../../aws/common/aws-error.js';
-import { AwsInvalidRdsStateError } from '../../../aws/rds/rds-client.js';
-import { cleanupManagedResources } from '../../../cleanup/cleanup-managed-resources.js';
-import { ManagedResources } from '../../../cleanup/managed-resources.js';
-import { cli } from '../../../common/cli.js';
-import { fmt } from '../../../common/fmt.js';
+import { AwsDependencyViolationError } from '~/aws/common/aws-error.js';
+import { AwsInvalidRdsStateError } from '~/aws/rds/rds-client.js';
+import { cleanupManagedResources } from '~/cleanup/cleanup-managed-resources.js';
+import { ManagedResources } from '~/cleanup/managed-resources.js';
+import { cli } from '~/common/cli.js';
+import { fmt } from '~/common/fmt.js';
 import {
   ManagedResourceType,
   ManagedResourceTypes,
-} from '../../../common/resource-type.js';
+} from '~/common/resource-type.js';
 import { detailProvider } from '../../error/get-error-detail.js';
 import { OperationError } from '../../error/operation-error.js';
 

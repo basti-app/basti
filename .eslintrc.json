@@ -5,7 +5,10 @@
   },
   "extends": [
     "standard-with-typescript",
+    "plugin:import/recommended",
+    "plugin:import/typescript",
     "plugin:unicorn/recommended",
+    // Make this the last element so prettier config overrides other formatting rules
     "plugin:prettier/recommended"
   ],
   "overrides": [],
@@ -15,7 +18,7 @@
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
-  "plugins": ["prettier", "unicorn"],
+  "plugins": ["prettier", "import", "unicorn"],
   "rules": {
     "no-ex-assign": "off",
 
@@ -32,5 +35,16 @@
     "unicorn/prevent-abbreviations": "off",
     "unicorn/prefer-spread": "off",
     "unicorn/no-array-for-each": "off"
+  },
+  "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts"]
+    },
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": "./tsconfig.json"
+      }
+    }
   }
 }

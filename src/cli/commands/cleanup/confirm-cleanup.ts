@@ -1,13 +1,13 @@
 import {
   CLEANUP_ORDER,
   ManagedResources,
-} from '../../../cleanup/managed-resources.js';
-import { cli } from '../../../common/cli.js';
-import { fmt } from '../../../common/fmt.js';
+} from '~/cleanup/managed-resources.js';
+import { cli } from '~/common/cli.js';
+import { fmt } from '~/common/fmt.js';
 import {
   ManagedResourceType,
   ManagedResourceTypes,
-} from '../../../common/resource-type.js';
+} from '~/common/resource-type.js';
 import { EarlyExitError } from '../../error/early-exit-error.js';
 
 export interface ConfirmCleanupInput {

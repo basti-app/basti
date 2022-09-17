@@ -1,5 +1,5 @@
-import { cli } from '../../../common/cli.js';
-import { fmt } from '../../../common/fmt.js';
+import { cli } from '~/common/cli.js';
+import { fmt } from '~/common/fmt.js';
 import { ErrorMessageProvider } from '../../error/get-error-detail.js';
 import { OperationError } from '../../error/operation-error.js';
 
