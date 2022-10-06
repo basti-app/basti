@@ -1,3 +1,8 @@
+import {
+  ManagedResourceType,
+  ManagedResourceTypes,
+} from '../common/resource-type.js';
+
 import { bastionInstanceCleaner } from './bastion-instance-cleaner.js';
 import { bastionInstanceProfileCleaner } from './bastion-instance-profile-cleaner.js';
 import { bastionRoleCleaner } from './bastion-role-cleaner.js';
@@ -10,10 +15,6 @@ import {
   accessSecurityGroupReferencesCleaner,
   securityGroupCleaner,
 } from './security-group-cleaner.js';
-import {
-  ManagedResourceType,
-  ManagedResourceTypes,
-} from '../common/resource-type.js';
 
 interface CleanupManagedResourcesHooks {
   onPreparingToCleanup?: (resourceGroup: ManagedResourceType) => void;

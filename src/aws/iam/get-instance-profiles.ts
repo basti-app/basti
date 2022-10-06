@@ -2,6 +2,7 @@ import {
   GetInstanceProfileCommand,
   ListInstanceProfilesCommand,
 } from '@aws-sdk/client-iam';
+
 import { iamClient } from './iam-client.js';
 import { parseIamInstanceProfileResponse } from './parse-iam-response.js';
 import { AwsIamInstanceProfile } from './types.js';

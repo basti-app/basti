@@ -3,8 +3,10 @@ import {
   CreateRoleCommand,
   waitUntilRoleExists,
 } from '@aws-sdk/client-iam';
+
 import { COMMON_WAITER_CONFIG } from '../common/waiter-config.js';
 import { handleWaiterError } from '../common/waiter-error.js';
+
 import { iamClient } from './iam-client.js';
 import { parseRoleResponse } from './parse-iam-response.js';
 import { AwsRole } from './types.js';

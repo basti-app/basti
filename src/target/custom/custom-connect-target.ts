@@ -1,4 +1,5 @@
 import { getBastion } from '~/bastion/get-bastion.js';
+
 import { ConnectTarget, TargetNotInitializedError } from '../connect-target.js';
 
 export class CustomConnectTarget implements ConnectTarget {

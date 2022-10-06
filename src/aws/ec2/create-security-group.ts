@@ -4,8 +4,10 @@ import {
   IpPermission,
   waitUntilSecurityGroupExists,
 } from '@aws-sdk/client-ec2';
+
 import { COMMON_WAITER_CONFIG } from '../common/waiter-config.js';
 import { handleWaiterError } from '../common/waiter-error.js';
+
 import { ec2Client } from './ec2-client.js';
 import {
   AwsSecurityGroup,

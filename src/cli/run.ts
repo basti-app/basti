@@ -1,6 +1,8 @@
 import { readFileSync } from 'node:fs';
+
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+
 import { handleCleanup } from './commands/cleanup/cleanup.js';
 import { handleConnect } from './commands/connect/connect.js';
 import { handleInit } from './commands/init/init.js';

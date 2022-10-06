@@ -1,4 +1,5 @@
 import { SSMClient, SSMServiceException } from '@aws-sdk/client-ssm';
+
 import { AwsClient } from '../common/aws-client.js';
 import {
   AwsAccessDeniedError,

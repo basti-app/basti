@@ -1,4 +1,5 @@
 import { getBastion } from '~/bastion/get-bastion.js';
+
 import { InitTarget } from '../init-target.js';
 
 export class CustomInitTarget implements InitTarget {

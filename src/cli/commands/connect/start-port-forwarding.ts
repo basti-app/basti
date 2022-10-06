@@ -1,7 +1,6 @@
 import { AwsSsmInstanceNotConnectedError } from '~/aws/ssm/ssm-client.js';
 import { cli } from '~/common/cli.js';
 import { fmt } from '~/common/fmt.js';
-
 import { startPortForwardingSession } from '~/session/start-port-forwarding-session.js';
 import {
   SessionManagerPluginNonInstalledError,
@@ -9,6 +8,7 @@ import {
   SessionManagerPluginUnexpectedExitError,
 } from '~/session/start-session-manager-plugin-process.js';
 import { ConnectTarget } from '~/target/connect-target.js';
+
 import {
   detailProvider,
   getErrorDetail,

@@ -1,4 +1,5 @@
 import { DescribeVpcsCommand } from '@aws-sdk/client-ec2';
+
 import { ec2Client } from './ec2-client.js';
 import { parseVpcResponse } from './parse-ec2-response.js';
 import { AwsVpc } from './types/aws-vpc.js';

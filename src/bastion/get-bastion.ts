@@ -4,6 +4,7 @@ import {
   ResourceDamagedError,
   UnexpectedStateError,
 } from '../common/runtime-error.js';
+
 import {
   Bastion,
   BASTION_INSTANCE_ID_TAG_NAME,

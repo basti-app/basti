@@ -31,7 +31,28 @@
       "error",
       { "ignoreDeclarationMerge": true }
     ],
-
+    "import/order": [
+      "error",
+      {
+        "pathGroups": [
+          {
+            "pattern": "~/**",
+            "group": "internal"
+          }
+        ],
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index",
+          "object",
+          "type"
+        ],
+        "newlines-between": "always"
+      }
+    ],
     "unicorn/prevent-abbreviations": "off",
     "unicorn/prefer-spread": "off",
     "unicorn/no-array-for-each": "off"

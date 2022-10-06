@@ -4,15 +4,17 @@ import {
   ConnectTargetInput,
   CustomConnectTargetInput,
 } from '~/target/target-input.js';
+import { cli } from '~/common/cli.js';
+
 import { promptForCustomTargetVpc } from '../common/prompt-for-custom-target-vpc.js';
 import { promptForAwsTarget } from '../common/prompt-for-aws-target.js';
-import { selectPort } from './select-port.js';
 import {
   DehydratedAwsTargetInput,
   hydrateAwsTarget,
 } from '../common/hydrate-aws-target.js';
 import { handleOperation } from '../common/handle-operation.js';
-import { cli } from '~/common/cli.js';
+
+import { selectPort } from './select-port.js';
 
 const IP_REGEX = /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/;
 const DOMAIN_NAME_REGEX =

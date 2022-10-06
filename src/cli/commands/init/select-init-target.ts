@@ -4,6 +4,7 @@ import {
   InitTargetInput,
 } from '~/target/target-input.js';
 import { createInitTarget } from '~/target/create-init-target.js';
+
 import { promptForCustomTargetVpc } from '../common/prompt-for-custom-target-vpc.js';
 import { promptForAwsTarget } from '../common/prompt-for-aws-target.js';
 import { handleOperation } from '../common/handle-operation.js';

@@ -1,5 +1,6 @@
 import inquirer from 'inquirer';
 import ora, { Ora } from 'ora';
+
 import { fmt } from './fmt.js';
 
 type CliContext = 'info' | 'warn' | 'error' | 'progress' | 'success' | 'none';

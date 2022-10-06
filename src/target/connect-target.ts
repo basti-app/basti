@@ -6,6 +6,7 @@ import {
 import { BASTION_INSTANCE_NAME_PREFIX } from '../bastion/bastion.js';
 import { ManagedResourceTypes } from '../common/resource-type.js';
 import { ResourceDamagedError, RuntimeError } from '../common/runtime-error.js';
+
 import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from './target-input.js';
 
 export interface ConnectTarget {

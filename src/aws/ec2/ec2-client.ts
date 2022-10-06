@@ -1,4 +1,5 @@
 import { EC2Client, EC2ServiceException } from '@aws-sdk/client-ec2';
+
 import { AwsClient } from '../common/aws-client.js';
 import {
   AwsAccessDeniedError,

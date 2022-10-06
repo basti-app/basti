@@ -3,6 +3,7 @@ import { Bastion } from '~/bastion/bastion.js';
 import * as bastionOps from '~/bastion/create-bastion.js';
 import { cli } from '~/common/cli.js';
 import { fmt } from '~/common/fmt.js';
+
 import { detailProvider } from '../../error/get-error-detail.js';
 import { OperationError } from '../../error/operation-error.js';
 

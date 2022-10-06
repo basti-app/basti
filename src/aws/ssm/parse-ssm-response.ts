@@ -1,5 +1,6 @@
 import { Parameter, StartSessionResponse } from '@aws-sdk/client-ssm';
 import { z } from 'zod';
+
 import { AwsSsmParameter, AwsSsmParameterType } from './types.js';
 
 const ParameterTypeParser = z.enum(['String', 'SecureString', 'StringList']);

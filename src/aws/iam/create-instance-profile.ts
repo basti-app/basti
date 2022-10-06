@@ -3,8 +3,10 @@ import {
   CreateInstanceProfileCommand,
   waitUntilInstanceProfileExists,
 } from '@aws-sdk/client-iam';
+
 import { COMMON_WAITER_CONFIG } from '../common/waiter-config.js';
 import { handleWaiterError } from '../common/waiter-error.js';
+
 import { iamClient } from './iam-client.js';
 import { parseIamInstanceProfileResponse } from './parse-iam-response.js';
 import { AwsIamInstanceProfile } from './types.js';

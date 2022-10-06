@@ -7,6 +7,7 @@ import { AwsRole } from '../aws/iam/types.js';
 import { getStringSsmParameter } from '../aws/ssm/get-ssm-parameter.js';
 import { RuntimeError } from '../common/runtime-error.js';
 import { generateShortId } from '../common/short-id.js';
+
 import { BASTION_INSTANCE_CLOUD_INIT } from './bastion-cloudinit.js';
 import {
   Bastion,

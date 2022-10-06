@@ -1,5 +1,7 @@
 import { DescribeDBInstancesCommand } from '@aws-sdk/client-rds';
+
 import { AwsNotFoundError } from '../common/aws-error.js';
+
 import { parseDbInstanceResponse } from './parse-rds-response.js';
 import { rdsClient } from './rds-client.js';
 import { AwsDbInstance } from './rds-types.js';

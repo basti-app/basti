@@ -1,6 +1,7 @@
 import { Bastion } from '~/bastion/bastion.js';
 import * as bastionOps from '~/bastion/get-bastion.js';
 import { cli } from '~/common/cli.js';
+
 import { handleOperation } from '../common/handle-operation.js';
 
 export interface GetBastionInput {
