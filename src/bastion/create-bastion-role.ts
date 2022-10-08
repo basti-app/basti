@@ -33,35 +33,30 @@ export async function createBastionRoleInlinePolicies({
   await createIamInlinePolicy({
     roleName: bastionRoleName,
     policyName: 'session-manager-access',
-    policyDocument: getSessionManagerAccessPolicy(bastionInstanceId),
+    policyDocument: getSessionManagerAccessPolicy(),
   });
 
   await createIamInlinePolicy({
     roleName: bastionRoleName,
     policyName: 'ec2-instance-access',
-    policyDocument: getAwsInstanceAccessPolicy(bastionInstanceId),
+    policyDocument: getAwsInstanceAccessPolicy(),
   });
 }
 
-function getSessionManagerAccessPolicy(bastionInstanceId: string): string {
+function getSessionManagerAccessPolicy(): string {
+  // Based on https://docs.aws.amazon.com/systems-manager/latest/userguide/getting-started-create-iam-instance-profile.html
   return JSON.stringify({
     Version: '2012-10-17',
     Statement: [
       {
         Effect: 'Allow',
-        Action: ['ssm:UpdateInstanceInformation'],
-        Resource: `arn:aws:ec2:*:*:instance/${bastionInstanceId}`,
-      },
-      {
-        Effect: 'Allow',
         Action: [
+          'ssm:UpdateInstanceInformation',
           'ssmmessages:CreateControlChannel',
           'ssmmessages:CreateDataChannel',
           'ssmmessages:OpenControlChannel',
           'ssmmessages:OpenDataChannel',
         ],
-        // The actions don't support resource-level permissions
-        // https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonsessionmanagermessagegatewayservice.html
         Resource: '*',
       },
       {
@@ -73,14 +68,14 @@ function getSessionManagerAccessPolicy(bastionInstanceId: string): string {
   });
 }
 
-function getAwsInstanceAccessPolicy(bastionInstanceId: string): string {
+function getAwsInstanceAccessPolicy(): string {
   return JSON.stringify({
     Version: '2012-10-17',
     Statement: [
       {
         Effect: 'Allow',
         Action: ['ec2:DescribeInstances'],
-        Resource: `arn:aws:ec2:*:*:instance/${bastionInstanceId}`,
+        Resource: '*',
       },
     ],
   });
