@@ -2,9 +2,12 @@ import { createSecurityGroup } from '../aws/ec2/create-security-group.js';
 import { getSecurityGroups } from '../aws/ec2/get-security-groups.js';
 import { AwsSecurityGroup } from '../aws/ec2/types/aws-security-group.js';
 import { Bastion } from '../bastion/bastion.js';
-import { RuntimeError } from '../common/runtime-error.js';
 import { generateShortId } from '../common/short-id.js';
 
+import {
+  AccessSecurityGroupCreationError,
+  AccessSecurityGroupAttachmentError,
+} from './target-errors.js';
 import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from './target-input.js';
 
 interface InitTargetAllowAccessHooks {
@@ -108,17 +111,5 @@ export abstract class InitTargetBase implements InitTarget {
     } catch (error) {
       throw new AccessSecurityGroupAttachmentError(error);
     }
-  }
-}
-
-export class AccessSecurityGroupCreationError extends RuntimeError {
-  constructor(cause: unknown) {
-    super(`Can't create access security group`, cause);
-  }
-}
-
-export class AccessSecurityGroupAttachmentError extends RuntimeError {
-  constructor(cause: unknown) {
-    super(`Can't attach access security group to the target`, cause);
   }
 }

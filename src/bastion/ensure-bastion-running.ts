@@ -5,8 +5,9 @@ import {
   waitEc2InstanceIsRunning,
   waitEc2InstanceIsStopped,
 } from '../aws/ec2/wait-ec2-instance.js';
-import { RuntimeError, UnexpectedStateError } from '../common/runtime-error.js';
+import { UnexpectedStateError } from '../common/runtime-error.js';
 
+import { StartingInstanceError } from './bastion-errors.js';
 import { Bastion } from './bastion.js';
 
 interface EnsureBastionRunningHooks {
@@ -53,6 +54,7 @@ export async function ensureBastionRunning({
       throw new Error(`Unexpected instance state ${instance.state}`);
   }
 }
+
 async function startInstance(instance: AwsEc2Instance): Promise<void> {
   try {
     await startEc2Instance({ instanceId: instance.id });
@@ -61,14 +63,5 @@ async function startInstance(instance: AwsEc2Instance): Promise<void> {
       error = new UnexpectedStateError(error);
     }
     throw new StartingInstanceError(instance.id, error);
-  }
-}
-
-export class StartingInstanceError extends RuntimeError {
-  readonly instanceId: string;
-
-  constructor(instanceId: string, cause: unknown) {
-    super(`Can't start bastion instance "${instanceId}"`, cause);
-    this.instanceId = instanceId;
   }
 }

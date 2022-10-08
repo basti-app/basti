@@ -1,4 +1,10 @@
 import { AwsInstanceProfileNotFoundError } from '~/aws/ec2/ec2-errors.js';
+import {
+  BastionImageRetrievalError,
+  BastionRoleCreationError,
+  BastionSecurityGroupCreationError,
+  BastionInstanceCreationError,
+} from '~/bastion/bastion-errors.js';
 import { Bastion } from '~/bastion/bastion.js';
 import * as bastionOps from '~/bastion/create-bastion.js';
 import { cli } from '~/common/cli.js';
@@ -64,19 +70,19 @@ export async function createBastion({
       dirtyOperation: true,
       detailProviders: [
         detailProvider(
-          bastionOps.BastionImageRetrievalError,
+          BastionImageRetrievalError,
           () => "Can't retrieve EC2 AMI for bastion instance"
         ),
         detailProvider(
-          bastionOps.BastionRoleCreationError,
+          BastionRoleCreationError,
           () => "Can't create IAM role for bastion instance"
         ),
         detailProvider(
-          bastionOps.BastionSecurityGroupCreationError,
+          BastionSecurityGroupCreationError,
           () => "Can't create security group for bastion instance"
         ),
         detailProvider(
-          bastionOps.BastionInstanceCreationError,
+          BastionInstanceCreationError,
           () => "Can't create bastion EC2 instance"
         ),
         detailProvider(

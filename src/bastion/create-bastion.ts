@@ -5,10 +5,15 @@ import { AwsSecurityGroup } from '../aws/ec2/types/aws-security-group.js';
 import { createIamRole } from '../aws/iam/create-iam-role.js';
 import { AwsRole } from '../aws/iam/types.js';
 import { getStringSsmParameter } from '../aws/ssm/get-ssm-parameter.js';
-import { RuntimeError } from '../common/runtime-error.js';
 import { generateShortId } from '../common/short-id.js';
 
 import { BASTION_INSTANCE_CLOUD_INIT } from './bastion-cloudinit.js';
+import {
+  BastionImageRetrievalError,
+  BastionInstanceCreationError,
+  BastionRoleCreationError,
+  BastionSecurityGroupCreationError,
+} from './bastion-errors.js';
 import {
   Bastion,
   BASTION_INSTANCE_ID_TAG_NAME,
@@ -175,29 +180,5 @@ async function createBastionInstance(
     return bastionInstance;
   } catch (error) {
     throw new BastionInstanceCreationError(error);
-  }
-}
-
-export class BastionImageRetrievalError extends RuntimeError {
-  constructor(cause: unknown) {
-    super(`Can't get latest EC2 AMI for bastion instance`, cause);
-  }
-}
-
-export class BastionRoleCreationError extends RuntimeError {
-  constructor(cause: unknown) {
-    super(`Can't create IAM role for bastion instance`, cause);
-  }
-}
-
-export class BastionSecurityGroupCreationError extends RuntimeError {
-  constructor(cause: unknown) {
-    super(`Can't create security group for bastion instance`, cause);
-  }
-}
-
-export class BastionInstanceCreationError extends RuntimeError {
-  constructor(cause: unknown) {
-    super(`Can't create bastion EC2 instance`, cause);
   }
 }

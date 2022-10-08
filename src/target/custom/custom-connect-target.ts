@@ -1,6 +1,7 @@
 import { getBastion } from '~/bastion/get-bastion.js';
 
-import { ConnectTarget, TargetNotInitializedError } from '../connect-target.js';
+import { ConnectTarget } from '../connect-target.js';
+import { TargetNotInitializedError } from '../target-errors.js';
 
 export class CustomConnectTarget implements ConnectTarget {
   private readonly vpcId: string;

@@ -2,6 +2,7 @@ import * as bastionOps from '~/bastion/ensure-bastion-running.js';
 import { Bastion } from '~/bastion/bastion.js';
 import { cli } from '~/common/cli.js';
 import { AwsNoRootVolumeAttachedError } from '~/aws/ec2/ec2-errors.js';
+import { StartingInstanceError } from '~/bastion/bastion-errors.js';
 
 import { OperationError } from '../../error/operation-error.js';
 import { detailProvider } from '../../error/get-error-detail.js';
@@ -40,7 +41,7 @@ export async function ensureBastionRunning({
       error,
       detailProviders: [
         detailProvider(
-          bastionOps.StartingInstanceError,
+          StartingInstanceError,
           error => `Can't start bastion instance ${error.instanceId}`
         ),
         detailProvider(

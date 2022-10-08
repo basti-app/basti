@@ -5,8 +5,9 @@ import {
 } from '../aws/ec2/types/aws-security-group.js';
 import { BASTION_INSTANCE_NAME_PREFIX } from '../bastion/bastion.js';
 import { ManagedResourceTypes } from '../common/resource-type.js';
-import { ResourceDamagedError, RuntimeError } from '../common/runtime-error.js';
+import { ResourceDamagedError } from '../common/runtime-error.js';
 
+import { TargetNotInitializedError } from './target-errors.js';
 import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from './target-input.js';
 
 export interface ConnectTarget {
@@ -72,10 +73,4 @@ export abstract class ConnectTargetBase implements ConnectTarget {
   }
 
   protected abstract getSecurityGroupIds(): Promise<string[]>;
-}
-
-export class TargetNotInitializedError extends RuntimeError {
-  constructor() {
-    super('Target is not initialized');
-  }
 }

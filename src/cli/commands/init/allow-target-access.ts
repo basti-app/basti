@@ -2,11 +2,11 @@ import { AwsTooManySecurityGroupsAttachedError } from '~/aws/rds/rds-errors.js';
 import { Bastion } from '~/bastion/bastion.js';
 import { cli } from '~/common/cli.js';
 import { fmt } from '~/common/fmt.js';
+import { InitTarget } from '~/target/init-target.js';
 import {
-  AccessSecurityGroupAttachmentError,
   AccessSecurityGroupCreationError,
-  InitTarget,
-} from '~/target/init-target.js';
+  AccessSecurityGroupAttachmentError,
+} from '~/target/target-errors.js';
 
 import { detailProvider } from '../../error/get-error-detail.js';
 import { OperationError } from '../../error/operation-error.js';
