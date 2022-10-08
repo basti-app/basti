@@ -1,15 +1,15 @@
-import { AwsInstanceProfileNotFoundError } from '~/aws/ec2/ec2-errors.js';
+import { AwsInstanceProfileNotFoundError } from '#src/aws/ec2/ec2-errors.js';
 import {
   BastionImageRetrievalError,
   BastionRoleCreationError,
   BastionSecurityGroupCreationError,
   BastionInstanceCreationError,
   BastionInlinePoliciesCreationError,
-} from '~/bastion/bastion-errors.js';
-import { Bastion } from '~/bastion/bastion.js';
-import * as bastionOps from '~/bastion/create-bastion.js';
-import { cli } from '~/common/cli.js';
-import { fmt } from '~/common/fmt.js';
+} from '#src/bastion/bastion-errors.js';
+import { Bastion } from '#src/bastion/bastion.js';
+import * as bastionOps from '#src/bastion/create-bastion.js';
+import { cli } from '#src/common/cli.js';
+import { fmt } from '#src/common/fmt.js';
 
 import { detailProvider } from '../../error/get-error-detail.js';
 import { OperationError } from '../../error/operation-error.js';

@@ -1,11 +1,11 @@
-import * as cleanupOps from '~/cleanup/get-resources-to-cleanup.js';
-import { ManagedResources } from '~/cleanup/managed-resources.js';
-import { cli } from '~/common/cli.js';
-import { fmt } from '~/common/fmt.js';
+import * as cleanupOps from '#src/cleanup/get-resources-to-cleanup.js';
+import { ManagedResources } from '#src/cleanup/managed-resources.js';
+import { cli } from '#src/common/cli.js';
+import { fmt } from '#src/common/fmt.js';
 import {
   ManagedResourceType,
   ManagedResourceTypes,
-} from '~/common/resource-type.js';
+} from '#src/common/resource-type.js';
 
 import { getErrorDetail } from '../../error/get-error-detail.js';
 

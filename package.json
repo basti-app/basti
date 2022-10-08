@@ -7,11 +7,15 @@
     "node": ">=14.16"
   },
   "bin": {
-    "basti": "bin/dev.js"
+    "basti": "bin/run.js"
+  },
+  "imports": {
+    "#src/*.js": "./src/*.js"
   },
   "scripts": {
     "build": "tsc",
-    "check-types": "tsc --noEmit --skipLibCheck",
+    "build-watch": "tsc --watch",
+    "check-types": "tsc --noEmit",
     "check-style": "eslint src"
   },
   "repository": {
@@ -38,7 +42,6 @@
     "eslint-plugin-promise": "^6.0.1",
     "eslint-plugin-unicorn": "^43.0.2",
     "prettier": "^2.7.1",
-    "ts-node": "^10.8.1",
     "typescript": "^4.8.3"
   },
   "dependencies": {

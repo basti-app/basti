@@ -1,4 +1,4 @@
-import { AwsDbCluster } from '~/aws/rds/rds-types.js';
+import { AwsDbCluster } from '#src/aws/rds/rds-types.js';
 
 import { ConnectTargetBase } from '../connect-target.js';
 

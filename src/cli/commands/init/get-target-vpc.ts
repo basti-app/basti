@@ -1,4 +1,4 @@
-import { InitTarget } from '~/target/init-target.js';
+import { InitTarget } from '#src/target/init-target.js';
 
 import { handleOperation } from '../common/handle-operation.js';
 

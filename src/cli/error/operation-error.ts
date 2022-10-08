@@ -1,4 +1,4 @@
-import { fmt } from '~/common/fmt.js';
+import { fmt } from '#src/common/fmt.js';
 
 import { ErrorMessageProvider, getErrorDetail } from './get-error-detail.js';
 

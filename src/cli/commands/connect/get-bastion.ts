@@ -1,11 +1,11 @@
-import { Bastion } from '~/bastion/bastion.js';
-import * as bastionOps from '~/bastion/get-bastion.js';
-import { ManagedResourceTypes } from '~/common/resource-type.js';
+import { Bastion } from '#src/bastion/bastion.js';
+import * as bastionOps from '#src/bastion/get-bastion.js';
+import { ManagedResourceTypes } from '#src/common/resource-type.js';
 import {
   ResourceNotFoundError,
   UnexpectedStateError,
-} from '~/common/runtime-errors.js';
-import { ConnectTarget } from '~/target/connect-target.js';
+} from '#src/common/runtime-errors.js';
+import { ConnectTarget } from '#src/target/connect-target.js';
 
 import { OperationError } from '../../error/operation-error.js';
 import { handleOperation } from '../common/handle-operation.js';

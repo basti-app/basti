@@ -1,6 +1,6 @@
-import { getVpcs } from '~/aws/ec2/get-vpcs.js';
-import { cli } from '~/common/cli.js';
-import { fmt } from '~/common/fmt.js';
+import { getVpcs } from '#src/aws/ec2/get-vpcs.js';
+import { cli } from '#src/common/cli.js';
+import { fmt } from '#src/common/fmt.js';
 
 import { EarlyExitError } from '../../error/early-exit-error.js';
 

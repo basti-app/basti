@@ -1,5 +1,5 @@
-import { modifyDbInstance } from '~/aws/rds/modify-db-instance.js';
-import { AwsDbInstance } from '~/aws/rds/rds-types.js';
+import { modifyDbInstance } from '#src/aws/rds/modify-db-instance.js';
+import { AwsDbInstance } from '#src/aws/rds/rds-types.js';
 
 import { InitTargetBase } from '../init-target.js';
 

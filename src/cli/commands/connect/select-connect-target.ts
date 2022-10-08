@@ -1,10 +1,10 @@
-import { ConnectTarget } from '~/target/connect-target.js';
-import { createConnectTarget } from '~/target/create-connect-target.js';
+import { ConnectTarget } from '#src/target/connect-target.js';
+import { createConnectTarget } from '#src/target/create-connect-target.js';
 import {
   ConnectTargetInput,
   CustomConnectTargetInput,
-} from '~/target/target-input.js';
-import { cli } from '~/common/cli.js';
+} from '#src/target/target-input.js';
+import { cli } from '#src/common/cli.js';
 
 import { promptForCustomTargetVpc } from '../common/prompt-for-custom-target-vpc.js';
 import { promptForAwsTarget } from '../common/prompt-for-aws-target.js';

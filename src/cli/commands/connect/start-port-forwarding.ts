@@ -1,13 +1,13 @@
-import { AwsSsmInstanceNotConnectedError } from '~/aws/ssm/ssm-errors.js';
-import { cli } from '~/common/cli.js';
-import { fmt } from '~/common/fmt.js';
+import { AwsSsmInstanceNotConnectedError } from '#src/aws/ssm/ssm-errors.js';
+import { cli } from '#src/common/cli.js';
+import { fmt } from '#src/common/fmt.js';
 import {
   SessionManagerPluginUnexpectedExitError,
   SessionManagerPluginNonInstalledError,
   SessionManagerPluginPortInUseError,
-} from '~/session/session-errors.js';
-import { startPortForwardingSession } from '~/session/start-port-forwarding-session.js';
-import { ConnectTarget } from '~/target/connect-target.js';
+} from '#src/session/session-errors.js';
+import { startPortForwardingSession } from '#src/session/start-port-forwarding-session.js';
+import { ConnectTarget } from '#src/target/connect-target.js';
 
 import {
   detailProvider,

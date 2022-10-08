@@ -1,6 +1,6 @@
-import { createIamInlinePolicy } from '~/aws/iam/create-iam-inline-policy.js';
-import { createIamRole } from '~/aws/iam/create-iam-role.js';
-import { AwsRole } from '~/aws/iam/types.js';
+import { createIamInlinePolicy } from '#src/aws/iam/create-iam-inline-policy.js';
+import { createIamRole } from '#src/aws/iam/create-iam-role.js';
+import { AwsRole } from '#src/aws/iam/types.js';
 
 import {
   BASTION_INSTANCE_ROLE_NAME_PREFIX,

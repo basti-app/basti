@@ -1,6 +1,6 @@
-import { getDbCluster } from '~/aws/rds/get-db-clusters.js';
-import { getDbInstance } from '~/aws/rds/get-db-instances.js';
-import { TargetTypes } from '~/common/resource-type.js';
+import { getDbCluster } from '#src/aws/rds/get-db-clusters.js';
+import { getDbInstance } from '#src/aws/rds/get-db-instances.js';
+import { TargetTypes } from '#src/common/resource-type.js';
 
 import { orThrow } from './get-or-throw.js';
 import { AwsTargetInput } from './prompt-for-aws-target.js';

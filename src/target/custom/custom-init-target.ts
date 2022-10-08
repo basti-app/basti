@@ -1,4 +1,4 @@
-import { getBastion } from '~/bastion/get-bastion.js';
+import { getBastion } from '#src/bastion/get-bastion.js';
 
 import { InitTarget } from '../init-target.js';
 

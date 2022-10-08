@@ -1,5 +1,5 @@
-import { ResourceType } from '~/common/resource-type.js';
-import { ResourceNotFoundError } from '~/common/runtime-errors.js';
+import { ResourceType } from '#src/common/resource-type.js';
+import { ResourceNotFoundError } from '#src/common/runtime-errors.js';
 
 export async function orThrow<T>(
   getter: () => Promise<T | undefined>,

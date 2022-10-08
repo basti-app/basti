@@ -36,7 +36,7 @@
       {
         "pathGroups": [
           {
-            "pattern": "~/**",
+            "pattern": "#src/**",
             "group": "internal"
           }
         ],
@@ -53,6 +53,7 @@
         "newlines-between": "always"
       }
     ],
+    "import/no-unresolved": ["error", { "ignore": ["^#.+$"] }],
     "unicorn/prevent-abbreviations": "off",
     "unicorn/prefer-spread": "off",
     "unicorn/no-array-for-each": "off"

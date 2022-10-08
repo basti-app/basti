@@ -1,8 +1,8 @@
-import * as bastionOps from '~/bastion/ensure-bastion-running.js';
-import { Bastion } from '~/bastion/bastion.js';
-import { cli } from '~/common/cli.js';
-import { AwsNoRootVolumeAttachedError } from '~/aws/ec2/ec2-errors.js';
-import { StartingInstanceError } from '~/bastion/bastion-errors.js';
+import * as bastionOps from '#src/bastion/ensure-bastion-running.js';
+import { Bastion } from '#src/bastion/bastion.js';
+import { cli } from '#src/common/cli.js';
+import { AwsNoRootVolumeAttachedError } from '#src/aws/ec2/ec2-errors.js';
+import { StartingInstanceError } from '#src/bastion/bastion-errors.js';
 
 import { OperationError } from '../../error/operation-error.js';
 import { detailProvider } from '../../error/get-error-detail.js';

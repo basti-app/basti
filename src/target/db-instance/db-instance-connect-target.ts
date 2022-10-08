@@ -1,4 +1,4 @@
-import { AwsDbInstance } from '~/aws/rds/rds-types.js';
+import { AwsDbInstance } from '#src/aws/rds/rds-types.js';
 
 import { ConnectTargetBase } from '../connect-target.js';
 

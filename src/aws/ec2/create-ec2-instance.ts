@@ -3,7 +3,7 @@ import {
   waitUntilInstanceRunning,
 } from '@aws-sdk/client-ec2';
 
-import { retry } from '~/common/retry.js';
+import { retry } from '#src/common/retry.js';
 
 import { handleWaiterError } from '../common/waiter-error.js';
 import { COMMON_WAITER_CONFIG } from '../common/waiter-config.js';

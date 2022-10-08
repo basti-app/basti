@@ -1,6 +1,6 @@
-import { Bastion } from '~/bastion/bastion.js';
-import * as bastionOps from '~/bastion/get-bastion.js';
-import { cli } from '~/common/cli.js';
+import { Bastion } from '#src/bastion/bastion.js';
+import * as bastionOps from '#src/bastion/get-bastion.js';
+import { cli } from '#src/common/cli.js';
 
 import { handleOperation } from '../common/handle-operation.js';
 

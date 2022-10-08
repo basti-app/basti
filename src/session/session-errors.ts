@@ -1,4 +1,4 @@
-import { RuntimeError } from '~/common/runtime-errors.js';
+import { RuntimeError } from '#src/common/runtime-errors.js';
 
 export class SessionManagerPluginNonInstalledError extends RuntimeError {
   constructor() {
