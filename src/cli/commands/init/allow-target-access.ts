@@ -1,4 +1,4 @@
-import { AwsTooManySecurityGroupsAttachedError } from '~/aws/rds/rds-client.js';
+import { AwsTooManySecurityGroupsAttachedError } from '~/aws/rds/rds-errors.js';
 import { Bastion } from '~/bastion/bastion.js';
 import { cli } from '~/common/cli.js';
 import { fmt } from '~/common/fmt.js';

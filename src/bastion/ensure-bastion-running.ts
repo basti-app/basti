@@ -1,4 +1,4 @@
-import { AwsNoRootVolumeAttachedError } from '../aws/ec2/ec2-client.js';
+import { AwsNoRootVolumeAttachedError } from '../aws/ec2/ec2-errors.js';
 import { startEc2Instance } from '../aws/ec2/start-ec2-instance.js';
 import { AwsEc2Instance } from '../aws/ec2/types/aws-ec2-instance.js';
 import {

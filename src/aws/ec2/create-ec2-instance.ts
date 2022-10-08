@@ -10,9 +10,10 @@ import { COMMON_WAITER_CONFIG } from '../common/waiter-config.js';
 import { createIamInstanceProfile } from '../iam/create-instance-profile.js';
 import { AwsTag } from '../tags/types.js';
 
-import { AwsInstanceProfileNotFoundError, ec2Client } from './ec2-client.js';
+import { AwsInstanceProfileNotFoundError } from './ec2-errors.js';
 import { parseEc2InstanceResponse } from './parse-ec2-response.js';
 import { AwsEc2Instance } from './types/aws-ec2-instance.js';
+import { ec2Client } from './ec2-client.js';
 
 export interface CreateEc2InstanceInput {
   imageId: string;

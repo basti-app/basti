@@ -1,4 +1,4 @@
-import { AwsInstanceProfileNotFoundError } from '~/aws/ec2/ec2-client.js';
+import { AwsInstanceProfileNotFoundError } from '~/aws/ec2/ec2-errors.js';
 import { Bastion } from '~/bastion/bastion.js';
 import * as bastionOps from '~/bastion/create-bastion.js';
 import { cli } from '~/common/cli.js';
