@@ -4,7 +4,7 @@ import {
   AwsAccessDeniedError,
   AwsDependencyViolationError,
   AwsError,
-} from '../common/aws-error.js';
+} from '../common/aws-errors.js';
 
 export async function ec2ErrorHandler<T>(
   operation: () => Promise<T>

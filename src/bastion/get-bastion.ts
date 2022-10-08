@@ -3,7 +3,7 @@ import { ManagedResourceTypes } from '../common/resource-type.js';
 import {
   ResourceDamagedError,
   UnexpectedStateError,
-} from '../common/runtime-error.js';
+} from '../common/runtime-errors.js';
 
 import {
   Bastion,

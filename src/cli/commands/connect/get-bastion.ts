@@ -4,7 +4,7 @@ import { ManagedResourceTypes } from '~/common/resource-type.js';
 import {
   ResourceNotFoundError,
   UnexpectedStateError,
-} from '~/common/runtime-error.js';
+} from '~/common/runtime-errors.js';
 import { ConnectTarget } from '~/target/connect-target.js';
 
 import { OperationError } from '../../error/operation-error.js';

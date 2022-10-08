@@ -1,5 +1,16 @@
-import { getErrorMessage } from './get-error-message.js';
 import { ResourceType } from './resource-type.js';
+
+export function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  return '';
+}
 
 export class RuntimeError extends Error {
   public readonly cause?: unknown;

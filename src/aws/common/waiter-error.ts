@@ -1,4 +1,4 @@
-import { AwsError } from './aws-error.js';
+import { AwsError } from './aws-errors.js';
 
 export async function handleWaiterError(
   waiter: () => Promise<unknown>

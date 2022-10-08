@@ -1,6 +1,6 @@
 import { DescribeDBClustersCommand } from '@aws-sdk/client-rds';
 
-import { AwsNotFoundError } from '../common/aws-error.js';
+import { AwsNotFoundError } from '../common/aws-errors.js';
 
 import { parseDbClusterResponse } from './parse-rds-response.js';
 import { rdsClient } from './rds-client.js';

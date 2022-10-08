@@ -5,7 +5,7 @@ import {
   waitEc2InstanceIsRunning,
   waitEc2InstanceIsStopped,
 } from '../aws/ec2/wait-ec2-instance.js';
-import { UnexpectedStateError } from '../common/runtime-error.js';
+import { UnexpectedStateError } from '../common/runtime-errors.js';
 
 import { StartingInstanceError } from './bastion-errors.js';
 import { Bastion } from './bastion.js';

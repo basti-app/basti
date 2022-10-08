@@ -1,4 +1,4 @@
-import { RuntimeError } from '~/common/runtime-error.js';
+import { RuntimeError } from '~/common/runtime-errors.js';
 
 export class AwsError extends RuntimeError {}
 

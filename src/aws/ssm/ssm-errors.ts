@@ -4,7 +4,7 @@ import {
   AwsAccessDeniedError,
   AwsNotFoundError,
   AwsError,
-} from '../common/aws-error.js';
+} from '../common/aws-errors.js';
 
 export async function ssmErrorHandler<T>(
   operation: () => Promise<T>

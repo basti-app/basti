@@ -5,7 +5,7 @@ import {
 } from '../aws/ec2/types/aws-security-group.js';
 import { BASTION_INSTANCE_NAME_PREFIX } from '../bastion/bastion.js';
 import { ManagedResourceTypes } from '../common/resource-type.js';
-import { ResourceDamagedError } from '../common/runtime-error.js';
+import { ResourceDamagedError } from '../common/runtime-errors.js';
 
 import { TargetNotInitializedError } from './target-errors.js';
 import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from './target-input.js';

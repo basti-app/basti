@@ -1,6 +1,6 @@
 import { IAMServiceException } from '@aws-sdk/client-iam';
 
-import { AwsAccessDeniedError } from '../common/aws-error.js';
+import { AwsAccessDeniedError } from '../common/aws-errors.js';
 
 export async function iamErrorHandler<T>(
   operation: () => Promise<T>

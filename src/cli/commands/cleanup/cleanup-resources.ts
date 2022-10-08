@@ -1,4 +1,4 @@
-import { AwsDependencyViolationError } from '~/aws/common/aws-error.js';
+import { AwsDependencyViolationError } from '~/aws/common/aws-errors.js';
 import { AwsInvalidRdsStateError } from '~/aws/rds/rds-errors.js';
 import { cleanupManagedResources } from '~/cleanup/cleanup-managed-resources.js';
 import { ManagedResources } from '~/cleanup/managed-resources.js';

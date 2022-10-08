@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/no-process-exit */
 
 import { cli } from '~/common/cli.js';
-import { getErrorMessage } from '~/common/get-error-message.js';
+import { getErrorMessage } from '~/common/runtime-errors.js';
 
 import { EarlyExitError } from './early-exit-error.js';
 import { OperationError } from './operation-error.js';

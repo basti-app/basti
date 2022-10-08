@@ -1,6 +1,6 @@
 import { GetParameterCommand } from '@aws-sdk/client-ssm';
 
-import { AwsError, AwsNotFoundError } from '../common/aws-error.js';
+import { AwsError, AwsNotFoundError } from '../common/aws-errors.js';
 
 import { parseSsmParameter } from './parse-ssm-response.js';
 import { ssmClient } from './ssm-client.js';

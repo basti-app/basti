@@ -1,4 +1,4 @@
-import { AwsDependencyViolationError } from '../aws/common/aws-error.js';
+import { AwsDependencyViolationError } from '../aws/common/aws-errors.js';
 import { deleteSecurityGroup } from '../aws/ec2/delete-security-group.js';
 import { getDbClusters } from '../aws/rds/get-db-clusters.js';
 import { getDbInstances } from '../aws/rds/get-db-instances.js';
