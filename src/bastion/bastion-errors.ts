@@ -12,6 +12,12 @@ export class BastionRoleCreationError extends RuntimeError {
   }
 }
 
+export class BastionInlinePoliciesCreationError extends RuntimeError {
+  constructor(cause: unknown) {
+    super(`Can't create IAM inline policies for bastion instance`, cause);
+  }
+}
+
 export class BastionSecurityGroupCreationError extends RuntimeError {
   constructor(cause: unknown) {
     super(`Can't create security group for bastion instance`, cause);

@@ -2,14 +2,15 @@ import { createEc2Instance } from '../aws/ec2/create-ec2-instance.js';
 import { createSecurityGroup } from '../aws/ec2/create-security-group.js';
 import { AwsEc2Instance } from '../aws/ec2/types/aws-ec2-instance.js';
 import { AwsSecurityGroup } from '../aws/ec2/types/aws-security-group.js';
-import { createIamRole } from '../aws/iam/create-iam-role.js';
 import { AwsRole } from '../aws/iam/types.js';
 import { getStringSsmParameter } from '../aws/ssm/get-ssm-parameter.js';
 import { generateShortId } from '../common/short-id.js';
 
+import * as bastionRoleOps from './create-bastion-role.js';
 import { BASTION_INSTANCE_CLOUD_INIT } from './bastion-cloudinit.js';
 import {
   BastionImageRetrievalError,
+  BastionInlinePoliciesCreationError,
   BastionInstanceCreationError,
   BastionRoleCreationError,
   BastionSecurityGroupCreationError,
@@ -20,8 +21,6 @@ import {
   BASTION_INSTANCE_IN_USE_TAG_NAME,
   BASTION_INSTANCE_NAME_PREFIX,
   BASTION_INSTANCE_PROFILE_PATH,
-  BASTION_INSTANCE_ROLE_NAME_PREFIX,
-  BASTION_INSTANCE_ROLE_PATH,
   BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
 } from './bastion.js';
 
@@ -30,6 +29,8 @@ interface CreateBastionHooks {
   onImageIdRetrieved?: (imageId: string) => void;
   onCreatingRole?: () => void;
   onRoleCreated?: (roleId: string) => void;
+  onCreatingInlinePolicies?: () => void;
+  onInlinePoliciesCreated?: () => void;
   onCreatingSecurityGroup?: () => void;
   onSecurityGroupCreated?: (securityGroupId: string) => void;
   onCreatingInstance?: () => void;
@@ -65,6 +66,12 @@ export async function createBastion({
     bastionRole,
     subnetId,
     bastionSecurityGroup,
+    hooks
+  );
+
+  await createBastionRoleInlinePolicies(
+    bastionRole.name,
+    bastionInstance.id,
     hooks
   );
 
@@ -108,19 +115,30 @@ async function createBastionRole(
 ): Promise<AwsRole> {
   try {
     hooks?.onCreatingRole?.();
-    const bastionRole = await createIamRole({
-      name: `${BASTION_INSTANCE_ROLE_NAME_PREFIX}-${bastionId}`,
-      path: BASTION_INSTANCE_ROLE_PATH,
-      principalService: 'ec2.amazonaws.com',
-      managedPolicies: [
-        'AmazonSSMManagedInstanceCore',
-        'AmazonEC2ReadOnlyAccess',
-      ],
+    const bastionRole = await bastionRoleOps.createBastionRole({
+      bastionId,
     });
     hooks?.onRoleCreated?.(bastionRole.name);
     return bastionRole;
   } catch (error) {
     throw new BastionRoleCreationError(error);
+  }
+}
+
+async function createBastionRoleInlinePolicies(
+  bastionRoleName: string,
+  bastionInstanceId: string,
+  hooks?: CreateBastionHooks
+): Promise<void> {
+  try {
+    hooks?.onCreatingInlinePolicies?.();
+    await bastionRoleOps.createBastionRoleInlinePolicies({
+      bastionRoleName,
+      bastionInstanceId,
+    });
+    hooks?.onInlinePoliciesCreated?.();
+  } catch (error) {
+    throw new BastionInlinePoliciesCreationError(error);
   }
 }
 

@@ -4,6 +4,7 @@ import {
   BastionRoleCreationError,
   BastionSecurityGroupCreationError,
   BastionInstanceCreationError,
+  BastionInlinePoliciesCreationError,
 } from '~/bastion/bastion-errors.js';
 import { Bastion } from '~/bastion/bastion.js';
 import * as bastionOps from '~/bastion/create-bastion.js';
@@ -43,6 +44,11 @@ export async function createBastion({
             `Bastion IAM role created: ${fmt.value(roleName)}`
           ),
 
+        onCreatingInlinePolicies: () =>
+          subCli.progressStart('Creating bastion IAM role policies'),
+        onInlinePoliciesCreated: () =>
+          subCli.progressSuccess('Bastion IAM role policies created'),
+
         onCreatingSecurityGroup: () =>
           subCli.progressStart('Creating bastion security group'),
         onSecurityGroupCreated: sgId =>
@@ -76,6 +82,10 @@ export async function createBastion({
         detailProvider(
           BastionRoleCreationError,
           () => "Can't create IAM role for bastion instance"
+        ),
+        detailProvider(
+          BastionInlinePoliciesCreationError,
+          () => "Can't create IAM role policies for bastion instance"
         ),
         detailProvider(
           BastionSecurityGroupCreationError,
