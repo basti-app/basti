@@ -5,18 +5,19 @@ import {
 } from '../common/child-process.js';
 
 import {
-  SessionManagerPluginUnexpectedExitError,
+  SessionManagerPluginExitError,
   SessionManagerPluginPortInUseError,
   SessionManagerPluginNonInstalledError,
 } from './session-errors.js';
 
-export type ProcessExitedHook = (error: Error) => void;
+export interface StartSessionManagerPluginHooks {
+  onExit?: () => void;
+  onErrorExit?: (error: SessionManagerPluginExitError) => void;
+}
 
 export interface StartSessionManagerPluginInput {
   sessionDescriptor: AwsSsmSessionDescriptor;
-  hooks?: {
-    onProcessExited?: ProcessExitedHook;
-  };
+  hooks?: StartSessionManagerPluginHooks;
 }
 
 export async function startSessionManagerPluginProcess({
@@ -25,22 +26,26 @@ export async function startSessionManagerPluginProcess({
 }: StartSessionManagerPluginInput): Promise<void> {
   const sessionManager = spawnPluginProcess(sessionDescriptor);
 
-  sessionManager.process.on('exit', (code, signal) => {
-    hooks?.onProcessExited?.(
-      new SessionManagerPluginUnexpectedExitError(
-        (code ?? signal)!,
-        sessionManager.collectOutput(),
-        sessionManager.collectErrorOutput()
-      )
-    );
-  });
-
   return await new Promise((resolve, reject) => {
-    sessionManager.onLine(line => isPortOpened(line) && resolve());
+    sessionManager.onLine(line => {
+      if (isPortOpened(line)) {
+        startExitListener(sessionManager, hooks);
+        resolve();
+      }
+    });
 
     sessionManager.onLine(
       line =>
         isPortInUse(line) && reject(new SessionManagerPluginPortInUseError())
+    );
+    sessionManager.process.on('exit', (code, signal) =>
+      reject(
+        new SessionManagerPluginExitError(
+          (code ?? signal)!,
+          sessionManager.collectOutput(),
+          sessionManager.collectErrorOutput()
+        )
+      )
     );
     sessionManager.process.on('error', error =>
       reject(parseProcessError(error))
@@ -63,6 +68,25 @@ function spawnPluginProcess(
   ];
 
   return spawnProcess('session-manager-plugin', args);
+}
+
+function startExitListener(
+  sessionManager: OutputOptimizedChildProcess,
+  hooks?: StartSessionManagerPluginHooks
+): void {
+  sessionManager.process.on('exit', (code, signal) => {
+    if (code === 0) {
+      hooks?.onExit?.();
+    } else {
+      hooks?.onErrorExit?.(
+        new SessionManagerPluginExitError(
+          (code ?? signal)!,
+          sessionManager.collectOutput(),
+          sessionManager.collectErrorOutput()
+        )
+      );
+    }
+  });
 }
 
 function parseProcessError(error: NodeJS.ErrnoException): Error {

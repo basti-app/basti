@@ -25,6 +25,8 @@ export function handleAsyncErrors(): void {
 }
 
 function handleError(error: unknown): never {
+  cli.exitContext();
+
   if (error instanceof EarlyExitError) {
     cli.info(error.message);
     process.exit(0);

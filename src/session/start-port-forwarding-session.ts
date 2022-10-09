@@ -8,7 +8,8 @@ import { startBastionUsageMarker } from './start-bastion-usage-marker.js';
 import { startSessionManagerPluginProcess } from './start-session-manager-plugin-process.js';
 
 export interface StartPortForwardingSessionHooks {
-  onSessionInterrupted?: (error: Error) => void;
+  onSessionError?: (error: Error) => void;
+  onSessionEnded?: () => void;
   onMarkingError?: (error: unknown) => void;
 }
 
@@ -46,9 +47,13 @@ export async function startPortForwardingSession({
     await startSessionManagerPluginProcess({
       sessionDescriptor,
       hooks: {
-        onProcessExited: error => {
+        onExit: () => {
           stopUsageMarker();
-          hooks?.onSessionInterrupted?.(error);
+          hooks?.onSessionEnded?.();
+        },
+        onErrorExit: error => {
+          stopUsageMarker();
+          hooks?.onSessionError?.(error);
         },
       },
     });

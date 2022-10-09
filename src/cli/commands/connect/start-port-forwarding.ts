@@ -1,8 +1,9 @@
 import { AwsSsmInstanceNotConnectedError } from '#src/aws/ssm/ssm-errors.js';
+import { EarlyExitError } from '#src/cli/error/early-exit-error.js';
 import { cli } from '#src/common/cli.js';
 import { fmt } from '#src/common/fmt.js';
 import {
-  SessionManagerPluginUnexpectedExitError,
+  SessionManagerPluginExitError,
   SessionManagerPluginNonInstalledError,
   SessionManagerPluginPortInUseError,
 } from '#src/session/session-errors.js';
@@ -10,6 +11,7 @@ import { startPortForwardingSession } from '#src/session/start-port-forwarding-s
 import { ConnectTarget } from '#src/target/connect-target.js';
 
 import {
+  DetailProvider,
   detailProvider,
   getErrorDetail,
 } from '../../error/get-error-detail.js';
@@ -34,7 +36,8 @@ export async function startPortForwarding({
       bastionInstanceId,
       localPort,
       hooks: {
-        onSessionInterrupted: handleSessionInterruption,
+        onSessionError: handleSessionError,
+        onSessionEnded: handleSessionEnded,
         onMarkingError: handleMarkingError,
       },
     });
@@ -51,17 +54,17 @@ export async function startPortForwarding({
   }
 }
 
-function handleSessionInterruption(error: Error): never {
+function handleSessionEnded(): void {
+  throw new EarlyExitError(
+    'Port forwarding session ended. Please, check your AWS Session Manager time out settings'
+  );
+}
+
+function handleSessionError(error: Error): never {
   throw OperationError.from({
     operationName: 'Running port forwarding session',
     error,
-    detailProviders: [
-      detailProvider(
-        SessionManagerPluginUnexpectedExitError,
-        error =>
-          `session-manager-plugin exited with code/signal: ${error.reason}\n\nOutput:\n${error.output}\n\nError output:\n${error.errorOutput}`
-      ),
-    ],
+    detailProviders: [getSessionManagerExitDetailProvider()],
   });
 }
 
@@ -93,6 +96,15 @@ function handleSessionStartError(error: unknown, localPort: number): never {
         SessionManagerPluginPortInUseError,
         () => `Local port ${fmt.value(String(localPort))} is already in use`
       ),
+      getSessionManagerExitDetailProvider(),
     ],
   });
+}
+
+function getSessionManagerExitDetailProvider(): DetailProvider {
+  return detailProvider(
+    SessionManagerPluginExitError,
+    error =>
+      `session-manager-plugin exited with code/signal: ${error.reason}\n\nOutput:\n${error.output}\n\nError output:\n${error.errorOutput}`
+  );
 }

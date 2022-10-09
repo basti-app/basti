@@ -18,7 +18,7 @@ import {
 
 type Constructor<T> = new (...args: any) => T;
 
-export interface ErrorMessageProvider<T extends Error = any> {
+export interface DetailProvider<T extends Error = any> {
   error: Constructor<T>;
   detail: (error: T) => string;
 }
@@ -26,7 +26,7 @@ export interface ErrorMessageProvider<T extends Error = any> {
 export function detailProvider<T extends Error>(
   error: Constructor<T>,
   detail: (error: T) => string
-): ErrorMessageProvider<T> {
+): DetailProvider<T> {
   return { error, detail };
 }
 
@@ -41,7 +41,7 @@ const RESOURCE_TYPE_NAME: Record<ResourceType, string> = {
   [TargetTypes.CUSTOM]: 'Custom target',
 };
 
-export const COMMON_DETAIL_PROVIDERS: ErrorMessageProvider[] = [
+export const COMMON_DETAIL_PROVIDERS: DetailProvider[] = [
   detailProvider(AwsAccessDeniedError, () => 'Access denied by IAM'),
   detailProvider(
     AwsTimeoutError,
@@ -72,7 +72,7 @@ export const COMMON_DETAIL_PROVIDERS: ErrorMessageProvider[] = [
 
 export function getErrorDetail(
   error: unknown,
-  detailProviders?: ErrorMessageProvider[]
+  detailProviders?: DetailProvider[]
 ): string {
   const allProviders = [...(detailProviders ?? []), ...COMMON_DETAIL_PROVIDERS];
 
@@ -92,7 +92,7 @@ export function getErrorDetail(
 }
 
 function isMatchingProvider<T extends Error>(
-  provider: ErrorMessageProvider<T>,
+  provider: DetailProvider<T>,
   error: unknown
 ): error is T {
   return error instanceof provider.error;

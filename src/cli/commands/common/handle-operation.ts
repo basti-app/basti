@@ -1,13 +1,13 @@
 import { cli } from '#src/common/cli.js';
 import { fmt } from '#src/common/fmt.js';
 
-import { ErrorMessageProvider } from '../../error/get-error-detail.js';
+import { DetailProvider } from '../../error/get-error-detail.js';
 import { OperationError } from '../../error/operation-error.js';
 
 export async function handleOperation<T>(
   operationName: string,
   handler: () => Promise<T>,
-  detailProviders: ErrorMessageProvider[] = []
+  detailProviders: DetailProvider[] = []
 ): Promise<T> {
   try {
     cli.progressStart(fmt.capitalize(operationName));

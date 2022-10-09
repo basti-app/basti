@@ -1,6 +1,6 @@
 import { fmt } from '#src/common/fmt.js';
 
-import { ErrorMessageProvider, getErrorDetail } from './get-error-detail.js';
+import { DetailProvider, getErrorDetail } from './get-error-detail.js';
 
 export class OperationError extends Error {
   constructor(
@@ -19,7 +19,7 @@ export class OperationError extends Error {
   }: {
     operationName: string;
     error: unknown;
-    detailProviders?: ErrorMessageProvider[];
+    detailProviders?: DetailProvider[];
     dirtyOperation?: boolean;
   }): OperationError {
     return new OperationError(

@@ -56,8 +56,12 @@ export class Cli {
     });
   }
 
-  out(text: string): void {
+  exitContext(): void {
     this.changeContext('none');
+  }
+
+  out(text: string): void {
+    this.exitContext();
 
     this.print(text);
   }
@@ -96,7 +100,7 @@ export class Cli {
     if (this.context !== 'progress') {
       return;
     }
-    this.changeContext('none');
+    this.exitContext();
 
     this.spinner.stop();
   }
@@ -105,7 +109,7 @@ export class Cli {
     if (this.context !== 'progress') {
       return;
     }
-    this.changeContext('none');
+    this.exitContext();
 
     symbol !== undefined
       ? this.spinner.stopAndPersist({ symbol })
@@ -116,7 +120,7 @@ export class Cli {
     if (this.context !== 'progress') {
       return;
     }
-    this.changeContext('none');
+    this.exitContext();
 
     this.spinner.fail(text);
   }
@@ -125,7 +129,7 @@ export class Cli {
     if (this.context !== 'progress') {
       return;
     }
-    this.changeContext('none');
+    this.exitContext();
 
     const currentText = this.spinner.text;
     const text =

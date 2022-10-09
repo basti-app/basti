@@ -12,7 +12,7 @@ export class SessionManagerPluginPortInUseError extends RuntimeError {
   }
 }
 
-export class SessionManagerPluginUnexpectedExitError extends RuntimeError {
+export class SessionManagerPluginExitError extends RuntimeError {
   readonly reason: number | NodeJS.Signals;
   readonly output: string;
   readonly errorOutput: string;
