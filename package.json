@@ -13,6 +13,7 @@
     "#src/*.js": "./src/*.js"
   },
   "scripts": {
+    "start": "npm run build && node bin/run.js",
     "build": "tsc",
     "build-watch": "tsc --watch",
     "check-types": "tsc --noEmit",
