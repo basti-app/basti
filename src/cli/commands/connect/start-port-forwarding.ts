@@ -102,9 +102,17 @@ function handleSessionStartError(error: unknown, localPort: number): never {
 }
 
 function getSessionManagerExitDetailProvider(): DetailProvider {
-  return detailProvider(
-    SessionManagerPluginExitError,
-    error =>
-      `session-manager-plugin exited with code/signal: ${error.reason}\n\nOutput:\n${error.output}\n\nError output:\n${error.errorOutput}`
-  );
+  return detailProvider(SessionManagerPluginExitError, error => {
+    const output =
+      error.output.length > 0 ? `\n\nOutput:\n${error.output.trim()}` : '';
+    const errorOutput =
+      error.errorOutput.length > 0
+        ? `\n\nError output:\n${error.errorOutput.trim()}`
+        : '';
+
+    if (typeof error.reason === 'number') {
+      return `session-manager-plugin exited with code ${error.reason}${output}${errorOutput}`;
+    }
+    return `session-manager-plugin exited due to ${error.reason} signal`;
+  });
 }
