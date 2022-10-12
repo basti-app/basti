@@ -21,8 +21,8 @@ handleAsyncErrors();
 void yargs(hideBin(process.argv))
   .version(pkg.version)
   .command(
-    'init',
-    'Set up a target to use with Basti',
+    ['init', 'i'],
+    'Initialize a target to use with Basti',
     yargs =>
       yargs
         .option('rds-instance', {
@@ -43,7 +43,14 @@ void yargs(hideBin(process.argv))
         })
         .check(
           conflictingOptions('rds-cluster', 'rds-instance', 'custom-target-vpc')
-        ),
+        )
+        .example([
+          ['$0 init', 'Use interactive mode'],
+          [
+            '$0 --rds-instance <id> --bastion-subnet <id>',
+            'Select target and bastion subnet automatically',
+          ],
+        ]),
     withErrorHandling(
       async ({ rdsInstance, rdsCluster, customTargetVpc, bastionSubnet }) => {
         const target =
@@ -59,8 +66,8 @@ void yargs(hideBin(process.argv))
     )
   )
   .command(
-    'connect',
-    'Start port forwarding session to the selected target',
+    ['connect', 'c'],
+    'Start port forwarding session with the selected target',
     yargs =>
       yargs
         .option('rds-instance', {
@@ -101,7 +108,14 @@ void yargs(hideBin(process.argv))
             'custom-target-host',
             'custom-target-port'
           )
-        ),
+        )
+        .example([
+          ['$0 connect', 'Use interactive mode'],
+          [
+            '$0 connect --rds-instance <id> --local-port <port>',
+            'Select target and local port automatically',
+          ],
+        ]),
     withErrorHandling(
       async ({
         rdsInstance,
@@ -130,16 +144,35 @@ void yargs(hideBin(process.argv))
     )
   )
   .command(
-    'cleanup',
+    ['cleanup', 'cl'],
     'Remove all resources created by Basti',
     yargs =>
-      yargs.option('confirm', {
-        type: 'boolean',
-        alias: ['c', 'y'],
-        description: 'Automatically confirm cleanup',
-      }),
+      yargs
+        .option('confirm', {
+          type: 'boolean',
+          alias: ['c', 'y'],
+          description: 'Automatically confirm cleanup',
+        })
+        .example([
+          ['$0 cleanup', 'Use interactive mode'],
+          ['$0 cleanup -y', 'Confirm cleanup automatically'],
+        ]),
+
     withErrorHandling(async ({ confirm }) => await handleCleanup({ confirm }))
   )
   .demandCommand(1)
   .strict()
+  .alias('help', 'h')
+  .alias('version', 'v')
+  .example([
+    ['$0 init', 'Initialize a target in interactive mode'],
+    ['$0 connect', 'Start connection in interactive mode'],
+    [
+      '$0 cleanup',
+      'Cleanup Basti resources in interactive mode (requires confirmation)',
+    ],
+  ])
+  .completion('completion', 'Generate completion script for your shell')
+  .recommendCommands()
+  .wrap(process.stdout.columns)
   .parse();
