@@ -27,12 +27,6 @@ const RESOURCE_GROUP_TITLES: Record<ManagedResourceType, string> = {
 export async function confirmCleanup({
   resources,
 }: ConfirmCleanupInput): Promise<void> {
-  if (isEmpty(resources)) {
-    throw new EarlyExitError(
-      'No Basti-managed resources found in your account'
-    );
-  }
-
   printResources(resources);
 
   const { confirm } = await cli.prompt({
@@ -45,10 +39,6 @@ export async function confirmCleanup({
   if (!(confirm as boolean)) {
     throw new EarlyExitError('Cleanup aborted');
   }
-}
-
-function isEmpty(resources: ManagedResources): boolean {
-  return Object.values(resources).every(group => group.length === 0);
 }
 
 function printResources(resources: ManagedResources): void {
