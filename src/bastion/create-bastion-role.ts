@@ -12,7 +12,6 @@ export interface CreateBastionRoleInput {
 }
 
 export interface CreateBastionInlinePoliciesInput {
-  bastionInstanceId: string;
   bastionRoleName: string;
 }
 
@@ -27,7 +26,6 @@ export async function createBastionRole({
 }
 
 export async function createBastionRoleInlinePolicies({
-  bastionInstanceId,
   bastionRoleName,
 }: CreateBastionInlinePoliciesInput): Promise<void> {
   await createIamInlinePolicy({
@@ -75,7 +73,7 @@ function getAwsInstanceAccessPolicy(): string {
       {
         Effect: 'Allow',
         Action: ['ec2:DescribeInstances'],
-        Resource: '*',
+        Resource: '*', // ec2:DescribeInstances does not support resource-level permissions
       },
     ],
   });
