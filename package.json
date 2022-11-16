@@ -1,16 +1,20 @@
 {
   "name": "basti",
-  "version": "0.0.1",
+  "version": "0.0.1-wip-4",
   "description": "A CLI tool to help you connect to a database in AWS private subnet.",
-  "type": "module",
-  "engines": {
-    "node": ">=14.16"
+  "author": "BohdanPetryshyn",
+  "homepage": "https://github.com/BohdanPetryshyn/basti#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BohdanPetryshyn/basti.git"
   },
+  "bugs": {
+    "url": "https://github.com/BohdanPetryshyn/basti/issues"
+  },
+  "license": "ISC",
+  "type": "module",
   "bin": {
     "basti": "bin/run.js"
-  },
-  "imports": {
-    "#src/*.js": "./src/*.js"
   },
   "scripts": {
     "start": "npm run build && node bin/run.js",
@@ -19,16 +23,6 @@
     "check-types": "tsc --noEmit",
     "check-style": "eslint src"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/BohdanPetryshyn/basti.git"
-  },
-  "author": "BohdanPetryshyn",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/BohdanPetryshyn/basti/issues"
-  },
-  "homepage": "https://github.com/BohdanPetryshyn/basti#readme",
   "devDependencies": {
     "@types/inquirer": "^8.2.1",
     "@types/yargs": "^17.0.10",
@@ -55,5 +49,13 @@
     "ora": "^6.1.2",
     "yargs": "^17.5.1",
     "zod": "^3.17.3"
-  }
+  },
+  "imports": {
+    "#src/*.js": "./src/*.js"
+  },
+  "files": [
+    "bin/run.js",
+    "dist",
+    "package.json"
+  ]
 }
