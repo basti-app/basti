@@ -41,6 +41,8 @@ function handleError(error: unknown): never {
   cli.error(`Unexpected error: ${getErrorMessage(error)}`);
   if (error instanceof RuntimeError) {
     cli.debug(error.getDeepStack());
+  } else if (error instanceof Error && error.stack !== undefined) {
+    cli.debug(error.stack);
   }
   process.exit(1);
 }
