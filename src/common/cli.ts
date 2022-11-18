@@ -3,7 +3,14 @@ import ora, { Ora } from 'ora';
 
 import { fmt } from './fmt.js';
 
-type CliContext = 'info' | 'warn' | 'error' | 'progress' | 'success' | 'none';
+type CliContext =
+  | 'info'
+  | 'warn'
+  | 'error'
+  | 'debug'
+  | 'progress'
+  | 'success'
+  | 'none';
 
 type ContextChangeHook = (context: CliContext) => void;
 
@@ -88,6 +95,16 @@ export class Cli {
     this.enterContext('error');
 
     this.print(fmt.red(`❌ ${text}`));
+  }
+
+  debug(text: string): void {
+    if (process.env.DEBUG !== 'true') {
+      return;
+    }
+
+    this.enterContext('debug');
+
+    this.print(fmt.gray(text));
   }
 
   progressStart(text: string): void {

@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/no-process-exit */
 
 import { cli } from '#src/common/cli.js';
-import { getErrorMessage } from '#src/common/runtime-errors.js';
+import { getErrorMessage, RuntimeError } from '#src/common/runtime-errors.js';
 
 import { EarlyExitError } from './early-exit-error.js';
 import { OperationError } from './operation-error.js';
@@ -33,10 +33,14 @@ function handleError(error: unknown): never {
   }
 
   if (error instanceof OperationError) {
-    cli.error(error.message);
+    cli.error(error.operationErrorMessage);
+    cli.debug(error.getDeepStack());
     process.exit(1);
   }
 
   cli.error(`Unexpected error: ${getErrorMessage(error)}`);
+  if (error instanceof RuntimeError) {
+    cli.debug(error.getDeepStack());
+  }
   process.exit(1);
 }

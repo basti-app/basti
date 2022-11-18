@@ -13,7 +13,7 @@ export function getErrorMessage(error: unknown): string {
 }
 
 export class RuntimeError extends Error {
-  public readonly cause?: unknown;
+  readonly cause?: unknown;
 
   constructor(message: string, cause?: unknown) {
     super(
@@ -21,6 +21,23 @@ export class RuntimeError extends Error {
     );
 
     this.cause = cause;
+  }
+
+  getDeepStack(): string {
+    const thisStack =
+      this.stack !== undefined ? this.stack : 'Error: No stack trace available';
+
+    const causeStack =
+      this.cause instanceof RuntimeError
+        ? this.cause.getDeepStack()
+        : this.cause instanceof Error
+        ? this.cause.stack
+        : undefined;
+
+    return (
+      thisStack +
+      (causeStack !== undefined ? `\n\nCaused by: ${causeStack}` : '')
+    );
   }
 }
 
