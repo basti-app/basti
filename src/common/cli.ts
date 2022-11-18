@@ -1,6 +1,7 @@
 import inquirer from 'inquirer';
 import ora, { Ora } from 'ora';
 
+import { isDebugMode } from './debug.js';
 import { fmt } from './fmt.js';
 
 type CliContext =
@@ -98,7 +99,7 @@ export class Cli {
   }
 
   debug(text: string): void {
-    if (process.env.DEBUG !== 'true') {
+    if (!isDebugMode()) {
       return;
     }
 

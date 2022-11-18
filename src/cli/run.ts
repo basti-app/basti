@@ -3,6 +3,8 @@ import { readFileSync } from 'node:fs';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
+import { setUpDebugMode } from '#src/common/debug.js';
+
 import { handleCleanup } from './commands/cleanup/cleanup.js';
 import { handleConnect } from './commands/connect/connect.js';
 import { handleInit } from './commands/init/init.js';
@@ -16,6 +18,7 @@ const pkg: {
   readFileSync(new URL('../../package.json', import.meta.url)).toString()
 );
 
+setUpDebugMode();
 handleAsyncErrors();
 
 void yargs(hideBin(process.argv))
