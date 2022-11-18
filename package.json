@@ -20,6 +20,7 @@
     "start": "npm run build && node bin/run.js",
     "build": "tsc",
     "build-watch": "tsc --watch",
+    "check": "npm run check-types && npm run check-style",
     "check-types": "tsc --noEmit",
     "check-style": "eslint src"
   },
