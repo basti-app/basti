@@ -1,0 +1,16 @@
+{
+  "name": "basti-session-manager-binary-linux-x64",
+  "version": "1.2.398.0-wip-1",
+  "description": "Session Manager Plugin binary for Basti. This package is not meant to be used directly.",
+  "author": "BohdanPetryshyn",
+  "license": "ISC",
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "files": [
+    "session-manager-plugin"
+  ]
+}

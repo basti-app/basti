@@ -1,3 +1,5 @@
 node_modules
 dist
+deps
 .history
+.build-deps-tmp

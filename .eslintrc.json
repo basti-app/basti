@@ -56,7 +56,8 @@
     "import/no-unresolved": ["error", { "ignore": ["^#.+$"] }],
     "unicorn/prevent-abbreviations": "off",
     "unicorn/prefer-spread": "off",
-    "unicorn/no-array-for-each": "off"
+    "unicorn/no-array-for-each": "off",
+    "unicorn/prefer-top-level-await": "off"
   },
   "settings": {
     "import/parsers": {

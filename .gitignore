@@ -2,3 +2,4 @@ node_modules
 dist
 .history
 .DS_Store
+.build-deps-tmp

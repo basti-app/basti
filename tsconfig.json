@@ -16,5 +16,5 @@
     "noUncheckedIndexedAccess": true,
     "skipLibCheck": true
   },
-  "include": ["./package.json", "./src/**/*"]
+  "include": ["./package.json", "./src/**/*", "./scripts/**/*"]
 }
