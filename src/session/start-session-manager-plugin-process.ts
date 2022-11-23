@@ -1,3 +1,7 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import url from 'node:url';
+
 import { AwsSsmSessionDescriptor } from '../aws/ssm/types.js';
 import {
   OutputOptimizedChildProcess,
@@ -67,7 +71,9 @@ function spawnPluginProcess(
     sessionDescriptor.endpoint,
   ];
 
-  return spawnProcess('session-manager-plugin', args);
+  const binaryPath = getPluginBinaryPath();
+
+  return spawnProcess(binaryPath, args);
 }
 
 function startExitListener(
@@ -101,4 +107,23 @@ function isPortOpened(line: string): boolean {
 
 function isPortInUse(line: string): boolean {
   return line.toLowerCase().includes('address already in use');
+}
+
+function getPluginBinaryPath(): string {
+  const rootDir = path.resolve(
+    path.dirname(url.fileURLToPath(import.meta.url)),
+    '..',
+    '..',
+    '..'
+  );
+  const devDepsDir = path.resolve(rootDir, 'deps');
+  const nodeModulesDir = path.resolve(rootDir, 'node_modules');
+
+  const depsDir = fs.existsSync(devDepsDir) ? devDepsDir : nodeModulesDir;
+
+  return path.resolve(
+    depsDir,
+    `basti-session-manager-binary-${process.platform}-${process.arch}`,
+    'session-manager-plugin'
+  );
 }
