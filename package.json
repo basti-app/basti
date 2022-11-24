@@ -26,7 +26,8 @@
     "check-style": "eslint src",
     "check-deps": "ts-node-esm scripts/check-deps.ts",
     "publish-deps": "ts-node-esm scripts/publish-deps.ts",
-    "prepare-deps": "npm run check-deps || (npm run build-deps && npm run publish-deps)"
+    "prepare-deps": "npm run check-deps || (npm run build-deps && npm run publish-deps)",
+    "prepublish": "npm run build-src && npm run prepare-deps"
   },
   "devDependencies": {
     "@types/inquirer": "8.2.1",
