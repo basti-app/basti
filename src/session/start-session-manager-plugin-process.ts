@@ -4,6 +4,7 @@ import url from 'node:url';
 
 import { AwsSsmSessionDescriptor } from '../aws/ssm/types.js';
 import {
+  ChildProcessExitDescription,
   OutputOptimizedChildProcess,
   spawnProcess,
 } from '../common/child-process.js';
@@ -15,7 +16,7 @@ import {
 } from './session-errors.js';
 
 export interface StartSessionManagerPluginHooks {
-  onExit?: () => void;
+  onExit?: (exitDescription: ChildProcessExitDescription) => void;
   onErrorExit?: (error: SessionManagerPluginExitError) => void;
 }
 
@@ -42,14 +43,8 @@ export async function startSessionManagerPluginProcess({
       line =>
         isPortInUse(line) && reject(new SessionManagerPluginPortInUseError())
     );
-    sessionManager.process.on('exit', (code, signal) =>
-      reject(
-        new SessionManagerPluginExitError(
-          (code ?? signal)!,
-          sessionManager.collectOutput(),
-          sessionManager.collectErrorOutput()
-        )
-      )
+    sessionManager.onExit(exitDescription =>
+      reject(new SessionManagerPluginExitError(exitDescription))
     );
     sessionManager.process.on('error', error =>
       reject(parseProcessError(error))
@@ -80,17 +75,11 @@ function startExitListener(
   sessionManager: OutputOptimizedChildProcess,
   hooks?: StartSessionManagerPluginHooks
 ): void {
-  sessionManager.process.on('exit', (code, signal) => {
-    if (code === 0) {
-      hooks?.onExit?.();
+  sessionManager.onExit(exitDescription => {
+    if (exitDescription.reason === 0) {
+      hooks?.onExit?.(exitDescription);
     } else {
-      hooks?.onErrorExit?.(
-        new SessionManagerPluginExitError(
-          (code ?? signal)!,
-          sessionManager.collectOutput(),
-          sessionManager.collectErrorOutput()
-        )
-      );
+      hooks?.onErrorExit?.(new SessionManagerPluginExitError(exitDescription));
     }
   });
 }

@@ -29,6 +29,7 @@ function handleError(error: unknown): never {
 
   if (error instanceof EarlyExitError) {
     cli.info(error.message);
+    error.debugInfo !== undefined && cli.debug(error.debugInfo);
     process.exit(0);
   }
 

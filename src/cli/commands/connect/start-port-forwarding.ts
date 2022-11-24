@@ -1,5 +1,6 @@
 import { AwsSsmInstanceNotConnectedError } from '#src/aws/ssm/ssm-errors.js';
 import { EarlyExitError } from '#src/cli/error/early-exit-error.js';
+import { ChildProcessExitDescription } from '#src/common/child-process.js';
 import { cli } from '#src/common/cli.js';
 import { fmt } from '#src/common/fmt.js';
 import {
@@ -54,9 +55,12 @@ export async function startPortForwarding({
   }
 }
 
-function handleSessionEnded(): void {
+function handleSessionEnded(
+  exitDescription: ChildProcessExitDescription
+): void {
   throw new EarlyExitError(
-    'Port forwarding session ended. Please, check your AWS Session Manager time out settings'
+    'Port forwarding session ended. Please, check your AWS Session Manager time out settings',
+    formatExitDescription(exitDescription)
   );
 }
 
@@ -103,16 +107,24 @@ function handleSessionStartError(error: unknown, localPort: number): never {
 
 function getSessionManagerExitDetailProvider(): DetailProvider {
   return detailProvider(SessionManagerPluginExitError, error => {
-    const output =
-      error.output.length > 0 ? `\n\nOutput:\n${error.output.trim()}` : '';
-    const errorOutput =
-      error.errorOutput.length > 0
-        ? `\n\nError output:\n${error.errorOutput.trim()}`
-        : '';
-
-    if (typeof error.reason === 'number') {
-      return `session-manager-plugin exited with code ${error.reason}${output}${errorOutput}`;
-    }
-    return `session-manager-plugin exited due to ${error.reason} signal`;
+    return formatExitDescription(error.exitDescription);
   });
+}
+
+function formatExitDescription(
+  exitDescription: ChildProcessExitDescription
+): string {
+  const output =
+    exitDescription.output.length > 0
+      ? `\n\nOutput:\n${exitDescription.output.trim()}`
+      : '';
+  const errorOutput =
+    exitDescription.errorOutput.length > 0
+      ? `\n\nError output:\n${exitDescription.errorOutput.trim()}`
+      : '';
+
+  if (typeof exitDescription.reason === 'number') {
+    return `session-manager-plugin exited with code ${exitDescription.reason}${output}${errorOutput}`;
+  }
+  return `session-manager-plugin exited due to ${exitDescription.reason} signal`;
 }

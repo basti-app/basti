@@ -1,3 +1,4 @@
+import { ChildProcessExitDescription } from '#src/common/child-process.js';
 import { RuntimeError } from '#src/common/runtime-errors.js';
 
 export class SessionManagerPluginNonInstalledError extends RuntimeError {
@@ -13,19 +14,11 @@ export class SessionManagerPluginPortInUseError extends RuntimeError {
 }
 
 export class SessionManagerPluginExitError extends RuntimeError {
-  readonly reason: number | NodeJS.Signals;
-  readonly output: string;
-  readonly errorOutput: string;
+  readonly exitDescription: ChildProcessExitDescription;
 
-  constructor(
-    reason: number | NodeJS.Signals,
-    output: string,
-    errorOutput: string
-  ) {
+  constructor(exitDescription: ChildProcessExitDescription) {
     super('session-manager-plugin exited unexpectedly');
 
-    this.reason = reason;
-    this.output = output;
-    this.errorOutput = errorOutput;
+    this.exitDescription = exitDescription;
   }
 }
