@@ -74,7 +74,7 @@ export class Cli {
     this.print(text);
   }
 
-  info(text: string, symbol: string = fmt.blue('ⓘ')): void {
+  info(text: string, symbol: string = 'ℹ️'): void {
     this.enterContext('info');
 
     this.print(`${symbol} ${text}`);
