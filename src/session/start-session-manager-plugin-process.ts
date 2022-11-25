@@ -108,8 +108,17 @@ function getPluginBinaryPath(): string {
   const devDepsDir = path.resolve(rootDir, 'deps');
   const nodeModulesDir = path.resolve(rootDir, 'node_modules');
 
-  const depsDir = fs.existsSync(devDepsDir) ? devDepsDir : nodeModulesDir;
+  const devPluginBinaryPath = getDepPluginBinaryPath(devDepsDir);
+  const nodeModulesPluginBinaryPath = getDepPluginBinaryPath(nodeModulesDir);
 
+  return fs.existsSync(devPluginBinaryPath)
+    ? devPluginBinaryPath
+    : fs.existsSync(nodeModulesPluginBinaryPath)
+    ? nodeModulesPluginBinaryPath
+    : 'session-manager-plugin';
+}
+
+function getDepPluginBinaryPath(depsDir: string): string {
   return path.resolve(
     depsDir,
     `basti-session-manager-binary-${process.platform}-${process.arch}`,

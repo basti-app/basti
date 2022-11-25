@@ -146,7 +146,7 @@ async function createBastionSecurityGroup(
     const bastionSecurityGroup = await createSecurityGroup({
       name: `${BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX}-${bastionId}`,
       description:
-        'Identifies basti instance and allows connection to the Internet',
+        'Identifies Basti instance and allows connection to the Internet',
       vpcId,
       ingressRules: [],
     });

@@ -94,7 +94,8 @@ function handleSessionStartError(error: unknown, localPort: number): never {
       ),
       detailProvider(
         SessionManagerPluginNonInstalledError,
-        () => 'session-manager-plugin is not installed'
+        () =>
+          'session-manager-plugin was not installed automatically with Basti. You can install it manually following the official manual: https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html'
       ),
       detailProvider(
         SessionManagerPluginPortInUseError,
