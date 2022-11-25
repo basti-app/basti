@@ -1,6 +1,6 @@
 {
   "name": "basti",
-  "version": "0.0.1-wip-12",
+  "version": "0.0.1-wip-13",
   "description": "A CLI tool to help you connect to a database in AWS private subnet.",
   "author": "BohdanPetryshyn",
   "homepage": "https://github.com/BohdanPetryshyn/basti#readme",
@@ -27,7 +27,7 @@
     "check-deps": "ts-node-esm scripts/check-deps.ts",
     "publish-deps": "ts-node-esm scripts/publish-deps.ts",
     "prepare-deps": "npm run check-deps || (npm run build-deps && npm run publish-deps)",
-    "prepublish": "npm run build-src && npm run prepare-deps"
+    "prepare": "npm run build-src && npm run prepare-deps"
   },
   "devDependencies": {
     "@types/inquirer": "8.2.1",
