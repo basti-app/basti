@@ -71,6 +71,7 @@
   "files": [
     "bin/run.js",
     "dist",
-    "package.json"
+    "package.json",
+    "README.md"
   ]
 }
