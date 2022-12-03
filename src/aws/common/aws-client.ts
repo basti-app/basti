@@ -19,7 +19,8 @@ export class AwsClient<T extends Client> {
     Client: ClientConstructor<T>;
     errorHandler?: ErrorHandler<ReturnType<T['send']>>;
   }) {
-    this.client = new Client({ region: 'us-east-1' });
+    // @ts-expect-error
+    this.client = new Client({});
     this.errorHandler = errorHandler;
   }
 
