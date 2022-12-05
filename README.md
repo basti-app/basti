@@ -1,6 +1,6 @@
 # Basti
 
-`basti` is a CLI tool for connecting to DB instances (and not only) in AWS private networks on budget.
+`basti` is a CLI tool for connecting to DB instances (and more) in AWS private networks on a budget.
 
 ## Installation
 
