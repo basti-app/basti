@@ -107,14 +107,18 @@ function getPluginBinaryPath(): string {
   );
   const devDepsDir = path.resolve(rootDir, 'deps');
   const nodeModulesDir = path.resolve(rootDir, 'node_modules');
+  const outerDir = path.resolve(rootDir, '..');
 
   const devPluginBinaryPath = getDepPluginBinaryPath(devDepsDir);
   const nodeModulesPluginBinaryPath = getDepPluginBinaryPath(nodeModulesDir);
+  const outerPluginBinaryPath = getDepPluginBinaryPath(outerDir);
 
   return fs.existsSync(devPluginBinaryPath)
     ? devPluginBinaryPath
     : fs.existsSync(nodeModulesPluginBinaryPath)
     ? nodeModulesPluginBinaryPath
+    : fs.existsSync(outerPluginBinaryPath)
+    ? outerPluginBinaryPath
     : 'session-manager-plugin';
 }
 
