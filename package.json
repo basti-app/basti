@@ -1,6 +1,6 @@
 {
   "name": "basti",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "A CLI tool to help you connect to a database in AWS private subnet.",
   "author": "BohdanPetryshyn",
   "homepage": "https://github.com/BohdanPetryshyn/basti#readme",
