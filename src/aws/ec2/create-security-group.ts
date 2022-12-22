@@ -71,13 +71,14 @@ function toIpPermission(rule: SecurityGroupIngressRule): IpPermission {
     .map(source => ({ GroupId: source.securityGroupId }));
 
   const sources = {
-    IpRanges,
-    UserIdGroupPairs,
+    IpRanges: IpRanges.length > 0 ? IpRanges : undefined,
+    UserIdGroupPairs:
+      UserIdGroupPairs.length > 0 ? UserIdGroupPairs : undefined,
   };
 
   return {
-    FromPort: rule?.ports?.from,
-    ToPort: rule?.ports?.to,
+    FromPort: rule.ports?.from,
+    ToPort: rule.ports?.to,
 
     IpProtocol: rule.ipProtocol,
     ...sources,

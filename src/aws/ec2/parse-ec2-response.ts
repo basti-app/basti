@@ -1,5 +1,6 @@
 import {
   Instance,
+  InstanceStateName,
   RouteTable,
   SecurityGroup,
   Subnet,
@@ -26,12 +27,12 @@ export const parseEc2InstanceResponse: (response: Instance) => AwsEc2Instance =
       ),
       State: z.object({
         Name: z.enum([
-          'pending',
-          'running',
-          'shutting-down',
-          'stopped',
-          'stopping',
-          'terminated',
+          InstanceStateName.pending,
+          InstanceStateName.running,
+          InstanceStateName.shutting_down,
+          InstanceStateName.stopped,
+          InstanceStateName.stopping,
+          InstanceStateName.terminated,
         ] as const),
       }),
       Tags: z.array(AwsTagParser).optional(),

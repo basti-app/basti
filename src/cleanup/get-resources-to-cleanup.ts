@@ -1,3 +1,5 @@
+import { InstanceStateName } from '@aws-sdk/client-ec2';
+
 import { getEc2Instances } from '../aws/ec2/get-ec2-instances.js';
 import { getSecurityGroups } from '../aws/ec2/get-security-groups.js';
 import { getIamRoles } from '../aws/iam/get-iam-role.js';
@@ -83,7 +85,12 @@ async function getBastionInstances(): Promise<string[]> {
         value: '*',
       },
     ],
-    states: ['pending', 'running', 'stopping', 'stopped'],
+    states: [
+      InstanceStateName.pending,
+      InstanceStateName.running,
+      InstanceStateName.stopping,
+      InstanceStateName.stopped,
+    ],
   });
   return bastionInstances.map(instance => instance.id);
 }

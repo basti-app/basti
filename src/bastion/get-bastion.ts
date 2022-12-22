@@ -1,3 +1,5 @@
+import { InstanceStateName } from '@aws-sdk/client-ec2';
+
 import { getEc2Instances } from '../aws/ec2/get-ec2-instances.js';
 import { ManagedResourceTypes } from '../common/resource-type.js';
 import {
@@ -27,7 +29,12 @@ export async function getBastion({
         value: bastionId ?? '*',
       },
     ],
-    states: ['pending', 'running', 'stopping', 'stopped'],
+    states: [
+      InstanceStateName.pending,
+      InstanceStateName.running,
+      InstanceStateName.stopping,
+      InstanceStateName.stopped,
+    ],
     vpcId,
   });
 

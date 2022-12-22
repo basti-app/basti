@@ -27,9 +27,10 @@ export async function getEc2Instances({
     ...(states !== undefined ? [getStateFilter(states)] : []),
     ...(tags !== undefined ? tags.map(tag => getTagFilter(tag)) : []),
   ];
+
   const { Reservations } = await ec2Client.send(
     new DescribeInstancesCommand({
-      Filters: filters,
+      Filters: filters.length > 0 ? filters : undefined,
     })
   );
 

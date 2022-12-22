@@ -22,13 +22,15 @@ export async function getSecurityGroups({
     return [];
   }
 
+  const filters: Filter[] = [
+    ...(tags ? tags.map(tag => getTagFilter(tag)) : []),
+    ...(names ? [getNamesFilter(names)] : []),
+  ];
+
   const { SecurityGroups } = await ec2Client.send(
     new DescribeSecurityGroupsCommand({
       GroupIds: securityGroupIds,
-      Filters: [
-        ...(tags ? tags.map(tag => getTagFilter(tag)) : []),
-        ...(names ? [getNamesFilter(names)] : []),
-      ],
+      Filters: filters.length > 0 ? filters : undefined,
     })
   );
 
