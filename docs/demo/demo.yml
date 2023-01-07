@@ -1,0 +1,274 @@
+# The configurations that used for the recording, feel free to edit them
+config:
+  # Specify a command to be executed
+  # like `/bin/bash -l`, `ls`, or any other commands
+  # the default is bash for Linux
+  # or powershell.exe for Windows
+  command: bash -l
+
+  # Specify the current working directory path
+  # the default is the current working directory path
+  cwd: /Users/bohdanpetryshyn/Documents/source/basti
+
+  # Export additional ENV variables
+  env:
+    recording: true
+
+  # Explicitly set the number of columns
+  # or use `auto` to take the current
+  # number of columns of your shell
+  cols: 100
+
+  # Explicitly set the number of rows
+  # or use `auto` to take the current
+  # number of rows of your shell
+  rows: 15
+
+  # Amount of times to repeat GIF
+  # If value is -1, play once
+  # If value is 0, loop indefinitely
+  # If value is a positive number, loop n times
+  repeat: 0
+
+  # Quality
+  # 1 - 100
+  quality: 100
+
+  # Delay between frames in ms
+  # If the value is `auto` use the actual recording delays
+  frameDelay: auto
+
+  # Maximum delay between frames in ms
+  # Ignored if the `frameDelay` isn't set to `auto`
+  # Set to `auto` to prevent limiting the max idle time
+  # maxIdleTime: 2000
+
+  # The surrounding frame box
+  # The `type` can be null, window, floating, or solid`
+  # To hide the title use the value null
+  # Don't forget to add a backgroundColor style with a null as type
+  frameBox:
+    type: floating
+    title: Basti
+    style:
+      border: 0px black solid
+      # boxShadow: none
+      # margin: 0px
+
+  # Add a watermark image to the rendered gif
+  # You need to specify an absolute path for
+  # the image on your machine or a URL, and you can also
+  # add your own CSS styles
+  watermark:
+    imagePath: null
+    style:
+      position: absolute
+      right: 15px
+      bottom: 15px
+      width: 100px
+      opacity: 0.9
+
+  # Cursor style can be one of
+  # `block`, `underline`, or `bar`
+  cursorStyle: block
+
+  # Font family
+  # You can use any font that is installed on your machine
+  # in CSS-like syntax
+  fontFamily: 'Monaco, Lucida Console, Ubuntu Mono, Monospace'
+
+  # The size of the font
+  fontSize: 12
+
+  # The height of lines
+  lineHeight: 1
+
+  # The spacing between letters
+  letterSpacing: 0
+
+  # Theme
+  theme:
+    background: 'transparent'
+    foreground: '#afafaf'
+    cursor: '#c7c7c7'
+    black: '#232628'
+    red: '#fc4384'
+    green: '#b3e33b'
+    yellow: '#ffa727'
+    blue: '#75dff2'
+    magenta: '#ae89fe'
+    cyan: '#00ffff'
+    white: '#d5d5d0'
+    brightBlack: '#626566'
+    brightRed: '#ff7fac'
+    brightGreen: '#c8ed71'
+    brightYellow: '#ebdf86'
+    brightBlue: '#75dff2'
+    brightMagenta: '#ae89fe'
+    brightCyan: '#b1c6ca'
+    brightWhite: '#f9f9f4'
+
+# Records, feel free to edit them
+records:
+  - delay: 0
+    content: "\e[32m❯\e[39m "
+  - delay: 1500
+    content: b
+  - delay: 100
+    content: a
+  - delay: 100
+    content: s
+  - delay: 100
+    content: t
+  - delay: 100
+    content: i
+  - delay: 100
+    content: ' '
+  - delay: 100
+    content: c
+  - delay: 100
+    content: o
+  - delay: 100
+    content: 'n'
+  - delay: 100
+    content: 'n'
+  - delay: 100
+    content: e
+  - delay: 100
+    content: c
+  - delay: 100
+    content: t
+  - delay: 100
+    content: "\r\n"
+  - delay: 1300
+    content: "\e[32m❯\e[39m Retrieving connection targets:\r\n\e[?25l\e[1G\e[3G\e[36m⠋\e[39m DB instances"
+  - delay: 81
+    content: "\e[1G\e[0K\e[3G\e[36m⠙\e[39m DB instances"
+  - delay: 79
+    content: "\e[1G\e[0K\e[3G\e[36m⠹\e[39m DB instances"
+  - delay: 81
+    content: "\e[1G\e[0K\e[3G\e[36m⠸\e[39m DB instances"
+  - delay: 81
+    content: "\e[1G\e[0K\e[3G\e[36m⠼\e[39m DB instances"
+  - delay: 81
+    content: "\e[1G\e[0K\e[3G\e[36m⠴\e[39m DB instances"
+  - delay: 81
+    content: "\e[1G\e[0K\e[3G\e[36m⠦\e[39m DB instances"
+  - delay: 81
+    content: "\e[1G\e[0K\e[3G\e[36m⠧\e[39m DB instances"
+  - delay: 80
+    content: "\e[1G\e[0K\e[3G\e[36m⠇\e[39m DB instances"
+  - delay: 82
+    content: "\e[1G\e[0K\e[3G\e[?25h\e[32m✔\e[39m DB instances\r\n\e[?25l\e[1G\e[3G\e[36m⠋\e[39m DB clusters"
+  - delay: 81
+    content: "\e[1G\e[0K\e[3G\e[36m⠙\e[39m DB clusters"
+  - delay: 81
+    content: "\e[1G\e[0K\e[3G\e[36m⠹\e[39m DB clusters"
+  - delay: 81
+    content: "\e[1G\e[0K\e[3G\e[36m⠸\e[39m DB clusters"
+  - delay: 76
+    content: "\e[1G\e[0K\e[3G\e[?25h\e[32m✔\e[39m DB clusters\r\n"
+  - delay: 5
+    content: "\e[?25l"
+  - delay: 8
+    content: "\e[32m?\e[39m \e[1mSelect target to connect to\e[22m\e[0m \e[0m\e[2m(Use arrow keys)\e[22m\r\n  \e[2mDatabase clusters:\e[22m\r\n\e[36m❯ tf-20220312113340880800000001\e[39m \r\n  \e[2m──────────────\e[22m\r\n  Custom \e[9D\e[9C"
+  - delay: 1345
+    content: "\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect target to connect to\e[22m\e[0m \e[0m\e[36mtf-20220312113340880800000001\e[39m\e[59D\e[59C\r\n\e[?25h\e[32m?\e[39m \e[1mLocal port number\e[22m\e[0m \e[0m\e[20D\e[20C"
+  - delay: 100
+    content: "\e[2K\e[G\e[32m?\e[39m \e[1mLocal port number\e[22m\e[0m \e[0m5\e[21D\e[21C"
+  - delay: 100
+    content: "\e[2K\e[G\e[32m?\e[39m \e[1mLocal port number\e[22m\e[0m \e[0m54\e[22D\e[22C"
+  - delay: 100
+    content: "\e[2K\e[G\e[32m?\e[39m \e[1mLocal port number\e[22m\e[0m \e[0m543\e[23D\e[23C"
+  - delay: 100
+    content: "\e[2K\e[G\e[32m?\e[39m \e[1mLocal port number\e[22m\e[0m \e[0m5432\e[24D\e[24C"
+  - delay: 628
+    content: "\e[2K\e[G\e[32m?\e[39m \e[1mLocal port number\e[22m\e[0m \e[0m\e[36m5432\e[39m\e[24D\e[24C\r\n\e[?25l\e[1G\e[1G\e[36m⠋\e[39m Checking target state"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠙\e[39m Checking target state"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠹\e[39m Checking target state"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠸\e[39m Checking target state"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠼\e[39m Checking target state"
+  - delay: 80
+    content: "\e[1G\e[0K\e[36m⠴\e[39m Checking target state"
+  - delay: 80
+    content: "\e[1G\e[0K\e[36m⠦\e[39m Checking target state"
+  - delay: 80
+    content: "\e[1G\e[0K\e[36m⠧\e[39m Checking target state"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠇\e[39m Checking target state"
+  - delay: 57
+    content: "\e[1G\e[0K\e[?25h\e[?25l\e[1G\e[36m⠋\e[39m Retrieving bastion id from target"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠙\e[39m Retrieving bastion id from target"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠹\e[39m Retrieving bastion id from target"
+  - delay: 80
+    content: "\e[1G\e[0K\e[36m⠸\e[39m Retrieving bastion id from target"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠼\e[39m Retrieving bastion id from target"
+  - delay: 40
+    content: "\e[1G\e[0K\e[?25h\e[?25l\e[1G\e[36m⠋\e[39m Retrieving bastion"
+  - delay: 82
+    content: "\e[1G\e[0K\e[36m⠙\e[39m Retrieving bastion"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠹\e[39m Retrieving bastion"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠸\e[39m Retrieving bastion"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠼\e[39m Retrieving bastion"
+  - delay: 42
+    content: "\e[1G\e[0K\e[?25h\e[?25l\e[1G\e[36m⠋\e[39m Starting port forwarding session"
+  - delay: 80
+    content: "\e[1G\e[0K\e[36m⠙\e[39m Starting port forwarding session"
+  - delay: 80
+    content: "\e[1G\e[0K\e[36m⠹\e[39m Starting port forwarding session"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠸\e[39m Starting port forwarding session"
+  - delay: 80
+    content: "\e[1G\e[0K\e[36m⠼\e[39m Starting port forwarding session"
+  - delay: 82
+    content: "\e[1G\e[0K\e[36m⠴\e[39m Starting port forwarding session"
+  - delay: 80
+    content: "\e[1G\e[0K\e[36m⠦\e[39m Starting port forwarding session"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠧\e[39m Starting port forwarding session"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠇\e[39m Starting port forwarding session"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠏\e[39m Starting port forwarding session"
+  - delay: 80
+    content: "\e[1G\e[0K\e[36m⠋\e[39m Starting port forwarding session"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠙\e[39m Starting port forwarding session"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠹\e[39m Starting port forwarding session"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠸\e[39m Starting port forwarding session"
+  - delay: 80
+    content: "\e[1G\e[0K\e[36m⠼\e[39m Starting port forwarding session"
+  - delay: 80
+    content: "\e[1G\e[0K\e[36m⠴\e[39m Starting port forwarding session"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠦\e[39m Starting port forwarding session"
+  - delay: 80
+    content: "\e[1G\e[0K\e[36m⠧\e[39m Starting port forwarding session"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠇\e[39m Starting port forwarding session"
+  - delay: 80
+    content: "\e[1G\e[0K\e[36m⠏\e[39m Starting port forwarding session"
+  - delay: 80
+    content: "\e[1G\e[0K\e[36m⠋\e[39m Starting port forwarding session"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠙\e[39m Starting port forwarding session"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠹\e[39m Starting port forwarding session"
+  - delay: 81
+    content: "\e[1G\e[0K\e[36m⠸\e[39m Starting port forwarding session"
+  - delay: 68
+    content: "\e[1G\e[0K\e[?25h\r\n\r\n\U0001F680 Port \e[36m5432\e[39m is open for your connections\r\n"
+  - delay: 2000
+    content: ' '
