@@ -1,18 +1,34 @@
-# Basti
+<h1 align="center">Basti</h1>
 
-Basti is a CLI tool for connecting to DB instances and other resources in AWS private networks on a budget.
+<div align="center">
+  <a href="https://makeapullrequest.com/">
+    <img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat">
+  </a>
+  <a href="https://www.npmjs.com/package/basti">
+    <img alt="NPM Package" src="https://img.shields.io/npm/v/basti?color=blue">
+  </a>
+  <a href="./LICENSE">
+    <img alt="GitHub" src="https://img.shields.io/github/license/BohdanPetryshyn/basti">
+  </a>
+</div>
 
-![demo](./docs/demo/demo.gif)
+<br/>
+
+Basti _(from [**Basti**on Host](https://en.wikipedia.org/wiki/Bastion_host))_ is a CLI tool for accessing DB instances and other AWS resources in private networks almost at no cost.
+
+<br/>
+
+<div align="center">
+<img alt="Demo" src="./docs/demo/demo.gif">
+</div>
 
 ## How it works
 
-In order to establish a connection, Basti sets up a so called bastion EC2 instance in the same VPC as the connection target. The instance is then used together with the AWS Session Manager to establish a secure port forwarding session and make the target available on your localhost. Basti takes care of keeping the bastion instance stopped when it's not used to make the solution cost as low as 0.001 USD per minute of connection plus 0.01 USD per month for maintaining the instance in a stopped state. Please, refer to the [Security](#security) section for more information on the secureness of using Basti.
+In order to establish a connection, Basti sets up a so called _bastion EC2 instance_ in the same VPC as the connection target. The instance is then used together with _AWS Session Manager_ to establish a secure _port forwarding session_ and make the target available on your _localhost_. Basti takes care of keeping the bastion instance stopped when it's not used to make the solution cost as low as **≈0.01 USD** per hour of connection plus **≈0.01 USD** per month of maintaining the instance in a stopped state. Please, refer to the [Security](#security) section for more information on the secureness of using Basti.
 
-TODO: calculate the actual usage prices.
+## Basic usage
 
-## Simple usage
-
-First, initialize your connection target for use with Basti. You only need to do this once.
+First, _initialize_ your connection target for use with Basti. You only need to do this _once_.
 
 ```sh
 basti init
@@ -22,7 +38,7 @@ The command will set up all the infrastructure required to start a connection. Y
 
 <br/>
 
-Now, you can connect to your target.
+Now, you can _connect_ to your target.
 
 ```sh
 basti connect
@@ -32,7 +48,7 @@ This command will establish a secure port forwarding session and make the target
 
 <br/>
 
-Finally, you can use your target the same way as it was running on your localhost.
+Finally, you can use the target the same way as it was running on your _localhost_.
 
 ```sh
 psql -h localhost -p 5432
@@ -40,7 +56,7 @@ psql -h localhost -p 5432
 
 <br/>
 
-You can remove all the resources created by Basti in you AWS account.
+You can _remove all the resources_ created by Basti in you AWS account.
 
 ```sh
 basti cleanup
