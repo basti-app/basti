@@ -24,7 +24,13 @@ Basti _(from [**Basti**on Host](https://en.wikipedia.org/wiki/Bastion_host))_ is
 
 ## How it works
 
-In order to establish a connection, Basti sets up a so called _bastion EC2 instance_ in the same VPC as the connection target. The instance is then used together with _AWS Session Manager_ to establish a secure _port forwarding session_ and make the target available on your _localhost_. Basti takes care of keeping the bastion instance stopped when it's not used to make the solution cost as low as **≈0.01 USD** per hour of connection plus **≈0.01 USD** per month of maintaining the instance in a stopped state. Please, refer to the [Security](#security) section for more information on the secureness of using Basti.
+- Basti sets up a so called _bastion EC2 instance_ in the connection target's VPC.
+
+- The bastion instance is used together with AWS Session Manager port forwarding functionality to make the target available on your _localhost_.
+
+- Basti takes care of keeping the bastion instance stopped when it's not used to make the solution cost as low as **≈0.01 USD** per hour of connection plus **≈0.80 USD** per month of maintaining the instance in a stopped state.
+
+- Security completely relies on AWS Session Manager and IAM policies. The bastion instance is not accessible from the Internet and no SSH keys are used.
 
 ## Basic usage
 
