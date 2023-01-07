@@ -14,12 +14,14 @@
 
 <br/>
 
-Basti _(from [**Basti**on Host](https://en.wikipedia.org/wiki/Bastion_host))_ is a CLI tool for accessing DB instances and other AWS resources in private networks almost at no cost.
+<div align="center">
+  Basti <em>(from <a href="https://en.wikipedia.org/wiki/Bastion_host"><strong>Basti</strong>on Host</a>)</em> is a CLI tool for accessing DB instances and other AWS resources in private networks almost at no cost.
+</div>
 
 <br/>
 
 <div align="center">
-<img alt="Demo" src="./docs/demo/demo.gif">
+  <img alt="Demo" src="./docs/demo/demo.gif">
 </div>
 
 ## How it works
