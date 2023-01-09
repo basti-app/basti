@@ -7,7 +7,7 @@
   <a href="https://www.npmjs.com/package/basti">
     <img alt="NPM Package" src="https://img.shields.io/npm/v/basti?color=blue">
   </a>
-  <a href="./LICENSE">
+  <a href="https://github.com/BohdanPetryshyn/basti/blob/main/LICENSE">
     <img alt="GitHub" src="https://img.shields.io/github/license/BohdanPetryshyn/basti">
   </a>
 </div>
@@ -114,3 +114,7 @@ basti connect --rds-instance your-instance-id --local-port your-port
 ```
 
 Use `basti <command> --help` to see all the available options for `basti connect` and other commands.
+
+## License
+
+Usage is provided under the MIT License. See [LICENSE](https://github.com/BohdanPetryshyn/basti/blob/main/LICENSE) for the full details.
