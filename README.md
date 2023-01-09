@@ -15,7 +15,7 @@
 <br/>
 
 <div align="center">
-  Basti <em>(from <a href="https://en.wikipedia.org/wiki/Bastion_host"><strong>Basti</strong>on Host</a>)</em> is a CLI tool for accessing DB instances and other AWS resources in private networks almost at no cost.
+  <a href="https://github.com/BohdanPetryshyn/basti">Basti</a> <em>(from <a href="https://en.wikipedia.org/wiki/Bastion_host"><strong>Basti</strong>on Host</a>)</em> is a CLI tool for accessing DB instances and other AWS resources in private networks almost at no cost. 
 </div>
 
 <br/>
@@ -23,6 +23,10 @@
 <div align="center">
   <img alt="Demo" src="./docs/demo/demo.gif">
 </div>
+
+## Why Basti?
+
+With [Basti](https://github.com/BohdanPetryshyn/basti), you can access your RDS/Aurora/Elasticache/EC2 instance in a private VPC subnet from local machine or CI/CD pipeline almost for free!
 
 ## How it works
 
