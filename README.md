@@ -90,6 +90,15 @@ basti cleanup
 
 The list of resources will be displayed and you will be prompted to confirm the cleanup.
 
+## Custom connection target
+
+Basti provides first class support for RDS instances and Aurora clusters. However, you can use Basti to connect to any other target in your AWS VPC (e.g. Elasticache instance, EC2 instance, etc.).
+
+To connect to a custom target, select the `Custom` option when prompted for a target to initialize or connect to. You will be prompted for the target's VPC, IP address and port.
+
+> **Note**  
+> Feel free to open an issue or a pull request if you want to extend the list of natively supported targets 😉
+
 ## Using Basti in CI/CD pipelines
 
 Using interactive mode is convenient when you're getting used to Basti. However, in Continuous Integration and Continuous Delivery (CI/CD) pipelines, you will probably want to disable interactivity and pass all the options as command line arguments.
