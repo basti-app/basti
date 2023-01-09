@@ -21,7 +21,7 @@
 <br/>
 
 <div align="center">
-  <img alt="Demo" src="./docs/demo/demo.gif">
+  <img alt="Demo" src="https://user-images.githubusercontent.com/45905756/211385579-3ac54ad5-7c90-4b68-9b22-239f4b26ad61.gif">
 </div>
 
 ## Why Basti?
