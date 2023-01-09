@@ -26,7 +26,7 @@
 
 ## Why Basti?
 
-With [Basti](https://github.com/BohdanPetryshyn/basti), you can access your RDS/Aurora/Elasticache/EC2 instance in a private VPC subnet from local machine or CI/CD pipeline almost for free!
+With [Basti](https://github.com/BohdanPetryshyn/basti), you can securely access your RDS/Aurora/Elasticache/EC2 instance in a private VPC subnet from a local machine or CI/CD pipeline almost for free!
 
 ## How it works
 
