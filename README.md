@@ -109,4 +109,4 @@ Take for example the non-interactive form of the `basti connect` command:
 basti connect --rds-instance your-instance-id --local-port your-port
 ```
 
-Use the `basti <command> --help` to see all the available options for `basti connect` and other commands.
+Use `basti <command> --help` to see all the available options for `basti connect` and other commands.
