@@ -34,6 +34,14 @@
 
 - Security completely relies on AWS Session Manager and IAM policies. The bastion instance is not accessible from the Internet, and no SSH keys are used.
 
+## Installation
+
+```sh
+npm install --global basti
+```
+
+Other, NodeJS-independent, installation options are coming soon!
+
 ## Basic usage
 
 Basti uses AWS SDK and relies on credentials to be configured in your system. You can use any of [the methods](https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/setting-credentials-node.html) supported by AWS SDK to configure credentials.
@@ -82,10 +90,14 @@ basti cleanup
 
 The list of resources will be displayed and you will be prompted to confirm the cleanup.
 
-## Installation
+## Using Basti in CI/CD pipelines
+
+Using interactive mode is convenient when you're getting used to Basti. However, in Continuous Integration and Continuous Delivery (CI/CD) pipelines, you will probably want to disable interactivity and pass all the options as command line arguments.
+
+Take for example the non-interactive form of the `basti connect` command:
 
 ```sh
-npm install --global basti
+basti connect --rds-instance your-instance-id --local-port your-port
 ```
 
-Other, NodeJS-independent, installation options are coming soon!
+Use the `basti <command> --help` to see all the available options for `basti connect` and other commands.
