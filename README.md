@@ -50,8 +50,7 @@ Other, NodeJS-independent, installation options are coming soon!
 
 Basti uses AWS SDK and relies on credentials to be configured in your system. You can use any of [the methods](https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/setting-credentials-node.html) supported by AWS SDK to configure credentials.
 
-> **Note**  
-> You can expect Basti to work if you can use AWS CLI in your terminal.
+> 💡 You can expect Basti to work if you can use AWS CLI in your terminal.
 
 ### Initialize target
 
@@ -81,8 +80,7 @@ Finally, you can use the target same way as it was running on your _localhost_ a
 psql -h localhost -p 5432
 ```
 
-> **Note**  
-> _psql_, the PostgreSQL client, is used as an example here. Basti can be used to connect to any type of database or other service as long as the communication is done over TCP.
+> 💡 _psql_, the PostgreSQL client, is used as an example here. Basti can be used to connect to any type of database or other services as long as the communication is done over TCP.
 
 ### Cleanup (optional)
 
@@ -100,8 +98,7 @@ Basti provides first class support for RDS instances and Aurora clusters. Howeve
 
 To connect to a custom target, select the `Custom` option when prompted for a target to initialize or connect to. You will be prompted for the target's VPC, IP address and port.
 
-> **Note**  
-> Feel free to open an issue or a pull request if you want to extend the list of natively supported targets 😉
+> 🤝 Feel free to open an issue or a pull request if you want to extend the list of natively supported targets
 
 ## Using Basti in CI/CD pipelines
 
