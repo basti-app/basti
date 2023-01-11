@@ -15,7 +15,10 @@
 <br/>
 
 <div align="center">
-  <a href="https://github.com/BohdanPetryshyn/basti">Basti</a> <em>(from <a href="https://en.wikipedia.org/wiki/Bastion_host"><strong>Basti</strong>on Host</a>)</em> is a CLI tool for accessing DB instances and other AWS resources in private networks almost at no cost. 
+  <a href="https://github.com/BohdanPetryshyn/basti">Basti</a> <em>(from <a href="https://en.wikipedia.org/wiki/Bastion_host"><strong>Basti</strong>on Host</a>)</em> is a CLI tool for securely accessing your DB instances and other AWS resources in private networks almost at no cost. 
+  <br/>
+  <br/>
+  💵 <em>No idle costs.</em>  🔑 <em>No SSH keys.</em> 🔒 <em>Fully IAM-driven.</em>
 </div>
 
 <br/>
@@ -24,19 +27,21 @@
   <img alt="Demo" src="https://user-images.githubusercontent.com/45905756/211385579-3ac54ad5-7c90-4b68-9b22-239f4b26ad61.gif">
 </div>
 
+<br/>
+
 ## Why Basti?
 
-With [Basti](https://github.com/BohdanPetryshyn/basti), you can securely access your RDS/Aurora/Elasticache/EC2 instance in a private VPC subnet from a local machine or CI/CD pipeline almost for free!
+With [Basti](https://github.com/BohdanPetryshyn/basti), you can securely connect to your RDS/Aurora/Elasticache/EC2 instances in private VPC subnets from a local machine or CI/CD pipeline almost for free!
 
 ## How it works
 
-- Basti sets up a so called _bastion EC2 instance_ in the connection target's VPC.
+- 🏰 Basti sets up a so called _bastion EC2 instance_ in the connection target's VPC.
 
-- The bastion instance is used with AWS Session Manager port forwarding capability to make the target available on your _localhost_.
+- 🧑‍💻 The bastion instance is used with AWS Session Manager port forwarding capability to make the target available on your _localhost_.
 
-- Basti takes care of keeping the bastion instance stopped when it's not used to make the solution cost as low as **≈0.01 USD** per hour of connection plus **≈0.80 USD** per month of maintaining the instance in a stopped state.
+- 💵 Basti takes care of keeping the bastion instance stopped when it's not used to make the solution cost as low as **≈ 0.01 USD** per hour of connection plus **≈ 0.80 USD** per month of maintaining the instance in a stopped state.
 
-- Security completely relies on AWS Session Manager and IAM policies. The bastion instance is not accessible from the Internet, and no SSH keys are used.
+- 🔒 Security completely relies on AWS Session Manager and IAM policies. The bastion instance is not accessible from the Internet and no SSH keys are used.
 
 ## Installation
 
@@ -92,7 +97,7 @@ basti cleanup
 
 The list of resources will be displayed and you will be prompted to confirm the cleanup.
 
-## Custom connection target
+## Custom connection targets
 
 Basti provides first class support for RDS instances and Aurora clusters. However, you can use Basti to connect to any other target in your AWS VPC (e.g. Elasticache instance, EC2 instance, etc.).
 
