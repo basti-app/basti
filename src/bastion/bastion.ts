@@ -23,3 +23,5 @@ export const BASTION_INSTANCE_PROFILE_PATH = BASTION_INSTANCE_ROLE_PATH;
 
 export const BASTION_INSTANCE_ID_TAG_NAME = 'basti:id';
 export const BASTION_INSTANCE_IN_USE_TAG_NAME = 'basti:in-use';
+export const BASTION_INSTANCE_UPDATING_TAG_NAME = 'basti:updating';
+export const BASTION_INSTANCE_UPDATED_TAG_NAME = 'basti:updated';
