@@ -26,6 +26,10 @@ export async function ensureBastionRunning({
           cli.progressStart(
             `Bastion instance is stopping. Waiting instance to stop`
           ),
+        onWaitingInstanceToUpdate: () =>
+          cli.progressStart(
+            `Bastion instance is updating. This may take a few minutes`
+          ),
         onStartingInstance: () =>
           cli.progressStart(
             `Bastion instance is stopped. Starting bastion instance`

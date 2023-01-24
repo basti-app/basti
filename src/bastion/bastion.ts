@@ -1,3 +1,5 @@
+import { InstanceStateName } from '@aws-sdk/client-ec2';
+
 import { AwsEc2Instance } from '../aws/ec2/types/aws-ec2-instance.js';
 
 export interface Bastion {
@@ -5,14 +7,13 @@ export interface Bastion {
 
   instance: AwsEc2Instance;
 
+  state: BastionState;
+
   securityGroupId: string;
   securityGroupName: string;
 }
 
-export interface BastionState {
-  id: string;
-  instance: AwsEc2Instance;
-}
+export type BastionState = InstanceStateName | 'updating';
 
 export const BASTION_INSTANCE_NAME_PREFIX = 'basti-instance';
 export const BASTION_INSTANCE_ROLE_NAME_PREFIX = BASTION_INSTANCE_NAME_PREFIX;

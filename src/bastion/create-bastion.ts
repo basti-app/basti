@@ -1,3 +1,5 @@
+import { InstanceStateName } from '@aws-sdk/client-ec2';
+
 import { createEc2Instance } from '../aws/ec2/create-ec2-instance.js';
 import { createSecurityGroup } from '../aws/ec2/create-security-group.js';
 import { AwsEc2Instance } from '../aws/ec2/types/aws-ec2-instance.js';
@@ -75,6 +77,8 @@ export async function createBastion({
     id: bastionId,
 
     instance: bastionInstance,
+
+    state: InstanceStateName.running,
 
     securityGroupId: bastionSecurityGroup.id,
     securityGroupName: bastionSecurityGroup.name,
