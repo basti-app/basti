@@ -62,14 +62,18 @@ export async function createBastion({
     hooks
   );
 
-  await createBastionRoleInlinePolicies(bastionRole.name, hooks);
-
   const bastionInstance = await createBastionInstance(
     bastionId,
     bastionImageId,
     bastionRole,
     subnetId,
     bastionSecurityGroup,
+    hooks
+  );
+
+  await createBastionRoleInlinePolicies(
+    bastionRole.name,
+    bastionInstance.id,
     hooks
   );
 
@@ -127,12 +131,14 @@ async function createBastionRole(
 
 async function createBastionRoleInlinePolicies(
   bastionRoleName: string,
+  bastionInstanceId: string,
   hooks?: CreateBastionHooks
 ): Promise<void> {
   try {
     hooks?.onCreatingInlinePolicies?.();
     await bastionRoleOps.createBastionRoleInlinePolicies({
       bastionRoleName,
+      bastionInstanceId,
     });
     hooks?.onInlinePoliciesCreated?.();
   } catch (error) {
