@@ -83,5 +83,5 @@ write_files:
   - path: /etc/cron.d/stop-if-not-used
     owner: root:root
     permissions: "0444"
-    content: "* * * * * root /bin/bash /opt/basti/stop-if-not-used.sh &>> /var/log/basti/stop-if-not-used.log\\n"
+    content: "* * * * * root flock -xn /var/lock/stop-if-not-used.lock -c /opt/basti/stop-if-not-used.sh &>> /var/log/basti/stop-if-not-used.log\\n"
 `;
