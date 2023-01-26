@@ -13,6 +13,7 @@ export interface CreateBastionRoleInput {
 
 export interface CreateBastionInlinePoliciesInput {
   bastionRoleName: string;
+  bastionInstanceId: string;
 }
 
 export async function createBastionRole({
@@ -27,6 +28,7 @@ export async function createBastionRole({
 
 export async function createBastionRoleInlinePolicies({
   bastionRoleName,
+  bastionInstanceId,
 }: CreateBastionInlinePoliciesInput): Promise<void> {
   await createIamInlinePolicy({
     roleName: bastionRoleName,
@@ -37,7 +39,7 @@ export async function createBastionRoleInlinePolicies({
   await createIamInlinePolicy({
     roleName: bastionRoleName,
     policyName: 'ec2-instance-access',
-    policyDocument: getAwsInstanceAccessPolicy(),
+    policyDocument: getAwsInstanceAccessPolicy(bastionInstanceId),
   });
 }
 
@@ -66,7 +68,7 @@ function getSessionManagerAccessPolicy(): string {
   });
 }
 
-function getAwsInstanceAccessPolicy(): string {
+function getAwsInstanceAccessPolicy(bastionInstanceId: string): string {
   return JSON.stringify({
     Version: '2012-10-17',
     Statement: [
@@ -74,6 +76,11 @@ function getAwsInstanceAccessPolicy(): string {
         Effect: 'Allow',
         Action: ['ec2:DescribeInstances'],
         Resource: '*', // ec2:DescribeInstances does not support resource-level permissions
+      },
+      {
+        Effect: 'Allow',
+        Action: ['ec2:CreateTags'],
+        Resource: `arn:aws:ec2:*:*:instance/${bastionInstanceId}`,
       },
     ],
   });

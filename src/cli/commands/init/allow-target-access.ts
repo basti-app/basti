@@ -50,9 +50,9 @@ export async function allowTargetAccess({
       },
     });
     cli.success(
-      `The target has been initialized to use with Basti. Use ${fmt.code(
+      `The target has been initialized to use with Basti. It's recommended to give AWS a few minutes to propagate the changes before connecting with the ${fmt.code(
         'basti connect'
-      )} to establish a connection`
+      )} command`
     );
   } catch (error) {
     subCli.progressFailure();

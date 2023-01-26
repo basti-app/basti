@@ -13,6 +13,7 @@ import { Bastion } from './bastion.js';
 interface EnsureBastionRunningHooks {
   onWaitingInstanceToStart?: () => void;
   onWaitingInstanceToStop?: () => void;
+  onWaitingInstanceToUpdate?: () => void;
   onStartingInstance?: () => void;
   onInstanceStarted?: () => void;
 }
@@ -26,9 +27,9 @@ export async function ensureBastionRunning({
   bastion,
   hooks,
 }: EnsureBastionRunningInput): Promise<void> {
-  const { instance } = bastion;
+  const { instance, state } = bastion;
 
-  switch (instance.state) {
+  switch (state) {
     case 'running':
       hooks?.onInstanceStarted?.();
       return;
@@ -39,6 +40,11 @@ export async function ensureBastionRunning({
       hooks?.onInstanceStarted?.();
       return;
 
+    case 'updating':
+      hooks?.onWaitingInstanceToUpdate?.();
+      await waitEc2InstanceIsStopped({ instanceId: instance.id });
+
+    // eslint-disable-next-line no-fallthrough
     case 'stopping':
       hooks?.onWaitingInstanceToStop?.();
       await waitEc2InstanceIsStopped({ instanceId: instance.id });

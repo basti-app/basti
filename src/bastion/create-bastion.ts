@@ -1,3 +1,5 @@
+import { InstanceStateName } from '@aws-sdk/client-ec2';
+
 import { createEc2Instance } from '../aws/ec2/create-ec2-instance.js';
 import { createSecurityGroup } from '../aws/ec2/create-security-group.js';
 import { AwsEc2Instance } from '../aws/ec2/types/aws-ec2-instance.js';
@@ -60,8 +62,6 @@ export async function createBastion({
     hooks
   );
 
-  await createBastionRoleInlinePolicies(bastionRole.name, hooks);
-
   const bastionInstance = await createBastionInstance(
     bastionId,
     bastionImageId,
@@ -71,10 +71,18 @@ export async function createBastion({
     hooks
   );
 
+  await createBastionRoleInlinePolicies(
+    bastionRole.name,
+    bastionInstance.id,
+    hooks
+  );
+
   return {
     id: bastionId,
 
     instance: bastionInstance,
+
+    state: InstanceStateName.running,
 
     securityGroupId: bastionSecurityGroup.id,
     securityGroupName: bastionSecurityGroup.name,
@@ -123,12 +131,14 @@ async function createBastionRole(
 
 async function createBastionRoleInlinePolicies(
   bastionRoleName: string,
+  bastionInstanceId: string,
   hooks?: CreateBastionHooks
 ): Promise<void> {
   try {
     hooks?.onCreatingInlinePolicies?.();
     await bastionRoleOps.createBastionRoleInlinePolicies({
       bastionRoleName,
+      bastionInstanceId,
     });
     hooks?.onInlinePoliciesCreated?.();
   } catch (error) {
