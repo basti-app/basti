@@ -37,11 +37,11 @@ With [Basti](https://github.com/BohdanPetryshyn/basti), you can securely connect
 
 - 🏰 Basti sets up a so called _bastion EC2 instance_ in the connection target's VPC.
 
-- 🧑‍💻 The bastion instance is used with AWS Session Manager port forwarding capability to make the target available on your _localhost_.
+- 🧑‍💻 The bastion instance is used with [AWS Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html) port forwarding capability to make the target available on your _localhost_.
 
 - 💵 Basti takes care of keeping the bastion instance stopped when it's not used to make the solution cost as low as **≈ 0.01 USD** per hour of connection plus **≈ 0.80 USD** per month of maintaining the instance in a stopped state.
 
-- 🔒 Security completely relies on AWS Session Manager and IAM policies. The bastion instance is not accessible from the Internet and no SSH keys are used.
+- 🔒 [Security](#security) completely relies on AWS Session Manager and IAM policies. The bastion instance is not accessible from the Internet and no SSH keys are used.
 
 ## Installation
 
@@ -116,6 +116,24 @@ basti connect --rds-instance your-instance-id --local-port your-port
 ```
 
 Use `basti <command> --help` to see all the available options for `basti connect` and other commands.
+
+## Security
+
+### Network
+
+The bastion EC2 instance reachability from the Internet is completely disabled with AWS Security Groups configuration. _No ports are open for inbound traffic._ The bastion instance is only accessible through [AWS Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html).
+
+Basti automatically adjusts the target's Security Group to allow inbound traffic from the bastion instance's Security Group.
+
+### Access control
+
+[AWS Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html), which is used by Basti to establish a port forwarding session, doesn't use SSH keys for access control. Instead, it relies on [AWS IAM](https://aws.amazon.com/iam/) users and their permissions in your AWS account. This also means that [AWS CloudTrail](https://aws.amazon.com/cloudtrail/) could be used to _audit Basti usage_.
+
+### Software
+
+Basti uses the latest Amazon Linux 2 - Kernel 5.10 AMI available at the initialization time (`basti init` command) for the bastion instance.
+
+The bastion instance is being stopped when it's not used for some short period of time. These shutdowns are also used to _update the bastion instance's software packages and OS kernel_. By default, the updates happen once a day but not more often than the bastion instance is used.
 
 ## License
 
