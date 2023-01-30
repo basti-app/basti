@@ -105,7 +105,7 @@ To connect to a custom target, select the `Custom` option when prompted for a ta
 
 > 🤝 Feel free to open an issue or a pull request if you want to extend the list of natively supported targets
 
-## Using Basti in CI/CD pipelines
+## Basti in CI/CD pipelines
 
 Using interactive mode is convenient when you're getting used to Basti. However, in Continuous Integration and Continuous Delivery (CI/CD) pipelines, you will probably want to disable interactivity and pass all the options as command line arguments.
 
@@ -116,6 +116,64 @@ basti connect --rds-instance your-instance-id --local-port your-port
 ```
 
 Use `basti <command> --help` to see all the available options for `basti connect` and other commands.
+
+## Basti in teams and organizations
+
+Basti was designed with organizational usage patterns in mind. The bastion instance and other infrastructure created by Basti is reused across all the users in your organization.
+
+### Minimal IAM permissions
+
+Basti commands require different sets of IAM permissions. `basti init` needs broad permissions to set up all the infrastructure required to start a connection. `basti connect`, on the other hand, requires only minimal permissions to start a connection. This means that the AWS account administrator can run the `basti init` command once and then grant the minimal permissions to the IAM users who need to start connections.
+
+<details>
+<summary> Minimal IAM policy for connection</summary>
+
+The following command is optimized for minimal permissions required to start a connection. It doesn't need to retrieve the target information as it's passed as command line arguments.
+
+```sh
+basti connect --custom-target-vpc your-vpc-id --custom-target-host your-target-host --custom-target-port your-target-port --local-port your-local-port
+```
+
+Minimal policy:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:StartInstances",
+      "Resource": "arn:aws:ec2:<your-region>:<your-account-id>:instance/<your-basti-instance-id>"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:CreateTags",
+      "Resource": "arn:aws:ec2:<your-region>:<your-account-id>:instance/<your-basti-instance-id>"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ssm:StartSession",
+      "Resource": [
+        "arn:aws:ssm:*:*:document/AWS-StartPortForwardingSessionToRemoteHost",
+        "arn:aws:ec2:<your-region>:<your-account-id>:instance/<your-basti-instance-id>"
+      ]
+    }
+  ]
+}
+```
+
+</details>
+
+### Usage audit
+
+Since Basti uses IAM for access control, the connection history, along with the _responsible IAM user_ and all the connection details, can be audited using AWS CloudTrail by filtering on the "StartSession" event. Please, refer to the [AWS CloudTrail documentation](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html) for more details.
+
+A simple connections history can also be found in the AWS Session Manager history. See [AWS Session Manager documentation](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-view-history.html) for more details.
 
 ## Security
 
