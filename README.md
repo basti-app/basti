@@ -177,6 +177,8 @@ A simple connections history can also be found in the AWS Session Manager histor
 
 ## Security
 
+Security is a top priority for Basti. The following sections describe the security measures taken by Basti.
+
 ### Network
 
 The bastion EC2 instance reachability from the Internet is completely disabled with AWS Security Groups configuration. _No ports are open for inbound traffic._ The bastion instance is only accessible through [AWS Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html).
