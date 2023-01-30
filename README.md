@@ -29,6 +29,31 @@
 
 <br/>
 
+<!-- The following toc is generated with the Markdown All in One VSCode extension (https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one) -->
+<!-- omit from toc -->
+## Table of contents
+- [Why Basti?](#why-basti)
+- [How it works](#how-it-works)
+- [Installation](#installation)
+- [Basic usage](#basic-usage)
+  - [Initialize target](#initialize-target)
+  - [Connect to target](#connect-to-target)
+  - [Use target on _localhost_](#use-target-on-localhost)
+  - [Cleanup (optional)](#cleanup-optional)
+- [Custom connection targets](#custom-connection-targets)
+- [Basti in CI/CD pipelines](#basti-in-cicd-pipelines)
+- [Basti in teams and organizations](#basti-in-teams-and-organizations)
+  - [Minimal IAM permissions](#minimal-iam-permissions)
+  - [Usage audit](#usage-audit)
+- [Security](#security)
+  - [Network](#network)
+  - [Access control](#access-control)
+  - [Software](#software)
+- [License](#license)
+
+<br/>
+
+
 ## Why Basti?
 
 With [Basti](https://github.com/BohdanPetryshyn/basti), you can securely connect to your RDS/Aurora/Elasticache/EC2 instances in private VPC subnets from a local machine or CI/CD pipeline almost for free!
