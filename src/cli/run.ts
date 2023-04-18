@@ -4,13 +4,15 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
 import { setUpDebugMode } from '#src/common/debug.js';
+import { setAwsClientGlobalConfiguration } from '#src/aws/common/aws-client.js';
 
-import { handleCleanup } from './commands/cleanup/cleanup.js';
-import { handleConnect } from './commands/connect/connect.js';
-import { handleInit } from './commands/init/init.js';
 import { handleAsyncErrors, withErrorHandling } from './error/handle-error.js';
 import { conflictingOptions } from './yargs/conflicting-options-check.js';
 import { optionGroup } from './yargs/option-group-check.js';
+import {
+  YARGS_AWS_CLIENT_OPTIONS,
+  getAwsClientOptions,
+} from './yargs/aws-client-options.js';
 
 const pkg: {
   version: string;
@@ -44,6 +46,8 @@ void yargs(hideBin(process.argv))
           type: 'string',
           description: 'ID of the public VPC subnet for the bastion instance',
         })
+        .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_PROFILE)
+        .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_REGION)
         .check(
           conflictingOptions('rds-cluster', 'rds-instance', 'custom-target-vpc')
         )
@@ -54,19 +58,24 @@ void yargs(hideBin(process.argv))
             'Select target and bastion subnet automatically',
           ],
         ]),
-    withErrorHandling(
-      async ({ rdsInstance, rdsCluster, customTargetVpc, bastionSubnet }) => {
-        const target =
-          rdsInstance !== undefined
-            ? { rdsInstanceId: rdsInstance }
-            : rdsCluster !== undefined
-            ? { rdsClusterId: rdsCluster }
-            : customTargetVpc !== undefined
-            ? { customTargetVpcId: customTargetVpc }
-            : undefined;
-        await handleInit({ target, bastionSubnet });
-      }
-    )
+    withErrorHandling(async options => {
+      const { rdsInstance, rdsCluster, customTargetVpc, bastionSubnet } =
+        options;
+
+      setAwsClientGlobalConfiguration(getAwsClientOptions(options));
+      const { handleInit } = await import('./commands/init/init.js');
+
+      const target =
+        rdsInstance !== undefined
+          ? { rdsInstanceId: rdsInstance }
+          : rdsCluster !== undefined
+          ? { rdsClusterId: rdsCluster }
+          : customTargetVpc !== undefined
+          ? { customTargetVpcId: customTargetVpc }
+          : undefined;
+
+      await handleInit({ target, bastionSubnet });
+    })
   )
   .command(
     ['connect', 'c'],
@@ -98,6 +107,8 @@ void yargs(hideBin(process.argv))
           type: 'number',
           description: 'Local port to forward the target to',
         })
+        .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_PROFILE)
+        .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_REGION)
         .check(
           conflictingOptions('rds-instance', 'rds-cluster', [
             'custom-target-vpc',
@@ -119,32 +130,36 @@ void yargs(hideBin(process.argv))
             'Select target and local port automatically',
           ],
         ]),
-    withErrorHandling(
-      async ({
+    withErrorHandling(async options => {
+      const {
         rdsInstance,
         rdsCluster,
         customTargetVpc,
         customTargetHost,
         customTargetPort,
         localPort,
-      }) => {
-        const target =
-          rdsInstance !== undefined
-            ? { rdsInstanceId: rdsInstance }
-            : rdsCluster !== undefined
-            ? { rdsClusterId: rdsCluster }
-            : customTargetVpc !== undefined &&
-              customTargetHost !== undefined &&
-              customTargetPort !== undefined
-            ? {
-                customTargetVpcId: customTargetVpc,
-                customTargetHost,
-                customTargetPort,
-              }
-            : undefined;
-        await handleConnect({ target, localPort });
-      }
-    )
+      } = options;
+
+      setAwsClientGlobalConfiguration(getAwsClientOptions(options));
+      const { handleConnect } = await import('./commands/connect/connect.js');
+
+      const target =
+        rdsInstance !== undefined
+          ? { rdsInstanceId: rdsInstance }
+          : rdsCluster !== undefined
+          ? { rdsClusterId: rdsCluster }
+          : customTargetVpc !== undefined &&
+            customTargetHost !== undefined &&
+            customTargetPort !== undefined
+          ? {
+              customTargetVpcId: customTargetVpc,
+              customTargetHost,
+              customTargetPort,
+            }
+          : undefined;
+
+      await handleConnect({ target, localPort });
+    })
   )
   .command(
     ['cleanup', 'cl'],
@@ -156,12 +171,21 @@ void yargs(hideBin(process.argv))
           alias: ['c', 'y'],
           description: 'Automatically confirm cleanup',
         })
+        .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_PROFILE)
+        .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_REGION)
         .example([
           ['$0 cleanup', 'Use interactive mode'],
           ['$0 cleanup -y', 'Confirm cleanup automatically'],
         ]),
 
-    withErrorHandling(async ({ confirm }) => await handleCleanup({ confirm }))
+    withErrorHandling(async options => {
+      const { confirm } = options;
+
+      setAwsClientGlobalConfiguration(getAwsClientOptions(options));
+      const { handleCleanup } = await import('./commands/cleanup/cleanup.js');
+
+      return await handleCleanup({ confirm });
+    })
   )
   .demandCommand(1)
   .strict()
