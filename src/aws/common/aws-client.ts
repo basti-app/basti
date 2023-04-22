@@ -1,27 +1,40 @@
-type ClientConstructor<T> = new (input: { region: string }) => T;
+export interface AwsClientConfiguration {
+  region?: string;
+  profile?: string;
+}
+export type AwsClientConstructor<T> = new (config: AwsClientConfiguration) => T;
 
-interface Client {
+export interface RawAwsClient {
   send: (...args: any[]) => Promise<any>;
 }
 
-type ErrorHandler<TResponse> = (
+export type AwsClientErrorHandler<TResponse> = (
   handler: () => Promise<TResponse>
 ) => Promise<TResponse>;
 
-export class AwsClient<T extends Client> {
+export class AwsClient<T extends RawAwsClient> {
+  // The global config is expected to be overriden on the application startup before
+  // the command dynamic import happens and any AWS client is instantiated.
+  private static readonly AWS_CLIENT_GLOBAL_CONFIGURATION: AwsClientConfiguration =
+    {};
+
   public readonly client: T;
-  private readonly errorHandler?: ErrorHandler<ReturnType<T['send']>>;
+
+  private readonly errorHandler?: AwsClientErrorHandler<ReturnType<T['send']>>;
 
   constructor({
     Client,
     errorHandler,
   }: {
-    Client: ClientConstructor<T>;
-    errorHandler?: ErrorHandler<ReturnType<T['send']>>;
+    Client: AwsClientConstructor<T>;
+    errorHandler?: AwsClientErrorHandler<ReturnType<T['send']>>;
   }) {
-    // @ts-expect-error
-    this.client = new Client({});
+    this.client = new Client(AwsClient.AWS_CLIENT_GLOBAL_CONFIGURATION);
     this.errorHandler = errorHandler;
+  }
+
+  static setGlobalConfiguration(config: AwsClientConfiguration): void {
+    Object.assign(AwsClient.AWS_CLIENT_GLOBAL_CONFIGURATION, config);
   }
 
   send: T['send'] = async (...args) =>
