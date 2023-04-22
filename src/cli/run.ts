@@ -4,7 +4,7 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
 import { setUpDebugMode } from '#src/common/debug.js';
-import { setAwsClientGlobalConfiguration } from '#src/aws/common/aws-client.js';
+import { AwsClient } from '#src/aws/common/aws-client.js';
 
 import { handleAsyncErrors, withErrorHandling } from './error/handle-error.js';
 import { conflictingOptions } from './yargs/conflicting-options-check.js';
@@ -62,7 +62,7 @@ void yargs(hideBin(process.argv))
       const { rdsInstance, rdsCluster, customTargetVpc, bastionSubnet } =
         options;
 
-      setAwsClientGlobalConfiguration(getAwsClientOptions(options));
+      AwsClient.setGlobalConfiguration(getAwsClientOptions(options));
       const { handleInit } = await import('./commands/init/init.js');
 
       const target =
@@ -140,7 +140,7 @@ void yargs(hideBin(process.argv))
         localPort,
       } = options;
 
-      setAwsClientGlobalConfiguration(getAwsClientOptions(options));
+      AwsClient.setGlobalConfiguration(getAwsClientOptions(options));
       const { handleConnect } = await import('./commands/connect/connect.js');
 
       const target =
@@ -181,7 +181,7 @@ void yargs(hideBin(process.argv))
     withErrorHandling(async options => {
       const { confirm } = options;
 
-      setAwsClientGlobalConfiguration(getAwsClientOptions(options));
+      AwsClient.setGlobalConfiguration(getAwsClientOptions(options));
       const { handleCleanup } = await import('./commands/cleanup/cleanup.js');
 
       return await handleCleanup({ confirm });
