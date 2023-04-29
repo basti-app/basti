@@ -70,7 +70,7 @@ function toPreparationError(
   group: ManagedResourceType,
   error: unknown
 ): OperationError {
-  return OperationError.from({
+  return OperationError.fromError({
     operationName: `Preparing to ${fmt.lower(RESOURCE_NAMES[group])} deletion`,
     error,
     detailProviders: [
@@ -88,7 +88,7 @@ function toCleanupError(
   id: string,
   error: unknown
 ): OperationError {
-  return OperationError.from({
+  return OperationError.fromError({
     operationName: `Deleting ${fmt.lower(RESOURCE_NAMES[group])} "${id}"`,
     error,
     detailProviders: [

@@ -70,7 +70,7 @@ export async function createBastion({
   } catch (error) {
     subCli.progressFailure();
 
-    throw OperationError.from({
+    throw OperationError.fromError({
       operationName: 'Setting up bastion',
       error,
       dirtyOperation: true,

@@ -13,7 +13,7 @@ export async function handleOperation<T>(
     cli.progressStart(fmt.capitalize(operationName));
     return await handler();
   } catch (error) {
-    throw OperationError.from({
+    throw OperationError.fromError({
       operationName,
       error,
       detailProviders,

@@ -65,7 +65,7 @@ function handleSessionEnded(
 }
 
 function handleSessionError(error: Error): never {
-  throw OperationError.from({
+  throw OperationError.fromError({
     operationName: 'Running port forwarding session',
     error,
     detailProviders: [getSessionManagerExitDetailProvider()],
@@ -81,7 +81,7 @@ function handleMarkingError(error: unknown): void {
 }
 
 function handleSessionStartError(error: unknown, localPort: number): never {
-  throw OperationError.from({
+  throw OperationError.fromError({
     operationName: 'Starting port forwarding session',
     error,
     detailProviders: [

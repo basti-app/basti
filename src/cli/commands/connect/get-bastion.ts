@@ -28,7 +28,7 @@ export async function getBastion({
   );
 
   if (!bastion) {
-    throw OperationError.from({
+    throw OperationError.fromError({
       operationName: 'Retrieving bastion',
       error: new UnexpectedStateError(
         new ResourceNotFoundError(

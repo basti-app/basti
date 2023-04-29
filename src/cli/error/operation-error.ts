@@ -21,7 +21,24 @@ export class OperationError extends RuntimeError {
     );
   }
 
-  public static from({
+  public static fromErrorMessage({
+    operationName,
+    message,
+    dirtyOperation,
+  }: {
+    operationName: string;
+    message: string;
+    dirtyOperation?: boolean;
+  }): OperationError {
+    return new OperationError(
+      operationName,
+      message,
+      undefined,
+      dirtyOperation
+    );
+  }
+
+  public static fromError({
     operationName,
     error,
     detailProviders,
