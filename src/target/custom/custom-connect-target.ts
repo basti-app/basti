@@ -1,25 +1,32 @@
+import { AwsClientConfiguration } from '#src/aws/common/aws-client.js';
 import { getBastion } from '#src/bastion/get-bastion.js';
 
 import { ConnectTarget } from '../connect-target.js';
 import { TargetNotInitializedError } from '../target-errors.js';
 
 export class CustomConnectTarget implements ConnectTarget {
+  readonly awsClientConfig?: AwsClientConfiguration;
+
   private readonly vpcId: string;
   private readonly host: string;
   private readonly port: number;
 
   constructor({
-    vpcId,
-    host,
-    port,
+    custom: { vpcId, host, port },
+    awsClientConfig,
   }: {
-    vpcId: string;
-    host: string;
-    port: number;
+    custom: {
+      vpcId: string;
+      host: string;
+      port: number;
+    };
+    awsClientConfig?: AwsClientConfiguration;
   }) {
     this.vpcId = vpcId;
     this.host = host;
     this.port = port;
+
+    this.awsClientConfig = awsClientConfig;
   }
 
   async isInitialized(): Promise<boolean> {

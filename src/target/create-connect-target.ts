@@ -11,5 +11,5 @@ export function createConnectTarget(target: ConnectTargetInput): ConnectTarget {
   if ('dbCluster' in target) {
     return new DbClusterConnectTarget(target);
   }
-  return new CustomConnectTarget(target.custom);
+  return new CustomConnectTarget(target);
 }

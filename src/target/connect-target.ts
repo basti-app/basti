@@ -1,3 +1,5 @@
+import { AwsClientConfiguration } from '#src/aws/common/aws-client.js';
+
 import { getSecurityGroups } from '../aws/ec2/get-security-groups.js';
 import {
   AwsSecurityGroup,
@@ -11,6 +13,10 @@ import { TargetNotInitializedError } from './target-errors.js';
 import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from './target-input.js';
 
 export interface ConnectTarget {
+  // Per-target AWS client config can only be specified via config file.
+  // In interactive mode as well as with CLI arguments, global client config is used.
+  awsClientConfig?: AwsClientConfiguration;
+
   isInitialized: () => Promise<boolean>;
 
   getBastionId: () => Promise<string>;
@@ -19,7 +25,17 @@ export interface ConnectTarget {
   getPort: () => Promise<number>;
 }
 
+export interface ConnectTargetBaseConstructorInput {
+  awsClientConfig?: AwsClientConfiguration;
+}
+
 export abstract class ConnectTargetBase implements ConnectTarget {
+  awsClientConfig?: AwsClientConfiguration;
+
+  constructor({ awsClientConfig }: ConnectTargetBaseConstructorInput = {}) {
+    this.awsClientConfig = awsClientConfig;
+  }
+
   async isInitialized(): Promise<boolean> {
     const accessSecurityGroup = await this.getAccessSecurityGroup();
     return accessSecurityGroup !== undefined;
