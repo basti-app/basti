@@ -4,7 +4,8 @@ import { AwsNotFoundError } from '../common/aws-errors.js';
 
 import { parseDbInstanceResponse } from './parse-rds-response.js';
 import { rdsClient } from './rds-client.js';
-import { AwsDbInstance } from './rds-types.js';
+
+import type { AwsDbInstance } from './rds-types.js';
 
 export interface GetDbInstanceInput {
   identifier: string;

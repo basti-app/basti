@@ -5,7 +5,8 @@ import {
 
 import { iamClient } from './iam-client.js';
 import { parseIamInstanceProfileResponse } from './parse-iam-response.js';
-import { AwsIamInstanceProfile } from './types.js';
+
+import type { AwsIamInstanceProfile } from './types.js';
 
 export interface GetInstanceProfilesInput {
   path: string;

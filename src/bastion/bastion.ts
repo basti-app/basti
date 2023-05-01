@@ -1,6 +1,5 @@
-import { InstanceStateName } from '@aws-sdk/client-ec2';
-
-import { AwsEc2Instance } from '../aws/ec2/types/aws-ec2-instance.js';
+import type { InstanceStateName } from '@aws-sdk/client-ec2';
+import type { AwsEc2Instance } from '../aws/ec2/types/aws-ec2-instance.js';
 
 export interface Bastion {
   id: string;

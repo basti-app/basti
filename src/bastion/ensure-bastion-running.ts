@@ -1,6 +1,5 @@
 import { AwsNoRootVolumeAttachedError } from '../aws/ec2/ec2-errors.js';
 import { startEc2Instance } from '../aws/ec2/start-ec2-instance.js';
-import { AwsEc2Instance } from '../aws/ec2/types/aws-ec2-instance.js';
 import {
   waitEc2InstanceIsRunning,
   waitEc2InstanceIsStopped,
@@ -8,7 +7,9 @@ import {
 import { UnexpectedStateError } from '../common/runtime-errors.js';
 
 import { StartingInstanceError } from './bastion-errors.js';
-import { Bastion } from './bastion.js';
+
+import type { AwsEc2Instance } from '../aws/ec2/types/aws-ec2-instance.js';
+import type { Bastion } from './bastion.js';
 
 interface EnsureBastionRunningHooks {
   onWaitingInstanceToStart?: () => void;

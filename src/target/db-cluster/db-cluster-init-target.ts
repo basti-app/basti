@@ -1,6 +1,6 @@
 import { getDbSubnetGroup } from '#src/aws/rds/get-db-subnet-group.js';
 import { modifyDBCluster } from '#src/aws/rds/modify-db-cluster.js';
-import { AwsDbCluster } from '#src/aws/rds/rds-types.js';
+import type { AwsDbCluster } from '#src/aws/rds/rds-types.js';
 
 import { InitTargetBase } from '../init-target.js';
 

@@ -1,5 +1,5 @@
 import { fmt } from '#src/common/fmt.js';
-import { ConnectTarget } from '#src/target/connect-target.js';
+import type { ConnectTarget } from '#src/target/connect-target.js';
 
 import { EarlyExitError } from '../../error/early-exit-error.js';
 import { handleOperation } from '../common/handle-operation.js';

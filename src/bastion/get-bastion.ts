@@ -1,7 +1,7 @@
 import { InstanceStateName } from '@aws-sdk/client-ec2';
 
-import { AwsEc2Instance } from '#src/aws/ec2/types/aws-ec2-instance.js';
-import { AwsSecurityGroupIdentifier } from '#src/aws/ec2/types/aws-security-group.js';
+import type { AwsEc2Instance } from '#src/aws/ec2/types/aws-ec2-instance.js';
+import type { AwsSecurityGroupIdentifier } from '#src/aws/ec2/types/aws-security-group.js';
 
 import { getEc2Instances } from '../aws/ec2/get-ec2-instances.js';
 import { ManagedResourceTypes } from '../common/resource-type.js';
@@ -11,12 +11,12 @@ import {
 } from '../common/runtime-errors.js';
 
 import {
-  Bastion,
-  BastionState,
   BASTION_INSTANCE_ID_TAG_NAME,
   BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
   BASTION_INSTANCE_UPDATING_TAG_NAME,
 } from './bastion.js';
+
+import type { Bastion, BastionState } from './bastion.js';
 
 export interface GetBastionInput {
   bastionId?: string;

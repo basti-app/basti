@@ -1,8 +1,9 @@
-import { AwsClientConfiguration } from '#src/aws/common/aws-client.js';
+import type { AwsClientConfiguration } from '#src/aws/common/aws-client.js';
 import { getBastion } from '#src/bastion/get-bastion.js';
 
-import { ConnectTarget } from '../connect-target.js';
 import { TargetNotInitializedError } from '../target-errors.js';
+
+import type { ConnectTarget } from '../connect-target.js';
 
 export class CustomConnectTarget implements ConnectTarget {
   readonly awsClientConfig?: AwsClientConfiguration;

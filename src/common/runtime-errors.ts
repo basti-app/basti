@@ -1,4 +1,4 @@
-import { ResourceType } from './resource-type.js';
+import type { ResourceType } from './resource-type.js';
 
 export function getErrorMessage(error: unknown): string {
   if (error instanceof Error) {

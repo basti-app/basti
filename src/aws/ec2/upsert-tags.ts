@@ -1,8 +1,8 @@
 import { CreateTagsCommand } from '@aws-sdk/client-ec2';
 
-import { AwsTag } from '../tags/types.js';
-
 import { ec2Client } from './ec2-client.js';
+
+import type { AwsTag } from '../tags/types.js';
 
 export interface UpsertTagsInput {
   resourceIds: string[];

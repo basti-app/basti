@@ -4,7 +4,9 @@ import { AwsError, AwsNotFoundError } from '../common/aws-errors.js';
 
 import { parseSsmParameter } from './parse-ssm-response.js';
 import { ssmClient } from './ssm-client.js';
-import { AwsSsmParameter, AwsSsmParameterTypes } from './types.js';
+import { AwsSsmParameterTypes } from './types.js';
+
+import type { AwsSsmParameter } from './types.js';
 
 export interface GetSsmParameterInput {
   name: string;

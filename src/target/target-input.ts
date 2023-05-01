@@ -1,6 +1,6 @@
-import { AwsClientConfiguration } from '#src/aws/common/aws-client.js';
+import type { AwsClientConfiguration } from '#src/aws/common/aws-client.js';
 
-import { AwsDbCluster, AwsDbInstance } from '../aws/rds/rds-types.js';
+import type { AwsDbCluster, AwsDbInstance } from '../aws/rds/rds-types.js';
 
 export type InitTargetInput =
   | DbClusterTargetInput

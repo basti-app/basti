@@ -1,7 +1,6 @@
-import {
-  ManagedResourceType,
-  ManagedResourceTypes,
-} from '../common/resource-type.js';
+import { ManagedResourceTypes } from '../common/resource-type.js';
+
+import type { ManagedResourceType } from '../common/resource-type.js';
 
 export type ManagedResources = {
   [key in ManagedResourceType]: string[];

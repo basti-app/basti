@@ -1,4 +1,4 @@
-import { ChildProcessExitDescription } from '#src/common/child-process.js';
+import type { ChildProcessExitDescription } from '#src/common/child-process.js';
 import { RuntimeError } from '#src/common/runtime-errors.js';
 
 export class SessionManagerPluginNonInstalledError extends RuntimeError {

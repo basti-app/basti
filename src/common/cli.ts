@@ -1,8 +1,10 @@
 import inquirer from 'inquirer';
-import ora, { Ora } from 'ora';
+import ora from 'ora';
 
 import { isDebugMode } from './debug.js';
 import { fmt } from './fmt.js';
+
+import type { Ora } from 'ora';
 
 type CliContext =
   | 'info'

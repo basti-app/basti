@@ -6,7 +6,7 @@ import {
   BastionInstanceCreationError,
   BastionInlinePoliciesCreationError,
 } from '#src/bastion/bastion-errors.js';
-import { Bastion } from '#src/bastion/bastion.js';
+import type { Bastion } from '#src/bastion/bastion.js';
 import * as bastionOps from '#src/bastion/create-bastion.js';
 import { cli } from '#src/common/cli.js';
 import { fmt } from '#src/common/fmt.js';

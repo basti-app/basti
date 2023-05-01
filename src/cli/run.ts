@@ -143,6 +143,12 @@ void yargs(hideBin(process.argv))
           ? getConnectCommandInputFromConfig(config, options.optionsSet)
           : getConnectCommandInputFromOptions(options);
 
+      // TODO: Relying on setting the global configuration before the command is
+      // imported is dangerous as it might be accidentally imported before the
+      // configuration is set. The approach has to be changed to passing the configuration
+      // to the AWS commands directly. This will also become a must with the
+      // introduction of multiple targets connection as each target will have its own
+      // AWS client configuration.
       AwsClient.setGlobalConfiguration(
         commandInput.target?.awsClientConfig ?? getAwsClientOptions(options)
       );

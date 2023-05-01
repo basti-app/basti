@@ -1,16 +1,15 @@
-import { AwsClientConfiguration } from '#src/aws/common/aws-client.js';
+import type { AwsClientConfiguration } from '#src/aws/common/aws-client.js';
 
 import { getSecurityGroups } from '../aws/ec2/get-security-groups.js';
-import {
-  AwsSecurityGroup,
-  isGroupSecurityGroupSource,
-} from '../aws/ec2/types/aws-security-group.js';
+import { isGroupSecurityGroupSource } from '../aws/ec2/types/aws-security-group.js';
 import { BASTION_INSTANCE_NAME_PREFIX } from '../bastion/bastion.js';
 import { ManagedResourceTypes } from '../common/resource-type.js';
 import { ResourceDamagedError } from '../common/runtime-errors.js';
 
 import { TargetNotInitializedError } from './target-errors.js';
 import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from './target-input.js';
+
+import type { AwsSecurityGroup } from '../aws/ec2/types/aws-security-group.js';
 
 export interface ConnectTarget {
   // Per-target AWS client config can only be specified via config file.

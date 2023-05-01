@@ -2,7 +2,8 @@ import { StartSessionCommand } from '@aws-sdk/client-ssm';
 
 import { parseStartSsmSessionResponse } from './parse-ssm-response.js';
 import { ssmClient } from './ssm-client.js';
-import { AwsSsmSessionDescriptor } from './types.js';
+
+import type { AwsSsmSessionDescriptor } from './types.js';
 
 export interface StartSsmPortForwardingSession {
   bastionInstanceId: string;

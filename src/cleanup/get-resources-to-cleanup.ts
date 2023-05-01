@@ -10,13 +10,13 @@ import {
   BASTION_INSTANCE_ROLE_PATH,
   BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
 } from '../bastion/bastion.js';
-import {
-  ManagedResourceType,
-  ManagedResourceTypes,
-} from '../common/resource-type.js';
+import { ManagedResourceTypes } from '../common/resource-type.js';
 import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from '../target/target-input.js';
 
-import { CLEANUP_ORDER, ManagedResources } from './managed-resources.js';
+import { CLEANUP_ORDER } from './managed-resources.js';
+
+import type { ManagedResources } from './managed-resources.js';
+import type { ManagedResourceType } from '../common/resource-type.js';
 
 interface GetResourcesToCleanupHooks {
   onRetrievingResources?: (resourceGroup: ManagedResourceType) => void;

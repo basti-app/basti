@@ -6,7 +6,7 @@ import { modifyDBCluster } from '../aws/rds/modify-db-cluster.js';
 import { modifyDbInstance } from '../aws/rds/modify-db-instance.js';
 import { retry } from '../common/retry.js';
 
-import {
+import type {
   ResourcesCleanupPreparer,
   ResourceCleaner,
 } from './resource-cleaner.js';

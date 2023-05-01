@@ -9,7 +9,8 @@ import {
   parseRoleAttachedPolicyResponse,
   parseRoleResponse,
 } from './parse-iam-response.js';
-import { AwsRole, AwsRoleAttachedPolicy } from './types.js';
+
+import type { AwsRole, AwsRoleAttachedPolicy } from './types.js';
 
 export interface GetIamRoleInput {
   path: string;

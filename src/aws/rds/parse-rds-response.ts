@@ -1,7 +1,11 @@
-import { DBCluster, DBInstance, DBSubnetGroup } from '@aws-sdk/client-rds';
 import { z } from 'zod';
 
-import { AwsDbCluster, AwsDbSubnetGroup, AwsDbInstance } from './rds-types.js';
+import type { DBCluster, DBInstance, DBSubnetGroup } from '@aws-sdk/client-rds';
+import type {
+  AwsDbCluster,
+  AwsDbSubnetGroup,
+  AwsDbInstance,
+} from './rds-types.js';
 
 export const parseDbInstanceResponse: (response?: DBInstance) => AwsDbInstance =
   z

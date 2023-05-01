@@ -1,8 +1,8 @@
 import { AwsTooManySecurityGroupsAttachedError } from '#src/aws/rds/rds-errors.js';
-import { Bastion } from '#src/bastion/bastion.js';
+import type { Bastion } from '#src/bastion/bastion.js';
 import { cli } from '#src/common/cli.js';
 import { fmt } from '#src/common/fmt.js';
-import { InitTarget } from '#src/target/init-target.js';
+import type { InitTarget } from '#src/target/init-target.js';
 import {
   AccessSecurityGroupCreationError,
   AccessSecurityGroupAttachmentError,

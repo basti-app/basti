@@ -3,9 +3,9 @@ import {
   AwsDependencyViolationError,
 } from '#src/aws/common/aws-errors.js';
 import { AwsTimeoutError } from '#src/aws/common/waiter-error.js';
+import type { ResourceType } from '#src/common/resource-type.js';
 import {
   ManagedResourceTypes,
-  ResourceType,
   TargetTypes,
 } from '#src/common/resource-type.js';
 import {

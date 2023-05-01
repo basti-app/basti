@@ -1,4 +1,6 @@
-import { isOptionInArgs, YargsCheck } from './yargs-check.js';
+import { isOptionInArgs } from './yargs-check.js';
+
+import type { YargsCheck } from './yargs-check.js';
 
 export function conflictingOptions(
   ...options: Array<string | string[]>

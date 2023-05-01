@@ -1,9 +1,8 @@
-import { AwsDbCluster } from '#src/aws/rds/rds-types.js';
+import type { AwsDbCluster } from '#src/aws/rds/rds-types.js';
 
-import {
-  ConnectTargetBase,
-  ConnectTargetBaseConstructorInput,
-} from '../connect-target.js';
+import { ConnectTargetBase } from '../connect-target.js';
+
+import type { ConnectTargetBaseConstructorInput } from '../connect-target.js';
 
 export class DbClusterConnectTarget extends ConnectTargetBase {
   private readonly dbCluster: AwsDbCluster;

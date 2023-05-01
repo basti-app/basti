@@ -1,15 +1,13 @@
-import {
-  DescribeInstancesCommand,
-  Filter,
-  InstanceStateName,
-} from '@aws-sdk/client-ec2';
+import { DescribeInstancesCommand } from '@aws-sdk/client-ec2';
 
 import { getTagFilter } from '../tags/get-tag-filter.js';
-import { AwsTag } from '../tags/types.js';
 
 import { ec2Client } from './ec2-client.js';
 import { parseEc2InstanceResponse } from './parse-ec2-response.js';
-import { AwsEc2Instance } from './types/aws-ec2-instance.js';
+
+import type { AwsTag } from '../tags/types.js';
+import type { Filter, InstanceStateName } from '@aws-sdk/client-ec2';
+import type { AwsEc2Instance } from './types/aws-ec2-instance.js';
 
 export interface GetEc2InstancesInput {
   vpcId?: string;

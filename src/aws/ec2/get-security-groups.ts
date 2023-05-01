@@ -1,11 +1,13 @@
-import { DescribeSecurityGroupsCommand, Filter } from '@aws-sdk/client-ec2';
+import { DescribeSecurityGroupsCommand } from '@aws-sdk/client-ec2';
 
 import { getTagFilter } from '../tags/get-tag-filter.js';
-import { AwsTag } from '../tags/types.js';
 
 import { ec2Client } from './ec2-client.js';
 import { parseSecurityGroupResponse } from './parse-ec2-response.js';
-import { AwsSecurityGroup } from './types/aws-security-group.js';
+
+import type { AwsTag } from '../tags/types.js';
+import type { Filter } from '@aws-sdk/client-ec2';
+import type { AwsSecurityGroup } from './types/aws-security-group.js';
 
 export interface GetSecurityGroupsInput {
   securityGroupIds?: string[];

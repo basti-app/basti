@@ -1,6 +1,6 @@
 import { AwsSsmInstanceNotConnectedError } from '#src/aws/ssm/ssm-errors.js';
 import { EarlyExitError } from '#src/cli/error/early-exit-error.js';
-import { ChildProcessExitDescription } from '#src/common/child-process.js';
+import type { ChildProcessExitDescription } from '#src/common/child-process.js';
 import { cli } from '#src/common/cli.js';
 import { fmt } from '#src/common/fmt.js';
 import {
@@ -9,14 +9,15 @@ import {
   SessionManagerPluginPortInUseError,
 } from '#src/session/session-errors.js';
 import { startPortForwardingSession } from '#src/session/start-port-forwarding-session.js';
-import { ConnectTarget } from '#src/target/connect-target.js';
+import type { ConnectTarget } from '#src/target/connect-target.js';
 
 import {
-  DetailProvider,
   detailProvider,
   getErrorDetail,
 } from '../../error/get-error-detail.js';
 import { OperationError } from '../../error/operation-error.js';
+
+import type { DetailProvider } from '../../error/get-error-detail.js';
 
 export interface StartPortForwardingInput {
   target: ConnectTarget;

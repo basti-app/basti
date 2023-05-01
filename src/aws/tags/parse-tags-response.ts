@@ -1,7 +1,7 @@
-import { Tag } from '@aws-sdk/client-ec2';
 import { z } from 'zod';
 
-import { AwsTags } from './types.js';
+import type { Tag } from '@aws-sdk/client-ec2';
+import type { AwsTags } from './types.js';
 
 export const AwsTagParser = z.object({
   Key: z.string(),
