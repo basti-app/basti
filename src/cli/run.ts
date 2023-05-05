@@ -111,11 +111,24 @@ void yargs(hideBin(process.argv))
         .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_PROFILE)
         .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_REGION)
         .check(
-          conflictingOptions('rds-instance', 'rds-cluster', [
+          conflictingOptions('options-set', 'rds-instance', 'rds-cluster', [
             'custom-target-vpc',
             'custom-target-host',
             'custom-target-port',
           ])
+        )
+        .check(conflictingOptions('options-set', 'local-port'))
+        .check(
+          conflictingOptions(
+            'options-set',
+            YARGS_AWS_CLIENT_OPTIONS.AWS_PROFILE[0]
+          )
+        )
+        .check(
+          conflictingOptions(
+            'options-set',
+            YARGS_AWS_CLIENT_OPTIONS.AWS_REGION[0]
+          )
         )
         .check(
           optionGroup(
