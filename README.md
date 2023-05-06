@@ -1,11 +1,11 @@
 <h1 align="center">Basti</h1>
 
 <div align="center">
-  <a href="https://makeapullrequest.com/">
-    <img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat">
-  </a>
   <a href="https://www.npmjs.com/package/basti">
     <img alt="NPM Package" src="https://img.shields.io/npm/v/basti?color=blue">
+  </a>
+  <a href="https://www.npmjs.com/package/basti">
+    <img alt="NPM" src="https://img.shields.io/npm/dw/basti">
   </a>
   <a href="https://github.com/BohdanPetryshyn/basti/blob/main/LICENSE">
     <img alt="GitHub" src="https://img.shields.io/github/license/BohdanPetryshyn/basti">
