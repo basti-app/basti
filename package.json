@@ -17,7 +17,7 @@
     "basti": "bin/run.js"
   },
   "scripts": {
-    "start": "npm run build && node bin/run.js",
+    "start": "node bin/run.js",
     "build": "npm run build-src && npm run build-deps",
     "build-src": "tsc",
     "build-src-watch": "tsc --watch",
