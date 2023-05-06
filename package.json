@@ -22,13 +22,14 @@
     "build-src": "tsc",
     "build-src-watch": "tsc --watch",
     "build-deps": "ts-node-esm scripts/build-deps.ts",
-    "check": "npm run check-types && npm run check-style && npm run check-deps",
+    "check": "npm run check-types && npm run check-style",
+    "check-prepublish": "npm run check-types && npm run check-style && npm run check-deps",
     "check-types": "tsc --noEmit",
     "check-style": "eslint src",
     "check-deps": "ts-node-esm scripts/check-deps.ts",
-    "publish-deps": "ts-node-esm scripts/publish-deps.ts",
     "prepare-deps": "npm run check-deps || (npm run build-deps && npm run publish-deps)",
-    "prepublishOnly": "npm run prepare-deps && npm run check && npm run build-src"
+    "publish-deps": "ts-node-esm scripts/publish-deps.ts",
+    "prepublishOnly": "npm run prepare-deps && npm run check-prepublish && npm run build-src"
   },
   "devDependencies": {
     "@types/inquirer": "8.2.1",
