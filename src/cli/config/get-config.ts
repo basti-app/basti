@@ -26,7 +26,7 @@ function parseConfig(config: unknown): Config {
   }
 
   throw OperationError.fromErrorMessage({
-    operationName: 'Parsing configuration file',
+    operationName: 'Reading configuration file',
     message: fromZodError(result.error).message,
   });
 }
