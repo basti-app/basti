@@ -1,11 +1,11 @@
 <h1 align="center">Basti</h1>
 
 <div align="center">
-  <a href="https://makeapullrequest.com/">
-    <img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat">
-  </a>
   <a href="https://www.npmjs.com/package/basti">
     <img alt="NPM Package" src="https://img.shields.io/npm/v/basti?color=blue">
+  </a>
+  <a href="https://www.npmjs.com/package/basti">
+    <img alt="NPM" src="https://img.shields.io/npm/dw/basti">
   </a>
   <a href="https://github.com/BohdanPetryshyn/basti/blob/main/LICENSE">
     <img alt="GitHub" src="https://img.shields.io/github/license/BohdanPetryshyn/basti">
@@ -49,6 +49,10 @@
   - [Network](#network)
   - [Access control](#access-control)
   - [Software](#software)
+- [Development](#development)
+  - [Build](#build)
+  - [Run](#run)
+  - [Test](#test)
 - [License](#license)
 
 <br/>
@@ -219,6 +223,66 @@ Basti automatically adjusts the target's Security Group to allow inbound traffic
 Basti uses the latest Amazon Linux 2 - Kernel 5.10 AMI available at the initialization time (`basti init` command) for the bastion instance.
 
 The bastion instance is being stopped when it's not used for some short period of time. These shutdowns are also used to _update the bastion instance's software packages and OS kernel_. By default, the updates happen once a day but not more often than the bastion instance is used.
+
+## Development
+
+First of all, thank you for your interest in contributing to Basti! 🎉
+
+The following section describes how to run your local version of Basti
+as you make changes to the code.
+
+### Build
+
+Before proceeding to development, it's recommended to run the _full build_.
+This requires Docker to be installed on your machine and may take a couple of minutes.
+
+```sh
+npm run build
+```
+
+Full Basti build consists of two parts:
+
+1. Compiling Basti TypeScript code. The code has to be compiled after each change.
+   ```sh
+   npm run build-src
+
+   # Or, if you want to automatically recompile on each change:
+   npm run build-src-watch
+   ```
+2. Building non-NodeJS dependencies (AWS session-manger-plugin).
+   This step is only required after the first checkout or in a rare
+   case when the dependencies are updated.
+   ```sh
+   npm run build-deps
+   ```
+
+### Run
+
+After the build is complete, you can run Basti:
+
+```sh
+npm run start -- <command> <options>
+```
+
+Alternatively, you can link-install the local version of Basti in your system
+and use it as you would usually use Basti:
+
+```sh
+# Link-install the local version of Basti
+npm link
+
+# Run Basti
+basti <command> <options>
+```
+
+### Test
+
+Before submitting a pull request, please make sure that all the tests and
+checks pass:
+
+```sh
+npm run test
+```
 
 ## License
 
