@@ -29,6 +29,8 @@ export interface CreateEc2InstanceInput {
 
   userData?: string;
 
+  requireIMDSv2?: boolean;
+
   tags: AwsTag[];
 }
 
@@ -42,6 +44,7 @@ export async function createEc2Instance({
   assignPublicIp,
   securityGroupIds,
   userData,
+  requireIMDSv2,
   tags,
 }: CreateEc2InstanceInput): Promise<AwsEc2Instance> {
   const instanceProfile = await createIamInstanceProfile({
@@ -74,6 +77,10 @@ export async function createEc2Instance({
             userData !== undefined
               ? Buffer.from(userData).toString('base64')
               : undefined,
+
+          MetadataOptions: {
+            HttpTokens: requireIMDSv2 === true ? 'required' : 'optional',
+          },
 
           TagSpecifications: [
             {
