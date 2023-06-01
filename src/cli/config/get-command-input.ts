@@ -28,12 +28,17 @@ export function getConnectCommandInputFromConfig(
     });
   }
 
-  const connectionTarget = config.targets[connectionConfig.target];
+  const connectionTarget =
+    typeof connectionConfig.target === 'object'
+      ? connectionConfig.target
+      : config.targets[connectionConfig.target];
 
   if (!connectionTarget) {
     throw OperationError.fromErrorMessage({
       operationName: 'Resoling connection from configuration file',
-      message: `No target with name "${connectionConfig.target}" found in configuration file`,
+      message: `No target with name "${
+        connectionConfig.target as string
+      }" found in configuration file`,
     });
   }
 

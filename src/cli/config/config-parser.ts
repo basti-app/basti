@@ -43,7 +43,7 @@ export type ConnectionTargetConfig = z.infer<
 >;
 
 const ConnectionConfigParser = z.object({
-  target: z.string(),
+  target: z.union([z.string(), ConnectionTargetConfigParser]),
   localPort: z.number(),
 });
 export type ConnectionConfig = z.infer<typeof ConnectionConfigParser>;
