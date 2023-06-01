@@ -4,10 +4,9 @@ import { createBastion } from './create-bastion.js';
 import { getBastion } from './get-bastion.js';
 import { getTargetVpc } from './get-target-vpc.js';
 import { selectBastionSubnetId } from './select-bastion-subnet.js';
-import {
-  DehydratedInitTargetInput,
-  selectInitTarget,
-} from './select-init-target.js';
+import { selectInitTarget } from './select-init-target.js';
+
+import type { DehydratedInitTargetInput } from './select-init-target.js';
 
 export interface InitCommandInput {
   target?: DehydratedInitTargetInput;

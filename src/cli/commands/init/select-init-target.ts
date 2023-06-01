@@ -1,5 +1,5 @@
-import { InitTarget } from '#src/target/init-target.js';
-import {
+import type { InitTarget } from '#src/target/init-target.js';
+import type {
   CustomInitTargetInput,
   InitTargetInput,
 } from '#src/target/target-input.js';
@@ -8,10 +8,9 @@ import { createInitTarget } from '#src/target/create-init-target.js';
 import { promptForCustomTargetVpc } from '../common/prompt-for-custom-target-vpc.js';
 import { promptForAwsTarget } from '../common/prompt-for-aws-target.js';
 import { handleOperation } from '../common/handle-operation.js';
-import {
-  DehydratedAwsTargetInput,
-  hydrateAwsTarget,
-} from '../common/hydrate-aws-target.js';
+import { hydrateAwsTarget } from '../common/hydrate-aws-target.js';
+
+import type { DehydratedAwsTargetInput } from '../common/hydrate-aws-target.js';
 
 export type DehydratedInitTargetInput =
   | DehydratedAwsTargetInput

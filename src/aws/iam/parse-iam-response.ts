@@ -1,7 +1,11 @@
-import { AttachedPolicy, InstanceProfile, Role } from '@aws-sdk/client-iam';
 import { z } from 'zod';
 
-import {
+import type {
+  AttachedPolicy,
+  InstanceProfile,
+  Role,
+} from '@aws-sdk/client-iam';
+import type {
   AwsIamInstanceProfile,
   AwsRole,
   AwsRoleAttachedPolicy,

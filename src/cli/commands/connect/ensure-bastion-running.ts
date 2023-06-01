@@ -1,5 +1,5 @@
 import * as bastionOps from '#src/bastion/ensure-bastion-running.js';
-import { Bastion } from '#src/bastion/bastion.js';
+import type { Bastion } from '#src/bastion/bastion.js';
 import { cli } from '#src/common/cli.js';
 import { AwsNoRootVolumeAttachedError } from '#src/aws/ec2/ec2-errors.js';
 import { StartingInstanceError } from '#src/bastion/bastion-errors.js';
@@ -40,7 +40,7 @@ export async function ensureBastionRunning({
   } catch (error) {
     cli.progressFailure();
 
-    throw OperationError.from({
+    throw OperationError.fromError({
       operationName: 'Starting bastion instance',
       error,
       detailProviders: [

@@ -1,8 +1,9 @@
-import { ConnectTarget } from './connect-target.js';
 import { CustomConnectTarget } from './custom/custom-connect-target.js';
 import { DbClusterConnectTarget } from './db-cluster/db-cluster-connect-target.js';
 import { DbInstanceConnectTarget } from './db-instance/db-instance-connect-target.js';
-import { ConnectTargetInput } from './target-input.js';
+
+import type { ConnectTarget } from './connect-target.js';
+import type { ConnectTargetInput } from './target-input.js';
 
 export function createConnectTarget(target: ConnectTargetInput): ConnectTarget {
   if ('dbInstance' in target) {
@@ -11,5 +12,5 @@ export function createConnectTarget(target: ConnectTargetInput): ConnectTarget {
   if ('dbCluster' in target) {
     return new DbClusterConnectTarget(target);
   }
-  return new CustomConnectTarget(target.custom);
+  return new CustomConnectTarget(target);
 }

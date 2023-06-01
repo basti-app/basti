@@ -1,32 +1,35 @@
-import { ConnectTarget } from '#src/target/connect-target.js';
+import type { ConnectTarget } from '#src/target/connect-target.js';
 import { createConnectTarget } from '#src/target/create-connect-target.js';
-import {
+import type {
   ConnectTargetInput,
   CustomConnectTargetInput,
 } from '#src/target/target-input.js';
 import { cli } from '#src/common/cli.js';
+import type { AwsClientConfiguration } from '#src/aws/common/aws-client.js';
 
 import { promptForCustomTargetVpc } from '../common/prompt-for-custom-target-vpc.js';
 import { promptForAwsTarget } from '../common/prompt-for-aws-target.js';
-import {
-  DehydratedAwsTargetInput,
-  hydrateAwsTarget,
-} from '../common/hydrate-aws-target.js';
+import { hydrateAwsTarget } from '../common/hydrate-aws-target.js';
 import { handleOperation } from '../common/handle-operation.js';
 
 import { selectPort } from './select-port.js';
+
+import type { DehydratedAwsTargetInput } from '../common/hydrate-aws-target.js';
 
 const IP_REGEX = /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/;
 const DOMAIN_NAME_REGEX =
   /^(?:[\da-z](?:[\da-z-]{0,61}[\da-z])?\.)+[\da-z][\da-z-]{0,61}[\da-z]$/;
 
-export type DehydratedConnectTargetInput =
+export type DehydratedConnectTargetInput = (
   | DehydratedAwsTargetInput
   | {
       customTargetVpcId: string;
       customTargetHost: string;
       customTargetPort: number;
-    };
+    }
+) & {
+  awsClientConfig?: AwsClientConfiguration;
+};
 
 export async function selectConnectTarget(
   dehydratedInput?: DehydratedConnectTargetInput
@@ -44,17 +47,21 @@ export async function selectConnectTarget(
 async function hydrateInput(
   dehydratedInput: DehydratedConnectTargetInput
 ): Promise<ConnectTargetInput> {
-  if ('customTargetVpcId' in dehydratedInput) {
-    return {
-      custom: {
-        vpcId: dehydratedInput.customTargetVpcId,
-        host: dehydratedInput.customTargetHost,
-        port: dehydratedInput.customTargetPort,
-      },
-    };
-  }
+  const targetInput =
+    'customTargetVpcId' in dehydratedInput
+      ? {
+          custom: {
+            vpcId: dehydratedInput.customTargetVpcId,
+            host: dehydratedInput.customTargetHost,
+            port: dehydratedInput.customTargetPort,
+          },
+        }
+      : await hydrateAwsTarget(dehydratedInput);
 
-  return await hydrateAwsTarget(dehydratedInput);
+  return {
+    ...targetInput,
+    awsClientConfig: dehydratedInput.awsClientConfig,
+  };
 }
 
 async function promptForTarget(): Promise<ConnectTargetInput> {

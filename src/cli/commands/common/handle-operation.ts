@@ -1,8 +1,9 @@
 import { cli } from '#src/common/cli.js';
 import { fmt } from '#src/common/fmt.js';
 
-import { DetailProvider } from '../../error/get-error-detail.js';
 import { OperationError } from '../../error/operation-error.js';
+
+import type { DetailProvider } from '../../error/get-error-detail.js';
 
 export async function handleOperation<T>(
   operationName: string,
@@ -13,7 +14,7 @@ export async function handleOperation<T>(
     cli.progressStart(fmt.capitalize(operationName));
     return await handler();
   } catch (error) {
-    throw OperationError.from({
+    throw OperationError.fromError({
       operationName,
       error,
       detailProviders,

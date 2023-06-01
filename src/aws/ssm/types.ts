@@ -1,4 +1,7 @@
-import { StartSessionRequest, StartSessionResponse } from '@aws-sdk/client-ssm';
+import type {
+  StartSessionRequest,
+  StartSessionResponse,
+} from '@aws-sdk/client-ssm';
 
 export const AwsSsmParameterTypes = {
   STRING: 'string',

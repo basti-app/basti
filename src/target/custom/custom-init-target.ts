@@ -1,6 +1,6 @@
 import { getBastion } from '#src/bastion/get-bastion.js';
 
-import { InitTarget } from '../init-target.js';
+import type { InitTarget } from '../init-target.js';
 
 export class CustomInitTarget implements InitTarget {
   private readonly vpcId: string;

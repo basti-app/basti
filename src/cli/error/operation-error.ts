@@ -1,7 +1,9 @@
 import { fmt } from '#src/common/fmt.js';
 import { RuntimeError } from '#src/common/runtime-errors.js';
 
-import { DetailProvider, getErrorDetail } from './get-error-detail.js';
+import { getErrorDetail } from './get-error-detail.js';
+
+import type { DetailProvider } from './get-error-detail.js';
 
 export class OperationError extends RuntimeError {
   operationErrorMessage: string;
@@ -21,7 +23,24 @@ export class OperationError extends RuntimeError {
     );
   }
 
-  public static from({
+  public static fromErrorMessage({
+    operationName,
+    message,
+    dirtyOperation,
+  }: {
+    operationName: string;
+    message: string;
+    dirtyOperation?: boolean;
+  }): OperationError {
+    return new OperationError(
+      operationName,
+      message,
+      undefined,
+      dirtyOperation
+    );
+  }
+
+  public static fromError({
     operationName,
     error,
     detailProviders,

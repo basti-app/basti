@@ -2,18 +2,19 @@ import fs from 'node:fs';
 import path from 'node:path';
 import url from 'node:url';
 
-import { AwsSsmSessionDescriptor } from '../aws/ssm/types.js';
-import {
-  ChildProcessExitDescription,
-  OutputOptimizedChildProcess,
-  spawnProcess,
-} from '../common/child-process.js';
+import { spawnProcess } from '../common/child-process.js';
 
 import {
   SessionManagerPluginExitError,
   SessionManagerPluginPortInUseError,
   SessionManagerPluginNonInstalledError,
 } from './session-errors.js';
+
+import type { AwsSsmSessionDescriptor } from '../aws/ssm/types.js';
+import type {
+  ChildProcessExitDescription,
+  OutputOptimizedChildProcess,
+} from '../common/child-process.js';
 
 export interface StartSessionManagerPluginHooks {
   onExit?: (exitDescription: ChildProcessExitDescription) => void;

@@ -1,16 +1,19 @@
-import inquirer, { DistinctChoice } from 'inquirer';
+import inquirer from 'inquirer';
 
 import { getDbClusters } from '#src/aws/rds/get-db-clusters.js';
 import { getDbInstances } from '#src/aws/rds/get-db-instances.js';
-import { AwsDbCluster, AwsDbInstance } from '#src/aws/rds/rds-types.js';
-import { Cli, cli } from '#src/common/cli.js';
+import type { AwsDbCluster, AwsDbInstance } from '#src/aws/rds/rds-types.js';
+import type { Cli } from '#src/common/cli.js';
+import { cli } from '#src/common/cli.js';
 import { fmt } from '#src/common/fmt.js';
-import {
+import type {
   DbClusterTargetInput,
   DbInstanceTargetInput,
 } from '#src/target/target-input.js';
 
 import { getErrorDetail } from '../../error/get-error-detail.js';
+
+import type { DistinctChoice } from 'inquirer';
 
 export type AwsTargetInput = DbInstanceTargetInput | DbClusterTargetInput;
 

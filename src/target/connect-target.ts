@@ -1,8 +1,7 @@
+import type { AwsClientConfiguration } from '#src/aws/common/aws-client.js';
+
 import { getSecurityGroups } from '../aws/ec2/get-security-groups.js';
-import {
-  AwsSecurityGroup,
-  isGroupSecurityGroupSource,
-} from '../aws/ec2/types/aws-security-group.js';
+import { isGroupSecurityGroupSource } from '../aws/ec2/types/aws-security-group.js';
 import { BASTION_INSTANCE_NAME_PREFIX } from '../bastion/bastion.js';
 import { ManagedResourceTypes } from '../common/resource-type.js';
 import { ResourceDamagedError } from '../common/runtime-errors.js';
@@ -10,7 +9,14 @@ import { ResourceDamagedError } from '../common/runtime-errors.js';
 import { TargetNotInitializedError } from './target-errors.js';
 import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from './target-input.js';
 
+import type { AwsSecurityGroup } from '../aws/ec2/types/aws-security-group.js';
+
 export interface ConnectTarget {
+  // Per-target AWS client config can only be specified via config file.
+  // Until multiple simultaneous connections are supported, this is not needed
+  // and the global config is used instead.
+  awsClientConfig?: AwsClientConfiguration;
+
   isInitialized: () => Promise<boolean>;
 
   getBastionId: () => Promise<string>;
@@ -19,7 +25,17 @@ export interface ConnectTarget {
   getPort: () => Promise<number>;
 }
 
+export interface ConnectTargetBaseConstructorInput {
+  awsClientConfig?: AwsClientConfiguration;
+}
+
 export abstract class ConnectTargetBase implements ConnectTarget {
+  awsClientConfig?: AwsClientConfiguration;
+
+  constructor({ awsClientConfig }: ConnectTargetBaseConstructorInput = {}) {
+    this.awsClientConfig = awsClientConfig;
+  }
+
   async isInitialized(): Promise<boolean> {
     const accessSecurityGroup = await this.getAccessSecurityGroup();
     return accessSecurityGroup !== undefined;

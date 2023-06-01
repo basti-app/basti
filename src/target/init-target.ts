@@ -1,7 +1,5 @@
 import { createSecurityGroup } from '../aws/ec2/create-security-group.js';
 import { getSecurityGroups } from '../aws/ec2/get-security-groups.js';
-import { AwsSecurityGroup } from '../aws/ec2/types/aws-security-group.js';
-import { Bastion } from '../bastion/bastion.js';
 import { generateShortId } from '../common/short-id.js';
 
 import {
@@ -9,6 +7,9 @@ import {
   AccessSecurityGroupAttachmentError,
 } from './target-errors.js';
 import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from './target-input.js';
+
+import type { Bastion } from '../bastion/bastion.js';
+import type { AwsSecurityGroup } from '../aws/ec2/types/aws-security-group.js';
 
 interface InitTargetAllowAccessHooks {
   onCreatingSecurityGroup?: () => void;

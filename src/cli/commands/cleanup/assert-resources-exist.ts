@@ -1,4 +1,4 @@
-import { ManagedResources } from '#src/cleanup/managed-resources.js';
+import type { ManagedResources } from '#src/cleanup/managed-resources.js';
 import { EarlyExitError } from '#src/cli/error/early-exit-error.js';
 
 export interface AssertResourcesExistInput {

@@ -1,4 +1,4 @@
-import { ResourceType } from '#src/common/resource-type.js';
+import type { ResourceType } from '#src/common/resource-type.js';
 import { ResourceNotFoundError } from '#src/common/runtime-errors.js';
 
 export async function orThrow<T>(

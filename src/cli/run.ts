@@ -13,6 +13,13 @@ import {
   YARGS_AWS_CLIENT_OPTIONS,
   getAwsClientOptions,
 } from './yargs/aws-client-options.js';
+import { getConfig } from './config/get-config.js';
+import { getConnectCommandInputFromConfig } from './config/get-command-input.js';
+import {
+  getCleanupCommandInputFromOptions,
+  getConnectCommandInputFromOptions,
+  getInitCommandInputFromOptions,
+} from './yargs/get-command-input.js';
 
 const pkg: {
   version: string;
@@ -59,29 +66,24 @@ void yargs(hideBin(process.argv))
           ],
         ]),
     withErrorHandling(async options => {
-      const { rdsInstance, rdsCluster, customTargetVpc, bastionSubnet } =
-        options;
-
       AwsClient.setGlobalConfiguration(getAwsClientOptions(options));
+
+      const commandOptions = getInitCommandInputFromOptions(options);
+
       const { handleInit } = await import('./commands/init/init.js');
-
-      const target =
-        rdsInstance !== undefined
-          ? { rdsInstanceId: rdsInstance }
-          : rdsCluster !== undefined
-          ? { rdsClusterId: rdsCluster }
-          : customTargetVpc !== undefined
-          ? { customTargetVpcId: customTargetVpc }
-          : undefined;
-
-      await handleInit({ target, bastionSubnet });
+      await handleInit(commandOptions);
     })
   )
   .command(
-    ['connect', 'c'],
+    ['connect [connection]', 'c'],
     'Start port forwarding session with the selected target',
     yargs =>
       yargs
+        .positional('connection', {
+          type: 'string',
+          description:
+            'Name of the connection in the configuration file. Conflicts with other options',
+        })
         .option('rds-instance', {
           type: 'string',
           description: 'ID of the RDS instance to connect to',
@@ -110,11 +112,24 @@ void yargs(hideBin(process.argv))
         .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_PROFILE)
         .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_REGION)
         .check(
-          conflictingOptions('rds-instance', 'rds-cluster', [
+          conflictingOptions('connection', 'rds-instance', 'rds-cluster', [
             'custom-target-vpc',
             'custom-target-host',
             'custom-target-port',
           ])
+        )
+        .check(conflictingOptions('connection', 'local-port'))
+        .check(
+          conflictingOptions(
+            'connection',
+            YARGS_AWS_CLIENT_OPTIONS.AWS_PROFILE[0]
+          )
+        )
+        .check(
+          conflictingOptions(
+            'connection',
+            YARGS_AWS_CLIENT_OPTIONS.AWS_REGION[0]
+          )
         )
         .check(
           optionGroup(
@@ -129,36 +144,31 @@ void yargs(hideBin(process.argv))
             '$0 connect --rds-instance <id> --local-port <port>',
             'Select target and local port automatically',
           ],
+          [
+            '$0 connect <connection>',
+            'Use connection configuration from the configuration file',
+          ],
         ]),
     withErrorHandling(async options => {
-      const {
-        rdsInstance,
-        rdsCluster,
-        customTargetVpc,
-        customTargetHost,
-        customTargetPort,
-        localPort,
-      } = options;
+      const config = await getConfig();
 
-      AwsClient.setGlobalConfiguration(getAwsClientOptions(options));
+      const commandInput =
+        options.connection !== undefined
+          ? getConnectCommandInputFromConfig(config, options.connection)
+          : getConnectCommandInputFromOptions(options);
+
+      // TODO: Relying on setting the global configuration before the command is
+      // imported is dangerous as it might be accidentally imported before the
+      // configuration is set. The approach has to be changed to passing the configuration
+      // to the AWS commands directly. This will also become a must with the
+      // introduction of multiple simultaneous connections support as each target
+      // will have its own AWS client configuration.
+      AwsClient.setGlobalConfiguration(
+        commandInput.target?.awsClientConfig ?? getAwsClientOptions(options)
+      );
+
       const { handleConnect } = await import('./commands/connect/connect.js');
-
-      const target =
-        rdsInstance !== undefined
-          ? { rdsInstanceId: rdsInstance }
-          : rdsCluster !== undefined
-          ? { rdsClusterId: rdsCluster }
-          : customTargetVpc !== undefined &&
-            customTargetHost !== undefined &&
-            customTargetPort !== undefined
-          ? {
-              customTargetVpcId: customTargetVpc,
-              customTargetHost,
-              customTargetPort,
-            }
-          : undefined;
-
-      await handleConnect({ target, localPort });
+      await handleConnect(commandInput);
     })
   )
   .command(
@@ -179,12 +189,12 @@ void yargs(hideBin(process.argv))
         ]),
 
     withErrorHandling(async options => {
-      const { confirm } = options;
-
       AwsClient.setGlobalConfiguration(getAwsClientOptions(options));
-      const { handleCleanup } = await import('./commands/cleanup/cleanup.js');
 
-      return await handleCleanup({ confirm });
+      const commandOptions = getCleanupCommandInputFromOptions(options);
+
+      const { handleCleanup } = await import('./commands/cleanup/cleanup.js');
+      return await handleCleanup(commandOptions);
     })
   )
   .demandCommand(1)

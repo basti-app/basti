@@ -1,14 +1,19 @@
-import { AwsDbCluster, AwsDbInstance } from '../aws/rds/rds-types.js';
+import type { AwsClientConfiguration } from '#src/aws/common/aws-client.js';
+
+import type { AwsDbCluster, AwsDbInstance } from '../aws/rds/rds-types.js';
 
 export type InitTargetInput =
   | DbClusterTargetInput
   | DbInstanceTargetInput
   | CustomInitTargetInput;
 
-export type ConnectTargetInput =
+export type ConnectTargetInput = (
   | DbClusterTargetInput
   | DbInstanceTargetInput
-  | CustomConnectTargetInput;
+  | CustomConnectTargetInput
+) & {
+  awsClientConfig?: AwsClientConfiguration;
+};
 
 export interface DbClusterTargetInput {
   dbCluster: AwsDbCluster;

@@ -1,12 +1,11 @@
 import { assertTargetIsInitialized } from './assert-target-is-initialized.js';
 import { ensureBastionRunning } from './ensure-bastion-running.js';
 import { getBastion } from './get-bastion.js';
-import {
-  DehydratedConnectTargetInput,
-  selectConnectTarget,
-} from './select-connect-target.js';
+import { selectConnectTarget } from './select-connect-target.js';
 import { selectPort } from './select-port.js';
 import { startPortForwarding } from './start-port-forwarding.js';
+
+import type { DehydratedConnectTargetInput } from './select-connect-target.js';
 
 export interface ConnectCommandInput {
   target?: DehydratedConnectTargetInput;

@@ -1,4 +1,4 @@
-import { Bastion } from '#src/bastion/bastion.js';
+import type { Bastion } from '#src/bastion/bastion.js';
 import * as bastionOps from '#src/bastion/get-bastion.js';
 import { cli } from '#src/common/cli.js';
 

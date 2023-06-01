@@ -3,7 +3,8 @@ import { getDbInstance } from '#src/aws/rds/get-db-instances.js';
 import { TargetTypes } from '#src/common/resource-type.js';
 
 import { orThrow } from './get-or-throw.js';
-import { AwsTargetInput } from './prompt-for-aws-target.js';
+
+import type { AwsTargetInput } from './prompt-for-aws-target.js';
 
 export type DehydratedAwsTargetInput =
   | { rdsInstanceId: string }

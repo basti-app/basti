@@ -1,13 +1,17 @@
-import { AwsDbInstance } from '#src/aws/rds/rds-types.js';
+import type { AwsDbInstance } from '#src/aws/rds/rds-types.js';
 
 import { ConnectTargetBase } from '../connect-target.js';
+
+import type { ConnectTargetBaseConstructorInput } from '../connect-target.js';
 
 export class DbInstanceConnectTarget extends ConnectTargetBase {
   private readonly dbInstance: AwsDbInstance;
 
-  constructor({ dbInstance }: { dbInstance: AwsDbInstance }) {
-    super();
-    this.dbInstance = dbInstance;
+  constructor(
+    input: ConnectTargetBaseConstructorInput & { dbInstance: AwsDbInstance }
+  ) {
+    super(input);
+    this.dbInstance = input.dbInstance;
   }
 
   async getHost(): Promise<string> {

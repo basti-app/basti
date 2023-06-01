@@ -1,13 +1,11 @@
 import { AwsDependencyViolationError } from '#src/aws/common/aws-errors.js';
 import { AwsInvalidRdsStateError } from '#src/aws/rds/rds-errors.js';
 import { cleanupManagedResources } from '#src/cleanup/cleanup-managed-resources.js';
-import { ManagedResources } from '#src/cleanup/managed-resources.js';
+import type { ManagedResources } from '#src/cleanup/managed-resources.js';
 import { cli } from '#src/common/cli.js';
 import { fmt } from '#src/common/fmt.js';
-import {
-  ManagedResourceType,
-  ManagedResourceTypes,
-} from '#src/common/resource-type.js';
+import type { ManagedResourceType } from '#src/common/resource-type.js';
+import { ManagedResourceTypes } from '#src/common/resource-type.js';
 
 import { detailProvider } from '../../error/get-error-detail.js';
 import { OperationError } from '../../error/operation-error.js';
@@ -70,7 +68,7 @@ function toPreparationError(
   group: ManagedResourceType,
   error: unknown
 ): OperationError {
-  return OperationError.from({
+  return OperationError.fromError({
     operationName: `Preparing to ${fmt.lower(RESOURCE_NAMES[group])} deletion`,
     error,
     detailProviders: [
@@ -88,7 +86,7 @@ function toCleanupError(
   id: string,
   error: unknown
 ): OperationError {
-  return OperationError.from({
+  return OperationError.fromError({
     operationName: `Deleting ${fmt.lower(RESOURCE_NAMES[group])} "${id}"`,
     error,
     detailProviders: [

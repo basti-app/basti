@@ -7,7 +7,8 @@ import { createIamInlinePolicy } from './create-iam-inline-policy.js';
 import { attachIamPolicy } from './attach-iam-policy.js';
 import { iamClient } from './iam-client.js';
 import { parseRoleResponse } from './parse-iam-response.js';
-import { AwsRole } from './types.js';
+
+import type { AwsRole } from './types.js';
 
 export interface InlinePolicyInput {
   name: string;

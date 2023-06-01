@@ -4,7 +4,8 @@ import { AwsNotFoundError } from '../common/aws-errors.js';
 
 import { parseDbSubnetGroup } from './parse-rds-response.js';
 import { rdsClient } from './rds-client.js';
-import { AwsDbSubnetGroup } from './rds-types.js';
+
+import type { AwsDbSubnetGroup } from './rds-types.js';
 
 export interface GetSubnetGroupInput {
   name: string;

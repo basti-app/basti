@@ -2,9 +2,6 @@ import { InstanceStateName } from '@aws-sdk/client-ec2';
 
 import { createEc2Instance } from '../aws/ec2/create-ec2-instance.js';
 import { createSecurityGroup } from '../aws/ec2/create-security-group.js';
-import { AwsEc2Instance } from '../aws/ec2/types/aws-ec2-instance.js';
-import { AwsSecurityGroup } from '../aws/ec2/types/aws-security-group.js';
-import { AwsRole } from '../aws/iam/types.js';
 import { getStringSsmParameter } from '../aws/ssm/get-ssm-parameter.js';
 import { generateShortId } from '../common/short-id.js';
 
@@ -18,13 +15,17 @@ import {
   BastionSecurityGroupCreationError,
 } from './bastion-errors.js';
 import {
-  Bastion,
   BASTION_INSTANCE_ID_TAG_NAME,
   BASTION_INSTANCE_IN_USE_TAG_NAME,
   BASTION_INSTANCE_NAME_PREFIX,
   BASTION_INSTANCE_PROFILE_PATH,
   BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
 } from './bastion.js';
+
+import type { Bastion } from './bastion.js';
+import type { AwsRole } from '../aws/iam/types.js';
+import type { AwsSecurityGroup } from '../aws/ec2/types/aws-security-group.js';
+import type { AwsEc2Instance } from '../aws/ec2/types/aws-ec2-instance.js';
 
 interface CreateBastionHooks {
   onRetrievingImageId?: () => void;

@@ -1,4 +1,4 @@
-import { AwsClientConfiguration } from '#src/aws/common/aws-client.js';
+import type { AwsClientConfiguration } from '#src/aws/common/aws-client.js';
 
 export const YARGS_AWS_CLIENT_OPTIONS = {
   AWS_PROFILE: [

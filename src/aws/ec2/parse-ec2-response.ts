@@ -1,18 +1,18 @@
-import {
+import { InstanceStateName } from '@aws-sdk/client-ec2';
+import { z } from 'zod';
+
+import { AwsTagParser, transformTags } from '../tags/parse-tags-response.js';
+
+import type {
   Instance,
-  InstanceStateName,
   RouteTable,
   SecurityGroup,
   Subnet,
   Vpc,
 } from '@aws-sdk/client-ec2';
-import { z } from 'zod';
-
-import { AwsTagParser, transformTags } from '../tags/parse-tags-response.js';
-
-import { AwsEc2Instance } from './types/aws-ec2-instance.js';
-import { AwsSecurityGroup } from './types/aws-security-group.js';
-import { AwsVpc, AwsSubnet, AwsRouteTable } from './types/aws-vpc.js';
+import type { AwsEc2Instance } from './types/aws-ec2-instance.js';
+import type { AwsSecurityGroup } from './types/aws-security-group.js';
+import type { AwsVpc, AwsSubnet, AwsRouteTable } from './types/aws-vpc.js';
 
 export const parseEc2InstanceResponse: (response: Instance) => AwsEc2Instance =
   z
