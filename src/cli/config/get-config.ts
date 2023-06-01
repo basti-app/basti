@@ -8,7 +8,9 @@ import { ConfigParser } from './config-parser.js';
 import type { Config } from './config-parser.js';
 
 export async function getConfig(): Promise<Config | undefined> {
-  const configExplorer = cosmiconfig('basti');
+  const configExplorer = cosmiconfig('basti', {
+    searchPlaces: ['basti.yaml', 'basti.yml', 'basti.json'],
+  });
   const configResult = await configExplorer.search();
 
   if (configResult === null) {

@@ -3,4 +3,4 @@ dist
 .history
 .DS_Store
 .build-deps-tmp
-.bastirc.yaml
+basti.yaml
