@@ -42,9 +42,11 @@
   - [Cleanup (optional)](#cleanup-optional)
 - [Custom connection targets](#custom-connection-targets)
 - [Basti in CI/CD pipelines](#basti-in-cicd-pipelines)
+- [Basti configuration file](#basti-configuration-file)
 - [Basti in teams and organizations](#basti-in-teams-and-organizations)
   - [Minimal IAM permissions](#minimal-iam-permissions)
   - [Usage audit](#usage-audit)
+  - [Shared configuration](#shared-configuration)
 - [Security](#security)
   - [Network](#network)
   - [Access control](#access-control)
@@ -146,6 +148,73 @@ basti connect --rds-instance your-instance-id --local-port your-port
 
 Use `basti <command> --help` to see all the available options for `basti connect` and other commands.
 
+## Basti configuration file
+
+<!-- When working with multiple targets, it's convenient to store the target's configuration
+as well as other Basti settings  -->
+
+When dealing with multiple connection targets, it becomes convenient to store their configurations
+and other Basti settings in a dedicated configuration file. To facilitate this, Basti automatically 
+searches for the configuration file in the current directory and its parent directories. 
+The supported file formats are `basti.yaml`, `basti.yml`, and `basti.json`.
+
+You can quickly start a connection defined in the configuration file by passing its
+name to the `basti connect` command:
+
+```sh
+basti connect your-connection
+```
+
+<details>
+<summary><b> Configuration file example </b></summary>
+<br/>
+
+This example uses YAML format. The same configuration can be written in JSON.
+
+```yaml
+# - Connections are used with the `basti connect <connection>` command
+# - Targets' fields are the same as the options for the `basti connect` command
+connections:
+  database-dev:
+    target:
+      rdsInstance: my-dev-database
+      awsProfile: dev
+    localPort: 5432
+
+  database-prod:
+    target:
+      rdsInstance: my-prod-database
+      awsProfile: prod
+    localPort: 5432
+
+  # Default AWS profile and region are used if not specified in the target
+  aurora-cluster-dev:
+    target:
+      rdsCluster: my-prod-aurora-cluster
+    localPort: 5432
+
+  custom-target:
+    target: custom-target
+    localPort: 4647
+
+  # Same target but with different local port
+  custom-target-local:
+    target: custom-target
+    localPort: 4646
+
+# Targets can be extracted and reused in multiple connections
+# with different local ports
+targets:
+  custom-target:
+    customTargetVpc: vpc-1234567890
+    customTargetHost: 10.0.1.1
+    customTargetPort: 4646
+    awsProfile: prod
+    awsRegion: us-east-1
+```
+
+</details>
+
 ## Basti in teams and organizations
 
 Basti was designed with organizational usage patterns in mind. The bastion instance and other infrastructure created by Basti is reused across all the users in your organization.
@@ -155,7 +224,8 @@ Basti was designed with organizational usage patterns in mind. The bastion insta
 Basti commands require different sets of IAM permissions. `basti init` needs broad permissions to set up all the infrastructure required to start a connection. `basti connect`, on the other hand, requires only minimal permissions to start a connection. This means that the AWS account administrator can run the `basti init` command once and then grant the minimal permissions to the IAM users who need to start connections.
 
 <details>
-<summary> Minimal IAM policy for connection</summary>
+<summary><b> Minimal IAM policy for connection </b></summary>
+<br/>
 
 The following command is optimized for minimal permissions required to start a connection. It doesn't need to retrieve the target information as it's passed as command line arguments.
 
@@ -203,6 +273,9 @@ Minimal policy:
 Since Basti uses IAM for access control, the connection history, along with the _responsible IAM user_ and all the connection details, can be audited using AWS CloudTrail by filtering on the "StartSession" event. Please, refer to the [AWS CloudTrail documentation](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html) for more details.
 
 A simple connections history can also be found in the AWS Session Manager history. See [AWS Session Manager documentation](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-view-history.html) for more details.
+
+### Shared configuration
+The [Basti configuration file](#basti-configuration-file) file can be shared across your organization, making it easy for all developers to connect to the project's cloud infrastructure. A recommended practice is to store the configuration file in the root of your project's repository. This ensures that the configuration is readily accessible to all team members, enabling quick and seamless connections to the required cloud resources.
 
 ## Security
 
