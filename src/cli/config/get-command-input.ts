@@ -19,7 +19,7 @@ export function getConnectCommandInputFromConfig(
     });
   }
 
-  const connectionConfig = config.connections[connection];
+  const connectionConfig = config.connections?.[connection];
 
   if (!connectionConfig) {
     throw OperationError.fromErrorMessage({
@@ -31,7 +31,7 @@ export function getConnectCommandInputFromConfig(
   const connectionTarget =
     typeof connectionConfig.target === 'object'
       ? connectionConfig.target
-      : config.targets[connectionConfig.target];
+      : config.targets?.[connectionConfig.target];
 
   if (!connectionTarget) {
     throw OperationError.fromErrorMessage({

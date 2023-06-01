@@ -49,8 +49,8 @@ const ConnectionConfigParser = z.object({
 export type ConnectionConfig = z.infer<typeof ConnectionConfigParser>;
 
 export const ConfigParser = z.object({
-  connections: z.record(z.string(), ConnectionConfigParser),
-  targets: z.record(z.string(), ConnectionTargetConfigParser),
+  connections: z.record(z.string(), ConnectionConfigParser).optional(),
+  targets: z.record(z.string(), ConnectionTargetConfigParser).optional(),
 });
 export type Config = z.infer<typeof ConfigParser>;
 
