@@ -75,13 +75,14 @@ void yargs(hideBin(process.argv))
     })
   )
   .command(
-    ['connect [options-set]', 'c'],
+    ['connect [connection]', 'c'],
     'Start port forwarding session with the selected target',
     yargs =>
       yargs
-        .positional('options-set', {
+        .positional('connection', {
           type: 'string',
-          description: 'Name of the options set in the configuration file',
+          description:
+            'Name of the connection in the configuration file. Conflicts with other options',
         })
         .option('rds-instance', {
           type: 'string',
@@ -111,22 +112,22 @@ void yargs(hideBin(process.argv))
         .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_PROFILE)
         .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_REGION)
         .check(
-          conflictingOptions('options-set', 'rds-instance', 'rds-cluster', [
+          conflictingOptions('connection', 'rds-instance', 'rds-cluster', [
             'custom-target-vpc',
             'custom-target-host',
             'custom-target-port',
           ])
         )
-        .check(conflictingOptions('options-set', 'local-port'))
+        .check(conflictingOptions('connection', 'local-port'))
         .check(
           conflictingOptions(
-            'options-set',
+            'connection',
             YARGS_AWS_CLIENT_OPTIONS.AWS_PROFILE[0]
           )
         )
         .check(
           conflictingOptions(
-            'options-set',
+            'connection',
             YARGS_AWS_CLIENT_OPTIONS.AWS_REGION[0]
           )
         )
@@ -144,16 +145,16 @@ void yargs(hideBin(process.argv))
             'Select target and local port automatically',
           ],
           [
-            '$0 connect <options-set>',
-            'Connect to a target defined in the configuration file',
+            '$0 connect <connection>',
+            'Use connection configuration from the configuration file',
           ],
         ]),
     withErrorHandling(async options => {
       const config = await getConfig();
 
       const commandInput =
-        options.optionsSet !== undefined
-          ? getConnectCommandInputFromConfig(config, options.optionsSet)
+        options.connection !== undefined
+          ? getConnectCommandInputFromConfig(config, options.connection)
           : getConnectCommandInputFromOptions(options);
 
       // TODO: Relying on setting the global configuration before the command is

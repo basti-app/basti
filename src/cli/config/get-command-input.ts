@@ -10,30 +10,30 @@ import type { Config } from './config-parser.js';
 
 export function getConnectCommandInputFromConfig(
   config: Config | undefined,
-  optionsSet: string
+  connection: string
 ): ConnectCommandInput {
   if (!config) {
     throw OperationError.fromErrorMessage({
-      operationName: 'Resoling options set',
+      operationName: 'Resoling connection from configuration file',
       message: 'No configuration file found',
     });
   }
 
-  const connectOptionsConfig = config.connect[optionsSet];
+  const connectionConfig = config.connections[connection];
 
-  if (!connectOptionsConfig) {
+  if (!connectionConfig) {
     throw OperationError.fromErrorMessage({
-      operationName: 'Resolving options set from configuration file',
-      message: `No options set named "${optionsSet}" found in configuration file`,
+      operationName: 'Resolving connection from configuration file',
+      message: `No connection with name "${connection}" found in configuration file`,
     });
   }
 
-  const connectionTarget = config.targets[connectOptionsConfig.target];
+  const connectionTarget = config.targets[connectionConfig.target];
 
   if (!connectionTarget) {
     throw OperationError.fromErrorMessage({
-      operationName: 'Resoling options set from configuration file',
-      message: `No target named "${connectOptionsConfig.target}" found in configuration file`,
+      operationName: 'Resoling connection from configuration file',
+      message: `No target with name "${connectionConfig.target}" found in configuration file`,
     });
   }
 
@@ -63,6 +63,6 @@ export function getConnectCommandInputFromConfig(
           customTargetPort: connectionTarget.customTargetPort,
           awsClientConfig,
         },
-    localPort: connectOptionsConfig.localPort,
+    localPort: connectionConfig.localPort,
   };
 }

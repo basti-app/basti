@@ -42,14 +42,14 @@ export type ConnectionTargetConfig = z.infer<
   typeof ConnectionTargetConfigParser
 >;
 
-const ConnectOptionsConfigParser = z.object({
+const ConnectionConfigParser = z.object({
   target: z.string(),
   localPort: z.number(),
 });
-export type ConnectOptionsConfig = z.infer<typeof ConnectOptionsConfigParser>;
+export type ConnectionConfig = z.infer<typeof ConnectionConfigParser>;
 
 export const ConfigParser = z.object({
-  connect: z.record(z.string(), ConnectOptionsConfigParser),
+  connections: z.record(z.string(), ConnectionConfigParser),
   targets: z.record(z.string(), ConnectionTargetConfigParser),
 });
 export type Config = z.infer<typeof ConfigParser>;
