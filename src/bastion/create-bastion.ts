@@ -188,6 +188,7 @@ async function createBastionInstance(
       assignPublicIp: true,
       securityGroupIds: [bastionSecurityGroup.id],
       userData: BASTION_INSTANCE_CLOUD_INIT,
+      requireIMDSv2: true,
       tags: [
         {
           key: BASTION_INSTANCE_ID_TAG_NAME,
