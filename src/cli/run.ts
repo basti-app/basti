@@ -160,8 +160,8 @@ void yargs(hideBin(process.argv))
       // imported is dangerous as it might be accidentally imported before the
       // configuration is set. The approach has to be changed to passing the configuration
       // to the AWS commands directly. This will also become a must with the
-      // introduction of multiple targets connection as each target will have its own
-      // AWS client configuration.
+      // introduction of multiple simultaneous connections support as each target
+      // will have its own AWS client configuration.
       AwsClient.setGlobalConfiguration(
         commandInput.target?.awsClientConfig ?? getAwsClientOptions(options)
       );

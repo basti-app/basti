@@ -13,7 +13,8 @@ import type { AwsSecurityGroup } from '../aws/ec2/types/aws-security-group.js';
 
 export interface ConnectTarget {
   // Per-target AWS client config can only be specified via config file.
-  // In interactive mode as well as with CLI arguments, global client config is used.
+  // Until multiple simultaneous connections are supported, this is not needed
+  // and the global config is used instead.
   awsClientConfig?: AwsClientConfiguration;
 
   isInitialized: () => Promise<boolean>;
