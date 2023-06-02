@@ -9,7 +9,14 @@ import type { Config } from './config-parser.js';
 
 export async function getConfig(): Promise<Config | undefined> {
   const configExplorer = cosmiconfig('basti', {
-    searchPlaces: ['basti.yaml', 'basti.yml', 'basti.json'],
+    searchPlaces: [
+      '.basti.yaml',
+      '.basti.yml',
+      '.basti.json',
+      'basti.yaml',
+      'basti.yml',
+      'basti.json',
+    ],
   });
   const configResult = await configExplorer.search();
 

@@ -156,7 +156,7 @@ as well as other Basti settings  -->
 When dealing with multiple connection targets, it becomes convenient to store their configurations
 and other Basti settings in a dedicated configuration file. To facilitate this, Basti automatically 
 searches for the configuration file in the current directory and its parent directories. 
-The supported file formats are `basti.yaml`, `basti.yml`, and `basti.json`.
+The supported file names are `.basti.yaml`, `.basti.yml`, and `.basti.json`.
 
 You can quickly start a connection defined in the configuration file by passing its
 name to the `basti connect` command:
