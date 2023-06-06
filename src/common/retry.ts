@@ -1,3 +1,6 @@
+import { cli } from './cli.js';
+import { getErrorMessage } from './runtime-errors.js';
+
 export interface RetryConfig {
   delay: number;
   maxRetries: number;
@@ -24,6 +27,7 @@ export async function retry<T>(
     } catch (error) {
       if (retries < config.maxRetries && config.shouldRetry(error)) {
         retries++;
+        cli.debug(`Retrying after error: ${getErrorMessage(error)}`);
         await delay(config.delay);
       } else {
         throw error;

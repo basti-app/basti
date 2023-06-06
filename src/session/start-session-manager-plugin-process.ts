@@ -8,6 +8,7 @@ import {
   SessionManagerPluginExitError,
   SessionManagerPluginPortInUseError,
   SessionManagerPluginNonInstalledError,
+  SessionManagerPluginTimeoutError,
 } from './session-errors.js';
 
 import type { AwsSsmSessionDescriptor } from '../aws/ssm/types.js';
@@ -33,12 +34,26 @@ export async function startSessionManagerPluginProcess({
   const sessionManager = spawnPluginProcess(sessionDescriptor);
 
   return await new Promise((resolve, reject) => {
+    let isStarted = false;
+
     sessionManager.onLine(line => {
       if (isPortOpened(line)) {
+        isStarted = true;
         startExitListener(sessionManager, hooks);
         resolve();
       }
     });
+
+    setTimeout(() => {
+      if (!isStarted) {
+        sessionManager.kill();
+        reject(
+          new SessionManagerPluginTimeoutError(
+            sessionManager.collectAllOutput()
+          )
+        );
+      }
+    }, 30_000).unref();
 
     sessionManager.onLine(
       line =>

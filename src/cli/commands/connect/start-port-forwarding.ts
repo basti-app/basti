@@ -1,15 +1,21 @@
 import { AwsSsmInstanceNotConnectedError } from '#src/aws/ssm/ssm-errors.js';
 import { EarlyExitError } from '#src/cli/error/early-exit-error.js';
-import type { ChildProcessExitDescription } from '#src/common/child-process.js';
+import type {
+  ChildProcessExitDescription,
+  ChildProcessOutput,
+} from '#src/common/child-process.js';
 import { cli } from '#src/common/cli.js';
 import { fmt } from '#src/common/fmt.js';
 import {
   SessionManagerPluginExitError,
   SessionManagerPluginNonInstalledError,
   SessionManagerPluginPortInUseError,
+  SessionManagerPluginTimeoutError,
 } from '#src/session/session-errors.js';
+import type { StartPortForwardingSessionHooks } from '#src/session/start-port-forwarding-session.js';
 import { startPortForwardingSession } from '#src/session/start-port-forwarding-session.js';
 import type { ConnectTarget } from '#src/target/connect-target.js';
+import { retry } from '#src/common/retry.js';
 
 import {
   detailProvider,
@@ -33,16 +39,16 @@ export async function startPortForwarding({
   try {
     cli.progressStart('Starting port forwarding session');
 
-    await startPortForwardingSession({
+    await startPortForwardingSessionWithRetries(
       target,
       bastionInstanceId,
       localPort,
-      hooks: {
+      {
         onSessionError: handleSessionError,
         onSessionEnded: handleSessionEnded,
         onMarkingError: handleMarkingError,
-      },
-    });
+      }
+    );
 
     cli.progressStop();
     cli.info(
@@ -54,6 +60,28 @@ export async function startPortForwarding({
 
     handleSessionStartError(error, localPort);
   }
+}
+
+async function startPortForwardingSessionWithRetries(
+  target: ConnectTarget,
+  bastionInstanceId: string,
+  localPort: number,
+  hooks: StartPortForwardingSessionHooks
+): Promise<void> {
+  await retry(
+    async () =>
+      await startPortForwardingSession({
+        target,
+        bastionInstanceId,
+        localPort,
+        hooks,
+      }),
+    {
+      delay: 1000,
+      maxRetries: 10,
+      shouldRetry: error => error instanceof SessionManagerPluginTimeoutError,
+    }
+  );
 }
 
 function handleSessionEnded(
@@ -103,6 +131,9 @@ function handleSessionStartError(error: unknown, localPort: number): never {
         () => `Local port ${fmt.value(String(localPort))} is already in use`
       ),
       getSessionManagerExitDetailProvider(),
+      detailProvider(SessionManagerPluginTimeoutError, error =>
+        formatTimeoutError(error.output)
+      ),
     ],
   });
 }
@@ -116,17 +147,27 @@ function getSessionManagerExitDetailProvider(): DetailProvider {
 function formatExitDescription(
   exitDescription: ChildProcessExitDescription
 ): string {
+  const output = formatOutput(exitDescription);
+  if (typeof exitDescription.reason === 'number') {
+    return `session-manager-plugin exited with code ${exitDescription.reason}${output}`;
+  }
+  return `session-manager-plugin exited due to ${exitDescription.reason} signal${output}`;
+}
+
+function formatTimeoutError(processOutput: ChildProcessOutput): string {
+  const output = formatOutput(processOutput);
+  return `session-manager-plugin did not start the port forwarding session${output}`;
+}
+
+function formatOutput(processOutput: ChildProcessOutput): string {
   const output =
-    exitDescription.output.length > 0
-      ? `\n\nOutput:\n${exitDescription.output.trim()}`
+    processOutput.output.length > 0
+      ? `\n\nOutput:\n${processOutput.output.trim()}`
       : '';
   const errorOutput =
-    exitDescription.errorOutput.length > 0
-      ? `\n\nError output:\n${exitDescription.errorOutput.trim()}`
+    processOutput.errorOutput.length > 0
+      ? `\n\nError output:\n${processOutput.errorOutput.trim()}`
       : '';
 
-  if (typeof exitDescription.reason === 'number') {
-    return `session-manager-plugin exited with code ${exitDescription.reason}${output}${errorOutput}`;
-  }
-  return `session-manager-plugin exited due to ${exitDescription.reason} signal`;
+  return `${output}${errorOutput}`;
 }

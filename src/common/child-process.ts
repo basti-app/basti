@@ -34,6 +34,10 @@ export class OutputOptimizedChildProcess {
     return this;
   }
 
+  kill(): void {
+    this.process.kill();
+  }
+
   onExit(
     listener: (exitDescription: ChildProcessExitDescription) => void
   ): this {
@@ -55,12 +59,22 @@ export class OutputOptimizedChildProcess {
   collectErrorOutput(): string {
     return this.errorOutput.join('\n');
   }
+
+  collectAllOutput(): ChildProcessOutput {
+    return {
+      output: this.collectOutput(),
+      errorOutput: this.collectErrorOutput(),
+    };
+  }
 }
 
-export interface ChildProcessExitDescription {
-  readonly reason: number | NodeJS.Signals;
+export interface ChildProcessOutput {
   readonly output: string;
   readonly errorOutput: string;
+}
+
+export interface ChildProcessExitDescription extends ChildProcessOutput {
+  readonly reason: number | NodeJS.Signals;
 }
 
 export function spawnProcess(

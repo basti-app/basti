@@ -3,6 +3,9 @@ export function setUpDebugMode(): void {
     return;
   }
 
+  console.log('>>>         Basti is running in debug mode         <<<');
+  console.log('>>> Visual glitches are possible due to debug logs <<<');
+
   Error.stackTraceLimit = Number.POSITIVE_INFINITY;
 }
 
