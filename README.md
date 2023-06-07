@@ -42,6 +42,7 @@
   - [Cleanup (optional)](#cleanup-optional)
 - [Custom connection targets](#custom-connection-targets)
 - [Basti in CI/CD pipelines](#basti-in-cicd-pipelines)
+  - [Automatic mode](#automatic-mode)
 - [Basti configuration file](#basti-configuration-file)
 - [Basti in teams and organizations](#basti-in-teams-and-organizations)
   - [Minimal IAM permissions](#minimal-iam-permissions)
@@ -138,15 +139,22 @@ To connect to a custom target, select the `Custom` option when prompted for a ta
 
 ## Basti in CI/CD pipelines
 
-Using interactive mode is convenient when you're getting used to Basti. However, in Continuous Integration and Continuous Delivery (CI/CD) pipelines, you will probably want to disable interactivity and pass all the options as command line arguments.
+### Automatic mode
 
-Take for example the non-interactive form of the `basti connect` command:
+Using interactive mode is convenient when you're getting used to Basti. However, in Continuous Integration and Continuous Delivery (CI/CD) pipelines, you will probably want to disable interactivity and pass all the options as command line arguments:
 
 ```sh
 basti connect --rds-instance your-instance-id --local-port your-port
 ```
 
 Use `basti <command> --help` to see all the available options for `basti connect` and other commands.
+
+To continue executing the script after the connection is established, you can use Basti in conjunction with the [wait-on utility](https://www.npmjs.com/package/wait-on) and the `&` shell operator:
+
+```sh
+basti connect --rds-instance your-instance-id --local-port your-port &
+wait-on tcp:localhost:your-port
+```
 
 ## Basti configuration file
 
