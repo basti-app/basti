@@ -8,12 +8,9 @@
 
 ## Checklist
 
-- [ ] I have followed the project's coding style guidelines.
-- [ ] I have added necessary documentation or updated existing documentation (if applicable).
-- [ ] I have added or modified tests to cover the changes (if applicable).
-- [ ] All new and existing tests passed successfully.
-- [ ] I have tested the changes locally and they function as expected.
-- [ ] I understand that the pull request may be closed if it becomes inactive.
+- [ ] All the tests and checks passed (`npm run test`).
+- [ ] I have added necessary documentation and/or updated existing documentation. <!-- check if not applicable -->
+- [ ] I have added or modified tests to cover the changes. <!-- check if not applicable -->
 
 ## Additional Notes
 

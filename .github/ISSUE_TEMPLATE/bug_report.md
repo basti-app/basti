@@ -2,13 +2,13 @@
 name: Bug report
 about: Create a report to help us improve
 title: ''
-labels: 'Type: Bug'
+labels: 'bug'
 assignees: ''
 ---
 
 ## Bug Description
 
-[Provide a clear and concise description of the bug.]
+[Please provide a clear and concise description of the bug.]
 
 ## Steps to Reproduce
 
@@ -25,26 +25,6 @@ assignees: ''
 ## Current Behavior
 
 [Describe what is currently happening instead.]
-
-## Command Used
-
-[Include the exact command(s) you used when encountering the bug.]
-
-## Screenshots or Output
-
-[If applicable, include screenshots or the output of the CLI tool that helps illustrate the issue.]
-
-## Environment
-
-- Operating System: [Specify the operating system you're using]
-- Basti Version/Commit: [Specify the version or commit of the tool]
-- Node Version: [Specify the version of Node.js you're using]
-- Package Manager: [Specify the package manager you're using, e.g. npm or yarn]
-- Package Manager Version: [Specify the version of the package manager you're using]
-
-## Additional Information
-
-[Provide any additional information, such as error messages, stack traces, or logs that might be helpful in resolving the bug.]
 
 ## Possible Solution (Optional)
 

@@ -1,14 +1,14 @@
 ---
-name: Feature request
+name: Feature Request
 about: Suggest an idea for this project
 title: ''
-labels: 'Type: Enhancement'
+labels: 'enhancement'
 assignees: ''
 ---
 
 ## Feature Description
 
-[Provide a clear and concise description of the feature you're requesting.]
+[Please provide a clear and concise description of the feature you're requesting.]
 
 ## Use Case
 
@@ -16,17 +16,8 @@ assignees: ''
 
 ## Proposed Solution
 
-[If you have any suggestions on how to implement the feature, provide details or a high-level overview here.]
-
-## Alternatives Considered
-
-[If you've considered any alternative approaches or solutions, describe them here.]
-
-## Additional Context
-
-[Provide any additional information or context that might be helpful in understanding and evaluating the feature request.]
+[If you have any suggestions on how to implement the feature, provide details or a high-level overview here. If not, that's okay too!]
 
 ## Related Issues/PRs
 
-[If there are any related issues or pull requests in the repository, reference them here.]
-
+[If there are any related issues or pull requests, please link to them here.]
