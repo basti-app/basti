@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/BohdanPetryshyn/basti/issues"
   },
-  "license": "ISC",
+  "license": "MIT",
   "type": "module",
   "bin": {
     "basti": "bin/run.js"
