@@ -1,20 +1,13 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "outDir": "dist",
+    "baseUrl": "./",
+
     "target": "es2016",
     "module": "ESNext",
-    "moduleResolution": "NodeNext",
-    "baseUrl": "./",
-    "paths": {
-      "#src/*.js": ["./src/*.js"]
-    },
-    "resolveJsonModule": true,
     "sourceMap": true,
-    "outDir": "dist",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "skipLibCheck": true
+    "esModuleInterop": true
   },
   "include": ["./package.json", "./src/**/*", "./scripts/**/*"]
 }

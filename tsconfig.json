@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "NodeNext",
+    "resolveJsonModule": true,
+
+    "paths": {
+      "#src/*.js": ["./src/*.js"]
+    },
+
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true
+  }
+}
