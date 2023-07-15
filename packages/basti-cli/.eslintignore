@@ -1,6 +1,3 @@
-node_modules
-dist
 deps
 bin
-.history
 .build-deps-tmp
