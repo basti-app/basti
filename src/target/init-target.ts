@@ -1,3 +1,5 @@
+import type { AwsTag } from '#src/aws/tags/types.js';
+
 import { createSecurityGroup } from '../aws/ec2/create-security-group.js';
 import { getSecurityGroups } from '../aws/ec2/get-security-groups.js';
 import { generateShortId } from '../common/short-id.js';
@@ -20,6 +22,7 @@ interface InitTargetAllowAccessHooks {
 
 export interface InitTargetAllowAccessInput {
   bastion: Bastion;
+  tags: AwsTag[];
   hooks?: InitTargetAllowAccessHooks;
 }
 
@@ -42,10 +45,12 @@ export abstract class InitTargetBase implements InitTarget {
 
   async allowAccess({
     bastion,
+    tags,
     hooks,
   }: InitTargetAllowAccessInput): Promise<void> {
     const accessSecurityGroup = await this.createAccessSecurityGroup(
       bastion,
+      tags,
       hooks
     );
 
@@ -71,6 +76,7 @@ export abstract class InitTargetBase implements InitTarget {
 
   private async createAccessSecurityGroup(
     bastion: Bastion,
+    tags: AwsTag[],
     hooks?: InitTargetAllowAccessHooks
   ): Promise<AwsSecurityGroup> {
     try {
@@ -93,6 +99,7 @@ export abstract class InitTargetBase implements InitTarget {
             },
           },
         ],
+        tags,
       });
       hooks?.onSecurityGroupCreated?.(accessSecurityGroup.id);
       return accessSecurityGroup;
