@@ -13,6 +13,7 @@ import { AwsInstanceProfileNotFoundError } from './ec2-errors.js';
 import { parseEc2InstanceResponse } from './parse-ec2-response.js';
 import { ec2Client } from './ec2-client.js';
 
+import type { Tag } from '@aws-sdk/client-ec2';
 import type { AwsEc2Instance } from './types/aws-ec2-instance.js';
 import type { AwsTag } from '../tags/types.js';
 
@@ -32,7 +33,8 @@ export interface CreateEc2InstanceInput {
 
   requireIMDSv2?: boolean;
 
-  tags: AwsTag[];
+  instanceTags: AwsTag[];
+  tags?: AwsTag[];
 }
 
 export async function createEc2Instance({
@@ -46,12 +48,14 @@ export async function createEc2Instance({
   securityGroupIds,
   userData,
   requireIMDSv2,
+  instanceTags,
   tags,
 }: CreateEc2InstanceInput): Promise<AwsEc2Instance> {
   const instanceProfile = await createIamInstanceProfile({
     name,
     roleNames,
     path: profilePath,
+    tags,
   });
 
   const { Instances } = await retry(
@@ -86,9 +90,10 @@ export async function createEc2Instance({
           TagSpecifications: [
             {
               ResourceType: 'instance',
-              Tags: tags
-                .map(tag => ({ Key: tag.key, Value: tag.value }))
-                .concat({ Key: 'Name', Value: name }),
+              Tags: [
+                ...instanceTags.map(element => toTagCreateInput(element)),
+                ...(tags ? tags.map(element => toTagCreateInput(element)) : []),
+              ],
             },
           ],
 
@@ -120,4 +125,8 @@ export async function createEc2Instance({
 
 function isInstanceProfileNotFoundError(error: unknown): boolean {
   return error instanceof AwsInstanceProfileNotFoundError;
+}
+
+function toTagCreateInput(tag: AwsTag): Tag {
+  return { Key: tag.key, Value: tag.value };
 }

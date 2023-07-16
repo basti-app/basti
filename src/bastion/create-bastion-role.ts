@@ -1,6 +1,7 @@
 import { createIamInlinePolicy } from '#src/aws/iam/create-iam-inline-policy.js';
 import { createIamRole } from '#src/aws/iam/create-iam-role.js';
 import type { AwsRole } from '#src/aws/iam/types.js';
+import type { AwsTag } from '#src/aws/tags/types.js';
 
 import {
   BASTION_INSTANCE_ROLE_NAME_PREFIX,
@@ -9,6 +10,7 @@ import {
 
 export interface CreateBastionRoleInput {
   bastionId: string;
+  tags?: AwsTag[];
 }
 
 export interface CreateBastionInlinePoliciesInput {
@@ -18,11 +20,13 @@ export interface CreateBastionInlinePoliciesInput {
 
 export async function createBastionRole({
   bastionId,
+  tags,
 }: CreateBastionRoleInput): Promise<AwsRole> {
   return await createIamRole({
     name: `${BASTION_INSTANCE_ROLE_NAME_PREFIX}-${bastionId}`,
     path: BASTION_INSTANCE_ROLE_PATH,
     principalService: 'ec2.amazonaws.com',
+    tags,
   });
 }
 

@@ -9,25 +9,37 @@ import { handleWaiterError } from '../common/waiter-error.js';
 
 import { ec2Client } from './ec2-client.js';
 
+import type { AwsTag } from '../tags/types.js';
 import type { IpPermission } from '@aws-sdk/client-ec2';
 import type {
   AwsSecurityGroup,
   SecurityGroupIngressRule,
 } from './types/aws-security-group.js';
 
-export type CreateSecurityGroupInput = Omit<AwsSecurityGroup, 'id'>;
+export interface CreateSecurityGroupInput {
+  name: string;
+  description: string;
+  vpcId: string;
+  ingressRules: SecurityGroupIngressRule[];
+  tags?: AwsTag[];
+}
 
 export async function createSecurityGroup({
   name,
   description,
   vpcId,
   ingressRules,
+  tags,
 }: CreateSecurityGroupInput): Promise<AwsSecurityGroup> {
   const { GroupId } = await ec2Client.send(
     new CreateSecurityGroupCommand({
       GroupName: name,
       Description: description,
       VpcId: vpcId,
+      TagSpecifications: tags?.map(tag => ({
+        ResourceType: 'security-group',
+        Tags: [{ Key: tag.key, Value: tag.value }],
+      })),
     })
   );
 
@@ -48,6 +60,10 @@ export async function createSecurityGroup({
       new AuthorizeSecurityGroupIngressCommand({
         GroupId,
         IpPermissions: ingressRules.map(rule => toIpPermission(rule)),
+        TagSpecifications: tags?.map(tag => ({
+          ResourceType: 'security-group-rule',
+          Tags: [{ Key: tag.key, Value: tag.value }],
+        })),
       })
     );
   }
