@@ -45,7 +45,7 @@ interface CreateBastionHooks {
 export interface CreateBastionInput {
   vpcId: string;
   subnetId: string;
-  tags?: AwsTag[];
+  tags: AwsTag[];
   hooks?: CreateBastionHooks;
 }
 
@@ -122,7 +122,7 @@ async function getBastionImageId(hooks?: CreateBastionHooks): Promise<string> {
 
 async function createBastionRole(
   bastionId: string,
-  tags?: AwsTag[],
+  tags: AwsTag[],
   hooks?: CreateBastionHooks
 ): Promise<AwsRole> {
   try {
@@ -158,7 +158,7 @@ async function createBastionRoleInlinePolicies(
 async function createBastionSecurityGroup(
   bastionId: string,
   vpcId: string,
-  tags?: AwsTag[],
+  tags: AwsTag[],
   hooks?: CreateBastionHooks
 ): Promise<AwsSecurityGroup> {
   try {
@@ -184,7 +184,7 @@ async function createBastionInstance(
   bastionRole: AwsRole,
   subnetId: string,
   bastionSecurityGroup: AwsSecurityGroup,
-  tags?: AwsTag[],
+  tags: AwsTag[],
   hooks?: CreateBastionHooks
 ): Promise<AwsEc2Instance> {
   try {

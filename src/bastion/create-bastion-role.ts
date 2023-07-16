@@ -10,7 +10,7 @@ import {
 
 export interface CreateBastionRoleInput {
   bastionId: string;
-  tags?: AwsTag[];
+  tags: AwsTag[];
 }
 
 export interface CreateBastionInlinePoliciesInput {

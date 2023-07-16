@@ -34,7 +34,7 @@ export interface CreateEc2InstanceInput {
   requireIMDSv2?: boolean;
 
   instanceTags: AwsTag[];
-  tags?: AwsTag[];
+  tags: AwsTag[];
 }
 
 export async function createEc2Instance({
@@ -92,7 +92,8 @@ export async function createEc2Instance({
               ResourceType: 'instance',
               Tags: [
                 ...instanceTags.map(element => toTagCreateInput(element)),
-                ...(tags ? tags.map(element => toTagCreateInput(element)) : []),
+                ...tags.map(element => toTagCreateInput(element)),
+                toTagCreateInput({ key: 'Name', value: name }),
               ],
             },
           ],

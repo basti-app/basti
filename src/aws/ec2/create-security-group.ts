@@ -21,7 +21,7 @@ export interface CreateSecurityGroupInput {
   description: string;
   vpcId: string;
   ingressRules: SecurityGroupIngressRule[];
-  tags?: AwsTag[];
+  tags: AwsTag[];
 }
 
 export async function createSecurityGroup({
@@ -36,7 +36,7 @@ export async function createSecurityGroup({
       GroupName: name,
       Description: description,
       VpcId: vpcId,
-      TagSpecifications: tags?.map(tag => ({
+      TagSpecifications: tags.map(tag => ({
         ResourceType: 'security-group',
         Tags: [{ Key: tag.key, Value: tag.value }],
       })),
@@ -60,7 +60,7 @@ export async function createSecurityGroup({
       new AuthorizeSecurityGroupIngressCommand({
         GroupId,
         IpPermissions: ingressRules.map(rule => toIpPermission(rule)),
-        TagSpecifications: tags?.map(tag => ({
+        TagSpecifications: tags.map(tag => ({
           ResourceType: 'security-group-rule',
           Tags: [{ Key: tag.key, Value: tag.value }],
         })),

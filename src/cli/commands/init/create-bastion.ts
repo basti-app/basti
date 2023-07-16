@@ -18,7 +18,7 @@ import { OperationError } from '../../error/operation-error.js';
 export interface CreateBastionInput {
   vpcId: string;
   subnetId: string;
-  tags?: AwsTag[];
+  tags: AwsTag[];
 }
 
 export async function createBastion({

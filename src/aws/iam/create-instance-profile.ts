@@ -17,7 +17,7 @@ export interface CreateInstanceProfileInput {
   name: string;
   roleNames: string[];
   path: string;
-  tags?: AwsTag[];
+  tags: AwsTag[];
 }
 
 export async function createIamInstanceProfile({
@@ -30,7 +30,7 @@ export async function createIamInstanceProfile({
     new CreateInstanceProfileCommand({
       InstanceProfileName: name,
       Path: path,
-      Tags: tags?.map(tag => ({ Key: tag.key, Value: tag.value })),
+      Tags: tags.map(tag => ({ Key: tag.key, Value: tag.value })),
     })
   );
 

@@ -26,7 +26,11 @@ export async function handleInit(input: InitCommandInput): Promise<void> {
 
   const bastion =
     (await getBastion({ vpcId: targetVpcId })) ??
-    (await createBastion({ vpcId: targetVpcId, subnetId: bastionSubnet }));
+    (await createBastion({
+      vpcId: targetVpcId,
+      subnetId: bastionSubnet,
+      tags: [],
+    }));
 
   await allowTargetAccess({ target, bastion, tags: [] });
 }
