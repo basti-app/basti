@@ -53,6 +53,11 @@ void yargs(hideBin(process.argv))
           type: 'string',
           description: 'ID of the public VPC subnet for the bastion instance',
         })
+        .option('tag', {
+          type: 'array',
+          description:
+            'One or multiple tags to be added to all created resources',
+        })
         .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_PROFILE)
         .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_REGION)
         .check(
@@ -61,7 +66,7 @@ void yargs(hideBin(process.argv))
         .example([
           ['$0 init', 'Use interactive mode'],
           [
-            '$0 --rds-instance <id> --bastion-subnet <id>',
+            '$0 init --rds-instance <id> --bastion-subnet <id>',
             'Select target and bastion subnet automatically',
           ],
         ]),
