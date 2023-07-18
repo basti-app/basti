@@ -1,3 +1,39 @@
 {
-  "name": "basti-cdk"
+  "name": "basti-cdk",
+  "version": "1.0.0-alpha.0",
+  "description": "A CDK Construct for Basti",
+  "author": "BobVeringa",
+  "main": "src/index.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BohdanPetryshyn/basti.git"
+  },
+  "scripts": {
+    "build": "jsii",
+    "build:watch": "jsii --watch",
+    "package": "jsii-pacmak"
+  },
+  "stability": "stable",
+  "types": "src/index.d.ts",
+  "jsii": {
+    "outdir": "dist",
+    "versionFormat": "full",
+    "targets": {
+      "python": {
+        "distName": "basti-cdk",
+        "module": "basti_cdk"
+      }
+    }
+  },
+  "devDependencies": {
+    "jsii": "^5.1.8",
+    "jsii-pacmak": "^1.85.0",
+    "aws-cdk-lib": "2.86.0",
+    "constructs": "10.0.5"
+  },
+  "peerDependencies": {
+    "aws-cdk-lib": "2.86.0",
+    "constructs": "10.0.5"
+  }
 }
