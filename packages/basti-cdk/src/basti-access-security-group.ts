@@ -14,6 +14,9 @@ export interface BastiAccessSecurityGroupProps
   /**
    * Basti ID
    *
+   * This ID is used as a suffix for the name, it is not the ID of the basti
+   * instance.
+   *
    * @default - A 8-character pseudo-random string
    */
   readonly bastiId?: string;
@@ -24,7 +27,7 @@ export interface BastiAccessSecurityGroupProps
  */
 export class BastiAccessSecurityGroup extends aws_ec2.SecurityGroup {
   /**
-   * Basti ID
+   * The basti custom ID for the security group.
    */
   readonly bastiId: string;
 
