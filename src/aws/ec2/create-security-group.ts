@@ -6,6 +6,7 @@ import {
 
 import { COMMON_WAITER_CONFIG } from '../common/waiter-config.js';
 import { handleWaiterError } from '../common/waiter-error.js';
+import { toTagSpecification } from '../tags/utils/to-tag-specification.js';
 
 import { ec2Client } from './ec2-client.js';
 
@@ -36,10 +37,12 @@ export async function createSecurityGroup({
       GroupName: name,
       Description: description,
       VpcId: vpcId,
-      TagSpecifications: tags.map(tag => ({
-        ResourceType: 'security-group',
-        Tags: [{ Key: tag.key, Value: tag.value }],
-      })),
+      TagSpecifications: [
+        toTagSpecification('security-group', [
+          ...tags,
+          { key: 'Name', value: name },
+        ]),
+      ],
     })
   );
 
@@ -60,10 +63,7 @@ export async function createSecurityGroup({
       new AuthorizeSecurityGroupIngressCommand({
         GroupId,
         IpPermissions: ingressRules.map(rule => toIpPermission(rule)),
-        TagSpecifications: tags.map(tag => ({
-          ResourceType: 'security-group-rule',
-          Tags: [{ Key: tag.key, Value: tag.value }],
-        })),
+        TagSpecifications: [toTagSpecification('security-group-rule', tags)],
       })
     );
   }

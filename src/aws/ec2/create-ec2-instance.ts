@@ -8,12 +8,12 @@ import { retry } from '#src/common/retry.js';
 import { handleWaiterError } from '../common/waiter-error.js';
 import { COMMON_WAITER_CONFIG } from '../common/waiter-config.js';
 import { createIamInstanceProfile } from '../iam/create-instance-profile.js';
+import { toTagSpecification } from '../tags/utils/to-tag-specification.js';
 
 import { AwsInstanceProfileNotFoundError } from './ec2-errors.js';
 import { parseEc2InstanceResponse } from './parse-ec2-response.js';
 import { ec2Client } from './ec2-client.js';
 
-import type { Tag } from '@aws-sdk/client-ec2';
 import type { AwsEc2Instance } from './types/aws-ec2-instance.js';
 import type { AwsTag } from '../tags/types.js';
 
@@ -88,14 +88,19 @@ export async function createEc2Instance({
           },
 
           TagSpecifications: [
-            {
-              ResourceType: 'instance',
-              Tags: [
-                ...instanceTags.map(element => toTagCreateInput(element)),
-                ...tags.map(element => toTagCreateInput(element)),
-                toTagCreateInput({ key: 'Name', value: name }),
-              ],
-            },
+            toTagSpecification('instance', [
+              ...instanceTags,
+              ...tags,
+              { key: 'Name', value: name },
+            ]),
+            toTagSpecification('volume', [
+              ...tags,
+              { key: 'Name', value: name },
+            ]),
+            toTagSpecification('network-interface', [
+              ...tags,
+              { key: 'Name', value: name },
+            ]),
           ],
 
           MinCount: 1,
@@ -126,8 +131,4 @@ export async function createEc2Instance({
 
 function isInstanceProfileNotFoundError(error: unknown): boolean {
   return error instanceof AwsInstanceProfileNotFoundError;
-}
-
-function toTagCreateInput(tag: AwsTag): Tag {
-  return { Key: tag.key, Value: tag.value };
 }

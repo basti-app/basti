@@ -1,7 +1,6 @@
-import type { AwsTag } from '#src/aws/tags/types.js';
+import { getTagsFromOptions } from './tags/get-tags-from-options.js';
 
-import { OperationError } from '../error/operation-error.js';
-
+import type { TagOptions } from './tags/get-tags-from-options.js';
 import type { InitCommandInput } from '../commands/init/init.js';
 import type { ConnectCommandInput } from '../commands/connect/connect.js';
 
@@ -27,8 +26,7 @@ export type InitOptions = Partial<RdsInstanceOptions> &
   Partial<RdsClusterOptions> &
   Partial<CustomTargetVpcOptions> & {
     bastionSubnet?: string;
-    tags?: Array<string | number>;
-  };
+  } & TagOptions;
 
 export type ConnectOptions = Partial<RdsInstanceOptions> &
   Partial<RdsClusterOptions> &
@@ -58,7 +56,7 @@ export function getInitCommandInputFromOptions(
         }
       : undefined,
     bastionSubnet: options.bastionSubnet,
-    tags: parseTags(options.tags),
+    tags: getTagsFromOptions(options),
   };
 }
 
@@ -113,30 +111,4 @@ function isCustomTargetOptions(
 ): options is CustomTargetOptions;
 function isCustomTargetOptions(options: ConnectOptions | InitOptions): any {
   return 'customTargetVpc' in options;
-}
-
-function parseTags(tags: Array<string | number> | undefined): AwsTag[] {
-  if (tags === undefined || tags.length === 0) {
-    return [];
-  }
-
-  return tags.map(tag => parseTag(tag));
-}
-
-function parseTag(tag: string | number): AwsTag {
-  const parts = tag
-    .toString()
-    .split(/(?<!(?<!\\)\\)=/)
-    .map(part => part.replace(/\\=/g, '=').replace(/\\\\/g, '\\'));
-
-  if (parts.length !== 2) {
-    throw OperationError.fromErrorMessage({
-      operationName: 'Parsing tags',
-      message: `Each tag should be a key-value pair separated by an equal sign.`,
-    });
-  }
-
-  const [key, value] = parts as [string, string];
-
-  return { key, value };
 }

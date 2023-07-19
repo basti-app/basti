@@ -54,9 +54,14 @@ void yargs(hideBin(process.argv))
           description: 'ID of the public VPC subnet for the bastion instance',
         })
         .option('tag', {
-          type: 'array',
+          type: 'string',
           description:
             'One or multiple tags to be added to all created resources',
+        })
+        .options('tags-file', {
+          type: 'string',
+          description:
+            'Path to a JSON file containing tags to be added to all created resources',
         })
         .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_PROFILE)
         .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_REGION)
