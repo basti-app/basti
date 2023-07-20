@@ -3,6 +3,10 @@ on:
     paths:
       - 'packages/basti-cdk/**'
       - '.github/workflows/basti-cdk-actions.yml'
+  pull_request:
+    paths:
+      - 'packages/basti-cdk/**'
+      - '.github/workflows/basti-cdk-actions.yml'
 
 jobs:
   test-basti-cdk:
@@ -24,8 +28,6 @@ jobs:
         # tsconfig.json file which is not included in the repository.
         # without this step you will get weird typescript errors.
       - name: Building
-        working-directory: packages/basti-cdk
         run: npm run build -w basti-cdk
       - name: Testing
-        working-directory: packages/basti-cdk
         run: npm run test -w basti-cdk

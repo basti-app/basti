@@ -4,7 +4,7 @@ import { generateShortId } from './basti-helper';
 import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from './basti-constants';
 
 import type { Construct } from 'constructs';
-import type { BastiInstance } from './basti-instance';
+import type { IBastiInstance } from './basti-instance';
 
 /**
  * The properties for the bastion access security group.
@@ -60,7 +60,7 @@ export class BastiAccessSecurityGroup extends aws_ec2.SecurityGroup {
    * @param port The port to allow access to
    */
   public addBastiInstance(
-    bastiInstance: BastiInstance,
+    bastiInstance: IBastiInstance,
     port: aws_ec2.Port
   ): void {
     this.addIngressRule(bastiInstance.securityGroup, port);

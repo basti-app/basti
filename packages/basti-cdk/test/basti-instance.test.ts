@@ -64,11 +64,18 @@ describe('BastiInstanceTest', () => {
     const instances = template.findResources('AWS::EC2::Instance');
     const instance = instances[Object.keys(instances)[0]];
     const tags = instance.Properties.Tags;
-    expect(tags).toContainEqual({ Key: 'basti:created-by', Value: 'CDK' });
-    expect(tags).toContainEqual({ Key: 'basti:id', Value: 'd8b7dc8b' });
+    // check that the list contains the correct tags.
     expect(tags).toContainEqual({
       Key: 'basti:in-use',
       Value: expect.stringContaining('T'),
+    });
+    expect(tags).toContainEqual({
+      Key: 'BASTION_INSTANCE_CREATED_BY_TAG_NAME',
+      Value: 'CDK',
+    });
+    expect(tags).toContainEqual({
+      Key: 'BASTION_INSTANCE_ID_TAG_NAME',
+      Value: 'd8b7dc8b',
     });
     expect(tags).toContainEqual({
       Key: 'Name',
@@ -88,12 +95,10 @@ describe('BastiInstanceTest', () => {
     const bastiInstance = new BastiInstance(bastiStack, 'bastiInstance', {
       vpc: bastiVpc,
       bastiId: 'TEST_ID',
-      machineConfig: {
-        instanceType: aws_ec2.InstanceType.of(
-          InstanceClass.T3,
-          InstanceSize.NANO
-        ),
-      },
+      instanceType: aws_ec2.InstanceType.of(
+        InstanceClass.T3,
+        InstanceSize.NANO
+      ),
       tags: {
         'basti:tag': 'test',
         'basti:tag2': 'test2',
@@ -146,19 +151,34 @@ describe('BastiInstanceTest', () => {
     const instances = template.findResources('AWS::EC2::Instance');
     const instance = instances[Object.keys(instances)[0]];
     const tags = instance.Properties.Tags;
-    expect(tags).toContainEqual({ Key: 'basti:created-by', Value: 'CDK' });
-    expect(tags).toContainEqual({ Key: 'basti:id', Value: 'TEST_ID' });
     expect(tags).toContainEqual({
       Key: 'basti:in-use',
       Value: expect.stringContaining('T'),
     });
     expect(tags).toContainEqual({
+      Key: 'BASTION_INSTANCE_CREATED_BY_TAG_NAME',
+      Value: 'CDK',
+    });
+    expect(tags).toContainEqual({
+      Key: 'BASTION_INSTANCE_ID_TAG_NAME',
+      Value: 'TEST_ID',
+    });
+    expect(tags).toContainEqual({
       Key: 'Name',
       Value: 'basti-instance-TEST_ID',
     });
-    expect(tags).toContainEqual({ Key: 'basti:tag', Value: 'test' });
-    expect(tags).toContainEqual({ Key: 'basti:tag2', Value: 'test2' });
-    expect(tags).toContainEqual({ Key: 'basti:tag3', Value: 'test3' });
+    expect(tags).toContainEqual({
+      Key: 'basti:tag',
+      Value: 'test',
+    });
+    expect(tags).toContainEqual({
+      Key: 'basti:tag2',
+      Value: 'test2',
+    });
+    expect(tags).toContainEqual({
+      Key: 'basti:tag3',
+      Value: 'test3',
+    });
   });
   test('construct-grant-connect', () => {
     const app = new cdk.App();
@@ -229,5 +249,34 @@ describe('BastiInstanceTest', () => {
         ],
       },
     });
+  });
+  // Test to make sure we can construct IBastiInstance
+  test('construct-ibastiinstance', () => {
+    const app = new cdk.App();
+
+    const bastiStack = new cdk.Stack(app, 'bastiStack', {
+      env: {
+        account: '123456789012',
+        region: 'us-east-1',
+      },
+    });
+
+    // Ok so importing a security group (which is done when calling .fromBastiId)
+    // requires a vpc to be passed in without tokens.
+    // There is no way around this. So we "import" the vpc again. Again without tokens.
+    // it must have a fixed name.
+    const importedVpc = aws_ec2.Vpc.fromLookup(bastiStack, 'specialVpc', {
+      vpcName: 'specialVpc',
+    });
+
+    const importedBastiInstance = BastiInstance.fromBastiId(
+      bastiStack,
+      'importedBastiInstance',
+      'TEST_ID',
+      importedVpc
+    );
+
+    // Check that the properties are set correctly.
+    expect(importedBastiInstance.vpc.vpcId).toEqual(importedVpc.vpcId);
   });
 });

@@ -41,7 +41,7 @@ const bastiAccessSecurityGroup = new BastiAccessSecurityGroup(
 );
 
 // The basti instance itself
-const basti = new BastiInstance(bastiStack, 'basti', {
+const bastiInstance = new BastiInstance(bastiStack, 'basti', {
   vpc: bastiVpc,
 });
 
@@ -65,23 +65,52 @@ const rdsInstance = new aws_rds.DatabaseInstance(
 // We then allow the basti instance access to the port of the RDS instance
 bastiAccessSecurityGroup.addBastiInstance(
   // basti instance we created earlier
-  basti,
+  bastiInstance,
   // Port can also be defined manually if needed
   aws_ec2.Port.tcp(rdsInstance.instanceEndpoint.port)
 );
 ```
 
-The basti instance can also allow roles to connect to it with the `grantBastiCliConnect` method.
+The basti instance can also allow roles to connect to it with the `grantBastiCliConnect` method. 
+You can also use this method to give groups/users permissions to connect to basti. 
 
 ```typescript
 // The basti instance itself
 import {BastiInstance} from "basti-cdk";
 
-const basti = new BastiInstance(...);
+const bastiInstance = new BastiInstance(...);
 const role = new aws_iam.Role(...);
 
 // Gives all the requires permissions to connect to the basti instance. With the direct conection option.
-basti.grantBastiCliConnect(role);
+bastiInstance.grantBastiCliConnect(role);
+```
+
+An interface version of basti can also be created using `BastiInstance.fromBastiId(...)`. This method can be used
+if your application is spread out over multiple projects. 
+```typescript
+const app = new cdk.App();
+
+const bastiStack = new cdk.Stack(app, 'bastiStack', {
+    env: {
+        account: '123456789012',
+        region: 'us-east-1',
+    },
+});
+
+// Ok so importing a security group (which is done when calling .fromBastiId)
+// requires a vpc to be passed in without tokens.
+// There is no way around this. So we "import" the vpc again. Again without tokens.
+// it must have a fixed name.
+const importedVpc = aws_ec2.Vpc.fromLookup(bastiStack, 'importedVpc', {
+    vpcName: 'importedVpc',
+});
+
+const importedBastiInstance = BastiInstance.fromBastiId(
+    bastiStack,
+    'importedBastiInstance',
+    'TEST_ID',
+    importedVpc
+);
 ```
 
 ## License
