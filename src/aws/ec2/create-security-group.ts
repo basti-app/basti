@@ -37,12 +37,8 @@ export async function createSecurityGroup({
       GroupName: name,
       Description: description,
       VpcId: vpcId,
-      TagSpecifications: [
-        toTagSpecification('security-group', [
-          ...tags,
-          { key: 'Name', value: name },
-        ]),
-      ],
+      // TODO: Add tags to the egress rule
+      TagSpecifications: [toTagSpecification('security-group', tags)],
     })
   );
 
