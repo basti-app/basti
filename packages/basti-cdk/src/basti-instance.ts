@@ -139,7 +139,6 @@ export class BastiInstance extends Construct implements IBastiInstance {
       vpc: props.vpc,
       vpcSubnets: props.vpcSubnets ?? defaultSubnetSelection,
       ssmSessionPermissions: true,
-      propagateTagsToVolumeOnCreation: true,
     });
 
     // Combine tags from props and default tags this reduces duplication
