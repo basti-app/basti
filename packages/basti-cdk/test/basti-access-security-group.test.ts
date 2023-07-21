@@ -149,7 +149,7 @@ describe('BastiAccessSecurityGroupTest', () => {
       }
     );
 
-    bastiAccessSecurityGroup.addBastiInstance(
+    bastiAccessSecurityGroup.allowBastiInstanceConnection(
       basti,
       aws_ec2.Port.tcp(rdsInstance.instanceEndpoint.port)
     );

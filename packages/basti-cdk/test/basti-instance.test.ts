@@ -70,11 +70,11 @@ describe('BastiInstanceTest', () => {
       Value: expect.stringContaining('T'),
     });
     expect(tags).toContainEqual({
-      Key: 'BASTION_INSTANCE_CREATED_BY_TAG_NAME',
+      Key: 'basti:created-by',
       Value: 'CDK',
     });
     expect(tags).toContainEqual({
-      Key: 'BASTION_INSTANCE_ID_TAG_NAME',
+      Key: 'basti:id',
       Value: 'd8b7dc8b',
     });
     expect(tags).toContainEqual({
@@ -156,11 +156,11 @@ describe('BastiInstanceTest', () => {
       Value: expect.stringContaining('T'),
     });
     expect(tags).toContainEqual({
-      Key: 'BASTION_INSTANCE_CREATED_BY_TAG_NAME',
+      Key: 'basti:created-by',
       Value: 'CDK',
     });
     expect(tags).toContainEqual({
-      Key: 'BASTION_INSTANCE_ID_TAG_NAME',
+      Key: 'basti:id',
       Value: 'TEST_ID',
     });
     expect(tags).toContainEqual({

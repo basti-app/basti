@@ -59,7 +59,7 @@ export class BastiAccessSecurityGroup extends aws_ec2.SecurityGroup {
    * @param bastiInstance The Basti instance
    * @param port The port to allow access to
    */
-  public addBastiInstance(
+  public allowBastiInstanceConnection(
     bastiInstance: IBastiInstance,
     port: aws_ec2.Port
   ): void {

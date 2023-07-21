@@ -4,6 +4,8 @@ import { aws_ec2, aws_iam, Tags } from 'aws-cdk-lib';
 import { BASTION_INSTANCE_CLOUD_INIT } from './bastion-cloudinit';
 import { generateShortId } from './basti-helper';
 import {
+  BASTION_INSTANCE_CREATED_BY_TAG_NAME,
+  BASTION_INSTANCE_ID_TAG_NAME,
   BASTION_INSTANCE_IN_USE_TAG_NAME,
   BASTION_INSTANCE_NAME_PREFIX,
   BASTION_INSTANCE_ROLE_NAME_PREFIX,
@@ -146,9 +148,12 @@ export class BastiInstance extends Construct implements IBastiInstance {
     });
 
     // Combine tags from props and default tags this reduces duplication
+
+    const inUseDate = new Date().toISOString();
     const bastiTags = {
-      BASTION_INSTANCE_ID_TAG_NAME: this.bastiId,
-      BASTION_INSTANCE_CREATED_BY_TAG_NAME: 'CDK',
+      [BASTION_INSTANCE_ID_TAG_NAME]: this.bastiId,
+      [BASTION_INSTANCE_CREATED_BY_TAG_NAME]: 'CDK',
+      [BASTION_INSTANCE_IN_USE_TAG_NAME]: inUseDate,
       ...props.tags,
     };
 
@@ -156,14 +161,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
     // Basti Tags are also assigned to all resources.
     for (const [key, value] of Object.entries(bastiTags)) {
       Tags.of(this.instance).add(key, value);
-      Tags.of(this.role).add(key, value);
-      Tags.of(this.securityGroup).add(key, value);
     }
-
-    Tags.of(this.instance).add(
-      BASTION_INSTANCE_IN_USE_TAG_NAME,
-      new Date().toISOString()
-    );
   }
 
   /**
