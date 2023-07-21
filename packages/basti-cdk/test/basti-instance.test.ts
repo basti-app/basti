@@ -99,11 +99,6 @@ describe('BastiInstanceTest', () => {
         InstanceClass.T3,
         InstanceSize.NANO
       ),
-      tags: {
-        'basti:tag': 'test',
-        'basti:tag2': 'test2',
-        'basti:tag3': 'test3',
-      },
     });
 
     // Check that the properties are set correctly.
@@ -166,18 +161,6 @@ describe('BastiInstanceTest', () => {
     expect(tags).toContainEqual({
       Key: 'Name',
       Value: 'basti-instance-TEST_ID',
-    });
-    expect(tags).toContainEqual({
-      Key: 'basti:tag',
-      Value: 'test',
-    });
-    expect(tags).toContainEqual({
-      Key: 'basti:tag2',
-      Value: 'test2',
-    });
-    expect(tags).toContainEqual({
-      Key: 'basti:tag3',
-      Value: 'test3',
     });
   });
   test('construct-grant-connect', () => {

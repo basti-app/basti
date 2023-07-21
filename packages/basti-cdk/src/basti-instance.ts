@@ -47,11 +47,6 @@ export interface BastiInstanceProps {
    * (Optional) The machine image to use for the bastion instance.
    */
   readonly machineImage?: aws_ec2.IMachineImage;
-
-  /**
-   * (Optional) The tags to apply to the bastion instance. Key-value pairs
-   */
-  readonly tags?: { [key: string]: string };
 }
 
 export interface IBastiInstance {
@@ -154,7 +149,6 @@ export class BastiInstance extends Construct implements IBastiInstance {
       [BASTION_INSTANCE_ID_TAG_NAME]: this.bastiId,
       [BASTION_INSTANCE_CREATED_BY_TAG_NAME]: 'CDK',
       [BASTION_INSTANCE_IN_USE_TAG_NAME]: inUseDate,
-      ...props.tags,
     };
 
     // Add tags to the bastion instance
