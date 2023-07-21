@@ -2,12 +2,20 @@
   "name": "basti-cdk",
   "version": "1.0.0-alpha.0",
   "description": "A CDK Construct for Basti",
-  "author": "BobVeringa",
+  "author": {
+    "name": "BohdanPetryshyn",
+    "email": "bohdan.y.petryshyn@gmail.com"
+  },
+  "contributors": [
+    {
+      "name": "BobVeringa",
+      "email": "veringabob@gmail.com"
+    }
+  ],
   "main": "src/index.js",
   "license": "MIT",
   "repository": {
-    "type": "git",
-    "url": "git+https://github.com/BohdanPetryshyn/basti.git"
+    "url": "https://github.com/BohdanPetryshyn/basti.git"
   },
   "scripts": {
     "build": "jsii",
