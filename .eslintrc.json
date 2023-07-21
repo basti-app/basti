@@ -20,6 +20,11 @@
     "project": "./tsconfig.json"
   },
   "rules": {
+    "prettier/prettier": [
+      "error",{
+        "endOfLine": "lf"
+      }
+    ],
     "no-ex-assign": "off",
 
     "@typescript-eslint/strict-boolean-expressions": [
