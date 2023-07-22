@@ -2,7 +2,8 @@ import * as cdk from 'aws-cdk-lib';
 import { aws_ec2, aws_rds } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 
-import { BastiAccessSecurityGroup, BastiInstance } from '../src';
+import { BastiAccessSecurityGroup } from '../basti-access-security-group';
+import { BastiInstance } from '../basti-instance';
 
 describe('BastiAccessSecurityGroupTest', () => {
   test('normal-access-security-group', () => {

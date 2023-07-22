@@ -3,7 +3,7 @@ import * as cdk from 'aws-cdk-lib';
 import { aws_ec2, aws_iam } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize } from 'aws-cdk-lib/aws-ec2';
 
-import { BastiInstance } from '../src';
+import { BastiInstance } from '../basti-instance';
 
 describe('BastiInstanceTest', () => {
   test('basic-construct', () => {

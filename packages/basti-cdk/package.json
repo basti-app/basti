@@ -12,7 +12,8 @@
       "email": "veringabob@gmail.com"
     }
   ],
-  "main": "src/index.js",
+  "main": "dist/js/index.js",
+  "types": "dist/js/index.d.ts",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/BohdanPetryshyn/basti.git"
@@ -25,15 +26,19 @@
     "watch": "tsc -w"
   },
   "stability": "stable",
-  "types": "src/index.d.ts",
   "jsii": {
-    "outdir": "dist",
+    "outdir": "dist/packages",
     "versionFormat": "full",
     "targets": {
       "python": {
         "distName": "basti-cdk",
         "module": "basti_cdk"
       }
+    },
+    "tsc": {
+      "rootDir": "src",
+      "outDir": "dist/js",
+      "forceConsistentCasingInFileNames": true
     }
   },
   "devDependencies": {

@@ -1,8 +1,5 @@
-// eslint-disable-next-line unicorn/prefer-module
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
-  roots: ['.'],
-  testMatch: ['**/**.test.ts'],
-  transform: {
-    '^.+\\.tsx?$': 'ts-jest',
-  },
+  preset: 'ts-jest',
+  testEnvironment: 'node',
 };

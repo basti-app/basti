@@ -1,4 +1,4 @@
-import { generateShortId } from '../src/basti-helper';
+import { generateShortId } from '../basti-helper';
 
 describe('BastiHelperTest', () => {
   test('generate-short-solutions', () => {
