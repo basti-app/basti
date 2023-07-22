@@ -14,6 +14,5 @@ dist
 !.jsii
 !.jsii.gz
 
-
 # Exclude jsii outdir
 dist/packages

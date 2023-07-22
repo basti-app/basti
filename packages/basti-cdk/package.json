@@ -26,9 +26,12 @@
   "types": "dist/js/index.d.ts",
   "stability": "stable",
   "scripts": {
-    "test": "jest",
+    "test": "npm run check && jest",
     "build": "jsii",
     "build:watch": "jsii --watch",
+    "check": "npm run check-types && npm run check-style",
+    "check-types": "tsc --noEmit",
+    "check-style": "eslint src",
     "package": "jsii-pacmak"
   },
   "peerDependencies": {
