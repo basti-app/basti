@@ -6,7 +6,8 @@
   "homepage": "https://github.com/BohdanPetryshyn/basti",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BohdanPetryshyn/basti.git"
+    "url": "git+https://github.com/BohdanPetryshyn/basti.git",
+    "directory": "packages/basti"
   },
   "bugs": {
     "url": "https://github.com/BohdanPetryshyn/basti/issues"
