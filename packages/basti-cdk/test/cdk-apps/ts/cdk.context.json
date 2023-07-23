@@ -1,0 +1,58 @@
+{
+  "availability-zones:account=507082836245:region=us-east-1": [
+    "us-east-1a",
+    "us-east-1b",
+    "us-east-1c",
+    "us-east-1d",
+    "us-east-1e",
+    "us-east-1f"
+  ],
+  "vpc-provider:account=507082836245:filter.tag:Name=cdk-test:region=us-east-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-073e5cf7e9fed2e10",
+    "vpcCidrBlock": "10.0.0.0/16",
+    "ownerAccountId": "507082836245",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-010d3afe9a39256a5",
+            "cidr": "10.0.0.0/18",
+            "availabilityZone": "us-east-1a",
+            "routeTableId": "rtb-01a6a96094d189b7f"
+          },
+          {
+            "subnetId": "subnet-0e19a684540edd680",
+            "cidr": "10.0.64.0/18",
+            "availabilityZone": "us-east-1b",
+            "routeTableId": "rtb-07c66d129a4ce15f7"
+          }
+        ]
+      },
+      {
+        "name": "private",
+        "type": "Isolated",
+        "subnets": [
+          {
+            "subnetId": "subnet-09dc8aaccd3b2af6e",
+            "cidr": "10.0.128.0/18",
+            "availabilityZone": "us-east-1a",
+            "routeTableId": "rtb-09de349f859e0b2b9"
+          },
+          {
+            "subnetId": "subnet-09cd1034f8e1d54d4",
+            "cidr": "10.0.192.0/18",
+            "availabilityZone": "us-east-1b",
+            "routeTableId": "rtb-0f8b5fa43dc86f9f6"
+          }
+        ]
+      }
+    ]
+  },
+  "security-group:account=507082836245:region=us-east-1:securityGroupName=basti-instance-cdk-test:vpcId=vpc-073e5cf7e9fed2e10": {
+    "securityGroupId": "sg-04a69981148f43cc8",
+    "allowAllOutbound": false
+  }
+}
