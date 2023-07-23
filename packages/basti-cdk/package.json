@@ -35,8 +35,8 @@
     "package": "jsii-pacmak"
   },
   "peerDependencies": {
-    "aws-cdk-lib": "2.86.0",
-    "constructs": "10.0.5"
+    "aws-cdk-lib": "^2.86.0",
+    "constructs": "^10.0.5"
   },
   "devDependencies": {
     "@types/jest": "^29.5.3",
