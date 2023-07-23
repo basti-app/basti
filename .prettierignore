@@ -1,4 +1,2 @@
-
-node_modules
-dist
-.history
+/node_modules
+/.history
