@@ -7,7 +7,7 @@ export interface RdsInstanceStackProps extends cdk.StackProps {
   bastiInstance: BastiInstance;
 }
 
-export class RdsInstanceStack extends cdk.Stack {
+export class RdsInstanceConnectStack extends cdk.Stack {
   readonly bastiAccessSecurityGroup: BastiAccessSecurityGroup;
   readonly rdsInstance: cdk.aws_rds.DatabaseInstance;
 

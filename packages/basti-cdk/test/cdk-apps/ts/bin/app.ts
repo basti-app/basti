@@ -2,8 +2,9 @@
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { BastiInstanceStack } from '../lib/basti-instance-stack';
-import { RdsInstanceStack } from '../lib/rds-instance-stack';
-import { BastiInstanceLookupStack } from '../lib/basti-instance-lookup';
+import { RdsInstanceConnectStack } from '../lib/rds-instance-connect-stack';
+import { BastiInstanceLookupStack } from '../lib/basti-instance-lookup-stack';
+import { BastiInstanceGrantConnectStack } from '../lib/basti-instance-grant-connect-stack';
 
 const app = new cdk.App();
 
@@ -14,7 +15,7 @@ const bastiInstanceStack = new BastiInstanceStack(app, 'BastiInstance', {
   },
 });
 
-new RdsInstanceStack(app, 'RdsInstance', {
+new RdsInstanceConnectStack(app, 'RdsInstanceConnect', {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
@@ -24,9 +25,23 @@ new RdsInstanceStack(app, 'RdsInstance', {
   bastiInstance: bastiInstanceStack.bastiInstance,
 });
 
-new BastiInstanceLookupStack(app, 'BastiInstanceLookup', {
+const bastiInstanceLookupStack = new BastiInstanceLookupStack(
+  app,
+  'BastiInstanceLookup',
+  {
+    env: {
+      account: process.env.CDK_DEFAULT_ACCOUNT,
+      region: process.env.CDK_DEFAULT_REGION,
+    },
+  }
+);
+bastiInstanceLookupStack.addDependency(bastiInstanceStack);
+
+new BastiInstanceGrantConnectStack(app, 'BastiInstanceGrantConnect', {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
   },
+
+  bastiInstance: bastiInstanceStack.bastiInstance,
 });

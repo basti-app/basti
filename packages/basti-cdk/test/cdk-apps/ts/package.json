@@ -9,8 +9,8 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy": "cdk deploy",
-    "destroy": "cdk destroy"
+    "deploy": "cdk deploy BastiInstance --require-approval never && cdk deploy --all --require-approval never",
+    "destroy": "cdk destroy --all --force"
   },
   "devDependencies": {
     "@types/jest": "^29.5.3",
