@@ -171,6 +171,8 @@ export class BastiInstance extends Construct implements IBastiInstance {
         resources: ['*'],
       })
     );
+
+    // FIXME: ssm:StartSession must be allowed on the SSM document: arn:aws:ssm:*:*:document/AWS-StartPortForwardingSessionToRemoteHost
     grantee.grantPrincipal.addToPrincipalPolicy(
       new aws_iam.PolicyStatement({
         actions: ['ssm:StartSession', 'ec2:StartInstances', 'ec2:CreateTags'],
