@@ -2,3 +2,4 @@
 /tsconfig.tsbuildinfo
 /.jsii
 /coverage/
+/.release-creds.sh
