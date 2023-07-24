@@ -8,7 +8,9 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "deploy": "cdk deploy",
+    "destroy": "cdk destroy"
   },
   "devDependencies": {
     "@types/jest": "^29.5.3",
@@ -20,9 +22,9 @@
     "typescript": "~5.1.6"
   },
   "dependencies": {
-    "aws-cdk-lib": "2.88.0",
-    "basti-cdk": "file:../../../dist/packages/js/basti-cdk@1.0.0-alpha.0.jsii.tgz",
-    "constructs": "^10.0.0",
+    "aws-cdk-lib": "^2.88.0",
+    "basti-cdk": "file:../../..",
+    "constructs": "^10.0.5",
     "source-map-support": "^0.5.21"
   }
 }
