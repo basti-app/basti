@@ -31,7 +31,7 @@
     "check-deps": "ts-node-esm scripts/check-deps.ts",
     "prepare-deps": "npm run check-deps || (npm run build-deps && npm run publish-deps)",
     "publish-deps": "ts-node-esm scripts/publish-deps.ts",
-    "prepublishOnly": "npm run prepare-deps && npm run check-prepublish && npm run build-src"
+    "release": "npm run prepare-deps && npm run check-prepublish && npm run build-src && npm publish"
   },
   "devDependencies": {
     "@types/inquirer": "8.2.1",
@@ -65,6 +65,7 @@
     "bin/run.js",
     "dist",
     "package.json",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ]
 }

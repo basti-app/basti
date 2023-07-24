@@ -1,6 +1,6 @@
 {
   "name": "basti-cdk",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.3",
   "description": "A CDK Construct for Basti",
   "author": {
     "name": "BohdanPetryshyn",
@@ -26,13 +26,15 @@
   "types": "dist/js/index.d.ts",
   "stability": "stable",
   "scripts": {
-    "test": "npm run check && jest",
+    "test": "npm run check && npm run test-unit",
+    "test-unit": "jest",
     "build": "jsii",
     "build:watch": "jsii --watch",
     "check": "npm run check-types && npm run check-style",
     "check-types": "tsc --noEmit",
     "check-style": "eslint src",
-    "package": "jsii-pacmak"
+    "package": "jsii-pacmak",
+    "release": "npm run build && npm run test && npm run package && source .release-creds.sh && publib dist/packages"
   },
   "peerDependencies": {
     "aws-cdk-lib": "^2.86.0",
@@ -44,8 +46,17 @@
     "jest": "^29.6.1",
     "jsii": "^5.1.8",
     "jsii-pacmak": "^1.85.0",
+    "jsii-release": "^0.2.735",
     "ts-jest": "^29.1.1"
   },
+  "files": [
+    "dist/js",
+    ".jsii",
+    ".jsii.gz",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
   "jsii": {
     "outdir": "dist/packages",
     "versionFormat": "full",
