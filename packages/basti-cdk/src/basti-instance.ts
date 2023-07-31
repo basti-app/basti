@@ -1,5 +1,5 @@
 import { Construct } from 'constructs';
-import { aws_ec2, aws_iam, Tags } from 'aws-cdk-lib';
+import { aws_ec2, aws_iam, Stack, Tags } from 'aws-cdk-lib';
 
 import { BASTION_INSTANCE_CLOUD_INIT } from './bastion-cloudinit';
 import { generateShortId } from './basti-helper';
@@ -164,19 +164,28 @@ export class BastiInstance extends Construct implements IBastiInstance {
    * @param grantee The principal to grant permission to.
    */
   public grantBastiCliConnect(grantee: aws_iam.IGrantable): void {
-    const instanceArn = `arn:aws:ec2:*:*:instance/${this.instance.instanceId}`;
+    const account = Stack.of(this).account;
+    const region = Stack.of(this).region;
+    const instanceArn = `arn:aws:ec2:${region}:${account}:instance/${this.instance.instanceId}`;
     grantee.grantPrincipal.addToPrincipalPolicy(
       new aws_iam.PolicyStatement({
         actions: ['ec2:DescribeInstances'],
         resources: ['*'],
       })
     );
-
-    // FIXME: ssm:StartSession must be allowed on the SSM document: arn:aws:ssm:*:*:document/AWS-StartPortForwardingSessionToRemoteHost
     grantee.grantPrincipal.addToPrincipalPolicy(
       new aws_iam.PolicyStatement({
-        actions: ['ssm:StartSession', 'ec2:StartInstances', 'ec2:CreateTags'],
+        actions: ['ec2:StartInstances', 'ec2:CreateTags'],
         resources: [instanceArn],
+      })
+    );
+    grantee.grantPrincipal.addToPrincipalPolicy(
+      new aws_iam.PolicyStatement({
+        actions: ['ssm:StartSession'],
+        resources: [
+          instanceArn,
+          'arn:aws:ssm:*:*:document/AWS-StartPortForwardingSessionToRemoteHost',
+        ],
       })
     );
   }

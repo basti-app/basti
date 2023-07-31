@@ -194,23 +194,45 @@ describe('BastiInstanceTest', () => {
             Resource: '*',
           },
           {
-            Action: [
-              'ssm:StartSession',
-              'ec2:StartInstances',
-              'ec2:CreateTags',
-            ],
+            Action: ['ec2:StartInstances', 'ec2:CreateTags'],
             Effect: 'Allow',
             Resource: {
               'Fn::Join': [
                 '',
                 [
-                  'arn:aws:ec2:*:*:instance/',
+                  'arn:aws:ec2:',
+                  { Ref: 'AWS::Region' },
+                  ':',
+                  { Ref: 'AWS::AccountId' },
+                  ':instance/',
                   {
                     Ref: 'bastiInstancebastiinstance6956A218',
                   },
                 ],
               ],
             },
+          },
+          {
+            Action: 'ssm:StartSession',
+            Effect: 'Allow',
+            Resource: [
+              {
+                'Fn::Join': [
+                  '',
+                  [
+                    'arn:aws:ec2:',
+                    { Ref: 'AWS::Region' },
+                    ':',
+                    { Ref: 'AWS::AccountId' },
+                    ':instance/',
+                    {
+                      Ref: 'bastiInstancebastiinstance6956A218',
+                    },
+                  ],
+                ],
+              },
+              'arn:aws:ssm:*:*:document/AWS-StartPortForwardingSessionToRemoteHost',
+            ],
           },
         ],
       },
