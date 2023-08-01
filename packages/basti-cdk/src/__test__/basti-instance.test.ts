@@ -55,6 +55,36 @@ describe('BastiInstanceTest', () => {
           ],
         },
       ],
+      Policies: [
+        {
+          PolicyName: 'basti-instance-policy',
+          PolicyDocument: {
+            Statement: [
+              {
+                Action: 'ec2:DescribeInstances',
+                Effect: 'Allow',
+                Resource: '*',
+              },
+              {
+                Action: 'ec2:CreateTags',
+                Effect: 'Allow',
+                Resource: {
+                  'Fn::Join': [
+                    '',
+                    [
+                      'arn:aws:ec2:',
+                      { Ref: 'AWS::Region' },
+                      ':',
+                      { Ref: 'AWS::AccountId' },
+                      ':instance/*',
+                    ],
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      ],
     });
 
     template.hasResourceProperties('AWS::EC2::SecurityGroup', {
