@@ -134,6 +134,29 @@ export class BastiInstance extends Construct implements IBastiInstance {
               Stack.of(this).account
             }:instance/*`,
           ],
+          // Because the resource is broader than we would like, we restrict
+          // the condition to only allow tagging of instances that match
+          // the basti ID. This is not perfect, but it is better than nothing.
+          conditions: {
+            StringEquals: {
+              [`ec2:ResourceTag/${BASTION_INSTANCE_ID_TAG_NAME}`]: `${this.bastiId}`,
+            },
+          },
+        }),
+      ],
+    });
+
+    const sessionManagerPolicy = new aws_iam.PolicyDocument({
+      statements: [
+        new aws_iam.PolicyStatement({
+          actions: [
+            'ssm:UpdateInstanceInformation',
+            'ssmmessages:CreateControlChannel',
+            'ssmmessages:CreateDataChannel',
+            'ssmmessages:OpenControlChannel',
+            'ssmmessages:OpenDataChannel',
+          ],
+          resources: ['*'],
         }),
       ],
     });
@@ -143,6 +166,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
       roleName: `${BASTION_INSTANCE_ROLE_NAME_PREFIX}-${this.bastiId}`,
       inlinePolicies: {
         'basti-instance-policy': bastiInstancePolicy,
+        'session-manager-policy': sessionManagerPolicy,
       },
     });
 
@@ -162,7 +186,6 @@ export class BastiInstance extends Construct implements IBastiInstance {
       userData: aws_ec2.UserData.custom(BASTION_INSTANCE_CLOUD_INIT),
       vpc: props.vpc,
       vpcSubnets: props.vpcSubnets ?? defaultSubnetSelection,
-      ssmSessionPermissions: true,
     });
 
     // Combine tags from props and default tags this reduces duplication
@@ -202,13 +225,12 @@ export class BastiInstance extends Construct implements IBastiInstance {
         resources: [instanceArn],
       })
     );
+
+    const documentArn = `arn:aws:ssm:${region}:${account}:document/AWS-StartPortForwardingSessionToRemoteHost`;
     grantee.grantPrincipal.addToPrincipalPolicy(
       new aws_iam.PolicyStatement({
         actions: ['ssm:StartSession'],
-        resources: [
-          instanceArn,
-          'arn:aws:ssm:*:*:document/AWS-StartPortForwardingSessionToRemoteHost',
-        ],
+        resources: [instanceArn, documentArn],
       })
     );
   }

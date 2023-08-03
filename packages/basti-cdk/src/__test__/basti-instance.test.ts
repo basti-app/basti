@@ -43,18 +43,6 @@ describe('BastiInstanceTest', () => {
           },
         ],
       },
-      ManagedPolicyArns: [
-        {
-          'Fn::Join': [
-            '',
-            [
-              'arn:',
-              { Ref: 'AWS::Partition' },
-              ':iam::aws:policy/AmazonSSMManagedInstanceCore',
-            ],
-          ],
-        },
-      ],
       Policies: [
         {
           PolicyName: 'basti-instance-policy',
@@ -80,6 +68,29 @@ describe('BastiInstanceTest', () => {
                     ],
                   ],
                 },
+                Condition: {
+                  StringEquals: {
+                    'ec2:ResourceTag/basti:id': 'd8b7dc8b',
+                  },
+                },
+              },
+            ],
+          },
+        },
+        {
+          PolicyName: 'session-manager-policy',
+          PolicyDocument: {
+            Statement: [
+              {
+                Action: [
+                  'ssm:UpdateInstanceInformation',
+                  'ssmmessages:CreateControlChannel',
+                  'ssmmessages:CreateDataChannel',
+                  'ssmmessages:OpenControlChannel',
+                  'ssmmessages:OpenDataChannel',
+                ],
+                Effect: 'Allow',
+                Resource: '*',
               },
             ],
           },
@@ -155,18 +166,6 @@ describe('BastiInstanceTest', () => {
           },
         ],
       },
-      ManagedPolicyArns: [
-        {
-          'Fn::Join': [
-            '',
-            [
-              'arn:',
-              { Ref: 'AWS::Partition' },
-              ':iam::aws:policy/AmazonSSMManagedInstanceCore',
-            ],
-          ],
-        },
-      ],
     });
 
     template.hasResourceProperties('AWS::EC2::SecurityGroup', {
@@ -261,7 +260,18 @@ describe('BastiInstanceTest', () => {
                   ],
                 ],
               },
-              'arn:aws:ssm:*:*:document/AWS-StartPortForwardingSessionToRemoteHost',
+              {
+                'Fn::Join': [
+                  '',
+                  [
+                    'arn:aws:ssm:',
+                    { Ref: 'AWS::Region' },
+                    ':',
+                    { Ref: 'AWS::AccountId' },
+                    ':document/AWS-StartPortForwardingSessionToRemoteHost',
+                  ],
+                ],
+              },
             ],
           },
         ],
