@@ -43,16 +43,66 @@ describe('BastiInstanceTest', () => {
           },
         ],
       },
-      ManagedPolicyArns: [
+      Policies: [
         {
-          'Fn::Join': [
-            '',
-            [
-              'arn:',
-              { Ref: 'AWS::Partition' },
-              ':iam::aws:policy/AmazonSSMManagedInstanceCore',
+          PolicyName: 'session-manager-policy',
+          PolicyDocument: {
+            Statement: [
+              {
+                Action: [
+                  'ssm:UpdateInstanceInformation',
+                  'ssmmessages:CreateControlChannel',
+                  'ssmmessages:CreateDataChannel',
+                  'ssmmessages:OpenControlChannel',
+                  'ssmmessages:OpenDataChannel',
+                ],
+                Effect: 'Allow',
+                Resource: '*',
+              },
             ],
-          ],
+          },
+        },
+      ],
+    });
+
+    template.hasResourceProperties('AWS::IAM::Policy', {
+      PolicyDocument: {
+        Statement: [
+          {
+            Action: 'ec2:DescribeInstances',
+            Effect: 'Allow',
+            Resource: '*',
+          },
+          {
+            Action: 'ec2:CreateTags',
+            Effect: 'Allow',
+            Resource: {
+              'Fn::Join': [
+                '',
+                [
+                  'arn:aws:ec2:',
+                  {
+                    Ref: 'AWS::Region',
+                  },
+                  ':',
+                  {
+                    Ref: 'AWS::AccountId',
+                  },
+                  ':instance/',
+                  {
+                    Ref: 'bastiInstancebastiinstance6956A218',
+                  },
+                ],
+              ],
+            },
+          },
+        ],
+        Version: '2012-10-17',
+      },
+      PolicyName: 'basti-instance-policy',
+      Roles: [
+        {
+          Ref: 'bastiInstancebastiinstanceroleFC226E9F',
         },
       ],
     });
@@ -125,18 +175,6 @@ describe('BastiInstanceTest', () => {
           },
         ],
       },
-      ManagedPolicyArns: [
-        {
-          'Fn::Join': [
-            '',
-            [
-              'arn:',
-              { Ref: 'AWS::Partition' },
-              ':iam::aws:policy/AmazonSSMManagedInstanceCore',
-            ],
-          ],
-        },
-      ],
     });
 
     template.hasResourceProperties('AWS::EC2::SecurityGroup', {
@@ -194,23 +232,56 @@ describe('BastiInstanceTest', () => {
             Resource: '*',
           },
           {
-            Action: [
-              'ssm:StartSession',
-              'ec2:StartInstances',
-              'ec2:CreateTags',
-            ],
+            Action: ['ec2:StartInstances', 'ec2:CreateTags'],
             Effect: 'Allow',
             Resource: {
               'Fn::Join': [
                 '',
                 [
-                  'arn:aws:ec2:*:*:instance/',
+                  'arn:aws:ec2:',
+                  { Ref: 'AWS::Region' },
+                  ':',
+                  { Ref: 'AWS::AccountId' },
+                  ':instance/',
                   {
                     Ref: 'bastiInstancebastiinstance6956A218',
                   },
                 ],
               ],
             },
+          },
+          {
+            Action: 'ssm:StartSession',
+            Effect: 'Allow',
+            Resource: [
+              {
+                'Fn::Join': [
+                  '',
+                  [
+                    'arn:aws:ec2:',
+                    { Ref: 'AWS::Region' },
+                    ':',
+                    { Ref: 'AWS::AccountId' },
+                    ':instance/',
+                    {
+                      Ref: 'bastiInstancebastiinstance6956A218',
+                    },
+                  ],
+                ],
+              },
+              {
+                'Fn::Join': [
+                  '',
+                  [
+                    'arn:aws:ssm:',
+                    { Ref: 'AWS::Region' },
+                    ':',
+                    { Ref: 'AWS::AccountId' },
+                    ':document/AWS-StartPortForwardingSessionToRemoteHost',
+                  ],
+                ],
+              },
+            ],
           },
         ],
       },

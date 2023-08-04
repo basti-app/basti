@@ -1,5 +1,5 @@
 import { Construct } from 'constructs';
-import { aws_ec2, aws_iam, Tags } from 'aws-cdk-lib';
+import { aws_ec2, aws_iam, Stack, Tags } from 'aws-cdk-lib';
 
 import { BASTION_INSTANCE_CLOUD_INIT } from './bastion-cloudinit';
 import { generateShortId } from './basti-helper';
@@ -116,10 +116,27 @@ export class BastiInstance extends Construct implements IBastiInstance {
     const defaultSubnetSelection = {
       subnetType: aws_ec2.SubnetType.PUBLIC,
     };
+    const sessionManagerPolicy = new aws_iam.PolicyDocument({
+      statements: [
+        new aws_iam.PolicyStatement({
+          actions: [
+            'ssm:UpdateInstanceInformation',
+            'ssmmessages:CreateControlChannel',
+            'ssmmessages:CreateDataChannel',
+            'ssmmessages:OpenControlChannel',
+            'ssmmessages:OpenDataChannel',
+          ],
+          resources: ['*'],
+        }),
+      ],
+    });
 
     this.role = new aws_iam.Role(this, 'basti-instance-role', {
       assumedBy: new aws_iam.ServicePrincipal('ec2.amazonaws.com'),
       roleName: `${BASTION_INSTANCE_ROLE_NAME_PREFIX}-${this.bastiId}`,
+      inlinePolicies: {
+        'session-manager-policy': sessionManagerPolicy,
+      },
     });
 
     this.securityGroup = new aws_ec2.SecurityGroup(this, 'basti-instance-sg', {
@@ -138,11 +155,34 @@ export class BastiInstance extends Construct implements IBastiInstance {
       userData: aws_ec2.UserData.custom(BASTION_INSTANCE_CLOUD_INIT),
       vpc: props.vpc,
       vpcSubnets: props.vpcSubnets ?? defaultSubnetSelection,
-      ssmSessionPermissions: true,
     });
 
-    // Combine tags from props and default tags this reduces duplication
+    const bastiInstancePolicy = new aws_iam.PolicyDocument({
+      statements: [
+        new aws_iam.PolicyStatement({
+          actions: ['ec2:DescribeInstances'],
+          // ec2:DescribeInstances does not support resource-level permissions
+          resources: ['*'],
+        }),
+        new aws_iam.PolicyStatement({
+          actions: ['ec2:CreateTags'],
+          resources: [
+            `arn:aws:ec2:${Stack.of(this).region}:${
+              Stack.of(this).account
+            }:instance/${this.instance.instanceId}`,
+          ],
+        }),
+      ],
+    });
 
+    this.role.attachInlinePolicy(
+      new aws_iam.Policy(this, 'basti-instance-policy', {
+        policyName: 'basti-instance-policy',
+        document: bastiInstancePolicy,
+      })
+    );
+
+    // Combine tags from props and default tags this reduces duplication
     const inUseDate = new Date().toISOString();
     const bastiTags = {
       [BASTION_INSTANCE_ID_TAG_NAME]: this.bastiId,
@@ -164,19 +204,27 @@ export class BastiInstance extends Construct implements IBastiInstance {
    * @param grantee The principal to grant permission to.
    */
   public grantBastiCliConnect(grantee: aws_iam.IGrantable): void {
-    const instanceArn = `arn:aws:ec2:*:*:instance/${this.instance.instanceId}`;
+    const account = Stack.of(this).account;
+    const region = Stack.of(this).region;
+    const instanceArn = `arn:aws:ec2:${region}:${account}:instance/${this.instance.instanceId}`;
     grantee.grantPrincipal.addToPrincipalPolicy(
       new aws_iam.PolicyStatement({
         actions: ['ec2:DescribeInstances'],
         resources: ['*'],
       })
     );
-
-    // FIXME: ssm:StartSession must be allowed on the SSM document: arn:aws:ssm:*:*:document/AWS-StartPortForwardingSessionToRemoteHost
     grantee.grantPrincipal.addToPrincipalPolicy(
       new aws_iam.PolicyStatement({
-        actions: ['ssm:StartSession', 'ec2:StartInstances', 'ec2:CreateTags'],
+        actions: ['ec2:StartInstances', 'ec2:CreateTags'],
         resources: [instanceArn],
+      })
+    );
+
+    const documentArn = `arn:aws:ssm:${region}:${account}:document/AWS-StartPortForwardingSessionToRemoteHost`;
+    grantee.grantPrincipal.addToPrincipalPolicy(
+      new aws_iam.PolicyStatement({
+        actions: ['ssm:StartSession'],
+        resources: [instanceArn, documentArn],
       })
     );
   }
