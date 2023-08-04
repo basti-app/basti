@@ -45,39 +45,6 @@ describe('BastiInstanceTest', () => {
       },
       Policies: [
         {
-          PolicyName: 'basti-instance-policy',
-          PolicyDocument: {
-            Statement: [
-              {
-                Action: 'ec2:DescribeInstances',
-                Effect: 'Allow',
-                Resource: '*',
-              },
-              {
-                Action: 'ec2:CreateTags',
-                Effect: 'Allow',
-                Resource: {
-                  'Fn::Join': [
-                    '',
-                    [
-                      'arn:aws:ec2:',
-                      { Ref: 'AWS::Region' },
-                      ':',
-                      { Ref: 'AWS::AccountId' },
-                      ':instance/*',
-                    ],
-                  ],
-                },
-                Condition: {
-                  StringEquals: {
-                    'ec2:ResourceTag/basti:id': 'd8b7dc8b',
-                  },
-                },
-              },
-            ],
-          },
-        },
-        {
           PolicyName: 'session-manager-policy',
           PolicyDocument: {
             Statement: [
@@ -94,6 +61,48 @@ describe('BastiInstanceTest', () => {
               },
             ],
           },
+        },
+      ],
+    });
+
+    template.hasResourceProperties('AWS::IAM::Policy', {
+      PolicyDocument: {
+        Statement: [
+          {
+            Action: 'ec2:DescribeInstances',
+            Effect: 'Allow',
+            Resource: '*',
+          },
+          {
+            Action: 'ec2:CreateTags',
+            Effect: 'Allow',
+            Resource: {
+              'Fn::Join': [
+                '',
+                [
+                  'arn:aws:ec2:',
+                  {
+                    Ref: 'AWS::Region',
+                  },
+                  ':',
+                  {
+                    Ref: 'AWS::AccountId',
+                  },
+                  ':instance/',
+                  {
+                    Ref: 'bastiInstancebastiinstance6956A218',
+                  },
+                ],
+              ],
+            },
+          },
+        ],
+        Version: '2012-10-17',
+      },
+      PolicyName: 'basti-instance-policy',
+      Roles: [
+        {
+          Ref: 'bastiInstancebastiinstanceroleFC226E9F',
         },
       ],
     });

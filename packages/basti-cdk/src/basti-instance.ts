@@ -116,36 +116,6 @@ export class BastiInstance extends Construct implements IBastiInstance {
     const defaultSubnetSelection = {
       subnetType: aws_ec2.SubnetType.PUBLIC,
     };
-
-    const bastiInstancePolicy = new aws_iam.PolicyDocument({
-      statements: [
-        new aws_iam.PolicyStatement({
-          actions: ['ec2:DescribeInstances'],
-          // ec2:DescribeInstances does not support resource-level permissions
-          resources: ['*'],
-        }),
-        new aws_iam.PolicyStatement({
-          actions: ['ec2:CreateTags'],
-          // This is broader than we would like, but it is required to tag
-          // the instance with the basti tags. We cannot restrict this to
-          // the instance itself, because of circular dependencies.
-          resources: [
-            `arn:aws:ec2:${Stack.of(this).region}:${
-              Stack.of(this).account
-            }:instance/*`,
-          ],
-          // Because the resource is broader than we would like, we restrict
-          // the condition to only allow tagging of instances that match
-          // the basti ID. This is not perfect, but it is better than nothing.
-          conditions: {
-            StringEquals: {
-              [`ec2:ResourceTag/${BASTION_INSTANCE_ID_TAG_NAME}`]: `${this.bastiId}`,
-            },
-          },
-        }),
-      ],
-    });
-
     const sessionManagerPolicy = new aws_iam.PolicyDocument({
       statements: [
         new aws_iam.PolicyStatement({
@@ -165,7 +135,6 @@ export class BastiInstance extends Construct implements IBastiInstance {
       assumedBy: new aws_iam.ServicePrincipal('ec2.amazonaws.com'),
       roleName: `${BASTION_INSTANCE_ROLE_NAME_PREFIX}-${this.bastiId}`,
       inlinePolicies: {
-        'basti-instance-policy': bastiInstancePolicy,
         'session-manager-policy': sessionManagerPolicy,
       },
     });
@@ -187,6 +156,31 @@ export class BastiInstance extends Construct implements IBastiInstance {
       vpc: props.vpc,
       vpcSubnets: props.vpcSubnets ?? defaultSubnetSelection,
     });
+
+    const bastiInstancePolicy = new aws_iam.PolicyDocument({
+      statements: [
+        new aws_iam.PolicyStatement({
+          actions: ['ec2:DescribeInstances'],
+          // ec2:DescribeInstances does not support resource-level permissions
+          resources: ['*'],
+        }),
+        new aws_iam.PolicyStatement({
+          actions: ['ec2:CreateTags'],
+          resources: [
+            `arn:aws:ec2:${Stack.of(this).region}:${
+              Stack.of(this).account
+            }:instance/${this.instance.instanceId}`,
+          ],
+        }),
+      ],
+    });
+
+    this.role.attachInlinePolicy(
+      new aws_iam.Policy(this, 'basti-instance-policy', {
+        policyName: 'basti-instance-policy',
+        document: bastiInstancePolicy,
+      })
+    );
 
     // Combine tags from props and default tags this reduces duplication
     const inUseDate = new Date().toISOString();
