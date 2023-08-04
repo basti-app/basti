@@ -51,6 +51,8 @@ export async function createEc2Instance({
   instanceTags,
   tags,
 }: CreateEc2InstanceInput): Promise<AwsEc2Instance> {
+  const tagsWithName = [...tags, { key: 'Name', value: name }];
+
   const instanceProfile = await createIamInstanceProfile({
     name,
     roleNames,
@@ -88,19 +90,9 @@ export async function createEc2Instance({
           },
 
           TagSpecifications: [
-            toTagSpecification('instance', [
-              ...instanceTags,
-              ...tags,
-              { key: 'Name', value: name },
-            ]),
-            toTagSpecification('volume', [
-              ...tags,
-              { key: 'Name', value: name },
-            ]),
-            toTagSpecification('network-interface', [
-              ...tags,
-              { key: 'Name', value: name },
-            ]),
+            toTagSpecification('instance', [...instanceTags, ...tagsWithName]),
+            toTagSpecification('volume', tagsWithName),
+            toTagSpecification('network-interface', tagsWithName),
           ],
 
           MinCount: 1,
