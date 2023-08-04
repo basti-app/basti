@@ -56,12 +56,12 @@ void yargs(hideBin(process.argv))
         .option('tag', {
           type: 'string',
           description:
-            'One or multiple tags to be added to all created resources',
+            'Tag to be added to all created resources. Can be used multiple times',
         })
         .options('tags-file', {
           type: 'string',
           description:
-            'Path to a JSON file containing tags to be added to all created resources',
+            'Path to a JSON file containing tags to be added to all created resources. Can be used multiple times',
         })
         .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_PROFILE)
         .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_REGION)
