@@ -90,7 +90,7 @@ export async function createEc2Instance({
           },
 
           TagSpecifications: [
-            toTagSpecification('instance', [...instanceTags, ...tagsWithName]),
+            toTagSpecification('instance', [...tagsWithName, ...instanceTags]),
             toTagSpecification('volume', tagsWithName),
             toTagSpecification('network-interface', tagsWithName),
           ],

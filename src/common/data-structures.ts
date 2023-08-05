@@ -11,3 +11,7 @@ export function indexBy<T>(array: T[], key: keyof T): Record<string, T> {
 export function uniqueBy<T>(array: T[], key: keyof T): T[] {
   return Object.values(indexBy(array, key));
 }
+
+export function toArray<T>(value: T | T[]): T[] {
+  return Array.isArray(value) ? value : [value];
+}
