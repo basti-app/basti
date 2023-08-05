@@ -3,3 +3,4 @@
 /.jsii
 /coverage/
 /.release-creds.sh
+/.npmignore
