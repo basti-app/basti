@@ -1,4 +1,5 @@
 import { AwsInstanceProfileNotFoundError } from '#src/aws/ec2/ec2-errors.js';
+import type { AwsTag } from '#src/aws/tags/types.js';
 import {
   BastionImageRetrievalError,
   BastionRoleCreationError,
@@ -17,11 +18,13 @@ import { OperationError } from '../../error/operation-error.js';
 export interface CreateBastionInput {
   vpcId: string;
   subnetId: string;
+  tags: AwsTag[];
 }
 
 export async function createBastion({
   vpcId,
   subnetId,
+  tags,
 }: CreateBastionInput): Promise<Bastion> {
   const subCli = cli.createSubInstance({ indent: 2 });
 
@@ -30,6 +33,7 @@ export async function createBastion({
     const bastion = await bastionOps.createBastion({
       vpcId,
       subnetId,
+      tags,
       hooks: {
         onRetrievingImageId: () =>
           subCli.progressStart('Retrieving the latest EC2 AMI'),

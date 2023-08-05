@@ -1,3 +1,6 @@
+import { getTagsFromOptions } from './tags/get-tags-from-options.js';
+
+import type { TagOptions } from './tags/get-tags-from-options.js';
 import type { InitCommandInput } from '../commands/init/init.js';
 import type { ConnectCommandInput } from '../commands/connect/connect.js';
 
@@ -23,7 +26,7 @@ export type InitOptions = Partial<RdsInstanceOptions> &
   Partial<RdsClusterOptions> &
   Partial<CustomTargetVpcOptions> & {
     bastionSubnet?: string;
-  };
+  } & TagOptions;
 
 export type ConnectOptions = Partial<RdsInstanceOptions> &
   Partial<RdsClusterOptions> &
@@ -53,6 +56,7 @@ export function getInitCommandInputFromOptions(
         }
       : undefined,
     bastionSubnet: options.bastionSubnet,
+    tags: getTagsFromOptions(options),
   };
 }
 

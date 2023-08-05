@@ -1,3 +1,5 @@
+import type { AwsTag } from '#src/aws/tags/types.js';
+
 import { allowTargetAccess } from './allow-target-access.js';
 import { assertTargetIsNotInitialized } from './assert-target-is-not-initiated.js';
 import { createBastion } from './create-bastion.js';
@@ -11,6 +13,7 @@ import type { DehydratedInitTargetInput } from './select-init-target.js';
 export interface InitCommandInput {
   target?: DehydratedInitTargetInput;
   bastionSubnet?: string;
+  tags: AwsTag[];
 }
 
 export async function handleInit(input: InitCommandInput): Promise<void> {
@@ -26,7 +29,11 @@ export async function handleInit(input: InitCommandInput): Promise<void> {
 
   const bastion =
     (await getBastion({ vpcId: targetVpcId })) ??
-    (await createBastion({ vpcId: targetVpcId, subnetId: bastionSubnet }));
+    (await createBastion({
+      vpcId: targetVpcId,
+      subnetId: bastionSubnet,
+      tags: input.tags,
+    }));
 
-  await allowTargetAccess({ target, bastion });
+  await allowTargetAccess({ target, bastion, tags: input.tags });
 }

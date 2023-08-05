@@ -8,6 +8,7 @@ import { retry } from '#src/common/retry.js';
 import { handleWaiterError } from '../common/waiter-error.js';
 import { COMMON_WAITER_CONFIG } from '../common/waiter-config.js';
 import { createIamInstanceProfile } from '../iam/create-instance-profile.js';
+import { toTagSpecification } from '../tags/utils/to-tag-specification.js';
 
 import { AwsInstanceProfileNotFoundError } from './ec2-errors.js';
 import { parseEc2InstanceResponse } from './parse-ec2-response.js';
@@ -32,6 +33,7 @@ export interface CreateEc2InstanceInput {
 
   requireIMDSv2?: boolean;
 
+  instanceTags: AwsTag[];
   tags: AwsTag[];
 }
 
@@ -46,12 +48,16 @@ export async function createEc2Instance({
   securityGroupIds,
   userData,
   requireIMDSv2,
+  instanceTags,
   tags,
 }: CreateEc2InstanceInput): Promise<AwsEc2Instance> {
+  const tagsWithName = [...tags, { key: 'Name', value: name }];
+
   const instanceProfile = await createIamInstanceProfile({
     name,
     roleNames,
     path: profilePath,
+    tags,
   });
 
   const { Instances } = await retry(
@@ -84,12 +90,9 @@ export async function createEc2Instance({
           },
 
           TagSpecifications: [
-            {
-              ResourceType: 'instance',
-              Tags: tags
-                .map(tag => ({ Key: tag.key, Value: tag.value }))
-                .concat({ Key: 'Name', Value: name }),
-            },
+            toTagSpecification('instance', [...instanceTags, ...tagsWithName]),
+            toTagSpecification('volume', tagsWithName),
+            toTagSpecification('network-interface', tagsWithName),
           ],
 
           MinCount: 1,
