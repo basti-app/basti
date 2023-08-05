@@ -1,7 +1,7 @@
 import { getTagsFromOptions } from './tags/get-tags-from-options.js';
 
 import type { TagOptions } from './tags/get-tags-from-options.js';
-import type { InitCommandInput } from '../commands/init/init.js';
+import type { InitCommandInput } from '../commands/init/init-command-input.js';
 import type { ConnectCommandInput } from '../commands/connect/connect.js';
 
 export interface RdsInstanceOptions {

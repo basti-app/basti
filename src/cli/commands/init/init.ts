@@ -1,5 +1,3 @@
-import type { AwsTag } from '#src/aws/tags/types.js';
-
 import { allowTargetAccess } from './allow-target-access.js';
 import { assertTargetIsNotInitialized } from './assert-target-is-not-initiated.js';
 import { createBastion } from './create-bastion.js';
@@ -7,14 +5,9 @@ import { getBastion } from './get-bastion.js';
 import { getTargetVpc } from './get-target-vpc.js';
 import { selectBastionSubnetId } from './select-bastion-subnet.js';
 import { selectInitTarget } from './select-init-target.js';
+import { selectAdvancedInput } from './advanced-input/select-advanced-input.js';
 
-import type { DehydratedInitTargetInput } from './select-init-target.js';
-
-export interface InitCommandInput {
-  target?: DehydratedInitTargetInput;
-  bastionSubnet?: string;
-  tags: AwsTag[];
-}
+import type { InitCommandInput } from './init-command-input.js';
 
 export async function handleInit(input: InitCommandInput): Promise<void> {
   const target = await selectInitTarget(input.target);
@@ -25,6 +18,8 @@ export async function handleInit(input: InitCommandInput): Promise<void> {
     bastionSubnetInput: input.bastionSubnet,
   });
 
+  const advancedInput = await selectAdvancedInput(input);
+
   await assertTargetIsNotInitialized({ target });
 
   const bastion =
@@ -32,8 +27,8 @@ export async function handleInit(input: InitCommandInput): Promise<void> {
     (await createBastion({
       vpcId: targetVpcId,
       subnetId: bastionSubnet,
-      tags: input.tags,
+      tags: advancedInput.tags,
     }));
 
-  await allowTargetAccess({ target, bastion, tags: input.tags });
+  await allowTargetAccess({ target, bastion, tags: advancedInput.tags });
 }
