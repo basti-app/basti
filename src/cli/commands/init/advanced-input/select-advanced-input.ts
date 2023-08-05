@@ -12,6 +12,8 @@ import { selectTags } from './select-tags.js';
 export async function selectAdvancedInput(
   input: InitCommandInput
 ): Promise<InitCommandAdvancedInput> {
+  // If the required input is complete, Basti must skip any other interactive
+  // input and proceed to execution immediately.
   if (isRequiredInputComplete(input) || isAdvancedInputComplete(input)) {
     return input;
   }
