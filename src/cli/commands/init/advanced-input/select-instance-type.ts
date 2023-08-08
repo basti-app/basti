@@ -11,7 +11,7 @@ export async function selectInstanceType(
   const { instanceType } = await cli.prompt({
     type: 'input',
     name: 'instanceType',
-    message: 'EC2 instance type',
+    message: 'EC2 instance type for the bastion',
     default: BASTION_INSTANCE_DEFAULT_INSTANCE_TYPE,
   });
 
