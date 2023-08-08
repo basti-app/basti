@@ -9,6 +9,7 @@ export interface InitCommandRequiredInput {
 
 export interface InitCommandAdvancedInput {
   tags: AwsTag[];
+  instanceType?: string;
 }
 
 export type InitCommandInput = InitCommandRequiredInput &
@@ -19,5 +20,5 @@ export function isRequiredInputComplete(input: InitCommandInput): boolean {
 }
 
 export function isAdvancedInputComplete(input: InitCommandInput): boolean {
-  return input.tags.length > 0;
+  return input.tags.length > 0 && input.instanceType !== undefined;
 }

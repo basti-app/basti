@@ -13,6 +13,10 @@ export async function upsertTags({
   resourceIds,
   tags,
 }: UpsertTagsInput): Promise<void> {
+  if (resourceIds.length === 0 || tags.length === 0) {
+    return;
+  }
+
   await ec2Client.send(
     new CreateTagsCommand({
       Resources: resourceIds,

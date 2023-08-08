@@ -72,7 +72,10 @@ export async function createSecurityGroup({
       new AuthorizeSecurityGroupIngressCommand({
         GroupId,
         IpPermissions: ingressRules.map(rule => toIpPermission(rule)),
-        TagSpecifications: [toTagSpecification('security-group-rule', tags)],
+        TagSpecifications:
+          tags.length > 0
+            ? [toTagSpecification('security-group-rule', tags)]
+            : undefined,
       })
     );
   }
