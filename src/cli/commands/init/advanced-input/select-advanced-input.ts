@@ -29,8 +29,11 @@ export async function selectAdvancedInput(
     return input;
   }
 
+  const instanceType = await selectInstanceType(input.instanceType);
+  const tags = await selectTags(input.tags);
+
   return {
-    tags: await selectTags(input.tags),
-    instanceType: await selectInstanceType(input.instanceType),
+    instanceType,
+    tags,
   };
 }
