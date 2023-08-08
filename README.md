@@ -43,6 +43,7 @@
 - [Custom connection targets](#custom-connection-targets)
 - [Advanced initialization options](#advanced-initialization-options)
   - [Resource tags](#resource-tags)
+  - [Bastion instance type](#bastion-instance-type)
 - [Basti in CI/CD pipelines](#basti-in-cicd-pipelines)
   - [Automatic mode](#automatic-mode)
 - [Basti configuration file](#basti-configuration-file)
@@ -163,6 +164,10 @@ Example of a tags file:
 Tags with the same name will be overwritten in the order they are specified. Tags specified with the `--tag` option will always overwrite tags specified in the tags file.
 
 > 💡 If your tags contain special characters, it might be easier to use interactive mode or the `--tags-file` command than escaping the characters in the `--tag` option.
+
+### Bastion instance type
+
+You can specify the EC2 instance type to be used for the bastion instance using the `--bastion-instance-type` option or by entering it in the advanced options section of the interactive mode. The default instance type is `t2.micro`, but it's subject to change in the future.
 
 ## Basti in CI/CD pipelines
 
