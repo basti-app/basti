@@ -63,7 +63,7 @@ const rdsInstance = new aws_rds.DatabaseInstance(
 );
 
 // We then allow the basti instance access to the port of the RDS instance
-bastiAccessSecurityGroup.addBastiInstance(
+bastiAccessSecurityGroup.allowBastiInstanceConnection(
   // basti instance we created earlier
   bastiInstance,
   // Port can also be defined manually if needed
