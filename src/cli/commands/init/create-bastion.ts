@@ -18,12 +18,14 @@ import { OperationError } from '../../error/operation-error.js';
 export interface CreateBastionInput {
   vpcId: string;
   subnetId: string;
+  instanceType: string | undefined;
   tags: AwsTag[];
 }
 
 export async function createBastion({
   vpcId,
   subnetId,
+  instanceType,
   tags,
 }: CreateBastionInput): Promise<Bastion> {
   const subCli = cli.createSubInstance({ indent: 2 });
@@ -33,6 +35,7 @@ export async function createBastion({
     const bastion = await bastionOps.createBastion({
       vpcId,
       subnetId,
+      instanceType,
       tags,
       hooks: {
         onRetrievingImageId: () =>

@@ -22,6 +22,7 @@ import {
   BASTION_INSTANCE_NAME_PREFIX,
   BASTION_INSTANCE_PROFILE_PATH,
   BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
+  BASTION_INSTANCE_DEFAULT_INSTANCE_TYPE,
 } from './bastion.js';
 
 import type { Bastion } from './bastion.js';
@@ -45,6 +46,7 @@ interface CreateBastionHooks {
 export interface CreateBastionInput {
   vpcId: string;
   subnetId: string;
+  instanceType: string | undefined;
   tags: AwsTag[];
   hooks?: CreateBastionHooks;
 }
@@ -52,6 +54,7 @@ export interface CreateBastionInput {
 export async function createBastion({
   vpcId,
   subnetId,
+  instanceType,
   tags,
   hooks,
 }: CreateBastionInput): Promise<Bastion> {
@@ -74,6 +77,7 @@ export async function createBastion({
     bastionRole,
     subnetId,
     bastionSecurityGroup,
+    instanceType,
     tags,
     hooks
   );
@@ -184,6 +188,7 @@ async function createBastionInstance(
   bastionRole: AwsRole,
   subnetId: string,
   bastionSecurityGroup: AwsSecurityGroup,
+  instanceType: string | undefined,
   tags: AwsTag[],
   hooks?: CreateBastionHooks
 ): Promise<AwsEc2Instance> {
@@ -192,7 +197,7 @@ async function createBastionInstance(
     const bastionInstance = await createEc2Instance({
       name: `${BASTION_INSTANCE_NAME_PREFIX}-${bastionId}`,
       imageId: bastionImageId,
-      instanceType: 't2.micro',
+      instanceType: instanceType ?? BASTION_INSTANCE_DEFAULT_INSTANCE_TYPE,
       roleNames: [bastionRole.name],
       profilePath: BASTION_INSTANCE_PROFILE_PATH,
       subnetId,

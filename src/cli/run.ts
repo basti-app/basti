@@ -53,6 +53,10 @@ void yargs(hideBin(process.argv))
           type: 'string',
           description: 'ID of the public VPC subnet for the bastion instance',
         })
+        .option('bastion-instance-type', {
+          type: 'string',
+          description: 'EC2 instance type for the bastion instance',
+        })
         .option('tag', {
           type: 'string',
           description:

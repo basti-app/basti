@@ -7,6 +7,7 @@ import {
   isAdvancedInputComplete,
 } from '../init-command-input.js';
 
+import { selectInstanceType } from './select-instance-type.js';
 import { selectTags } from './select-tags.js';
 
 export async function selectAdvancedInput(
@@ -30,5 +31,6 @@ export async function selectAdvancedInput(
 
   return {
     tags: await selectTags(input.tags),
+    instanceType: await selectInstanceType(input.instanceType),
   };
 }

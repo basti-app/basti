@@ -26,6 +26,7 @@ export type InitOptions = Partial<RdsInstanceOptions> &
   Partial<RdsClusterOptions> &
   Partial<CustomTargetVpcOptions> & {
     bastionSubnet?: string;
+    bastionInstanceType?: string;
   } & TagOptions;
 
 export type ConnectOptions = Partial<RdsInstanceOptions> &
@@ -57,6 +58,7 @@ export function getInitCommandInputFromOptions(
       : undefined,
     bastionSubnet: options.bastionSubnet,
     tags: getTagsFromOptions(options),
+    instanceType: options.bastionInstanceType,
   };
 }
 
