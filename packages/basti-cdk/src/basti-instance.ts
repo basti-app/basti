@@ -140,7 +140,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
       assumedBy: new aws_iam.ServicePrincipal('ec2.amazonaws.com'),
       roleName: `${BASTION_INSTANCE_ROLE_NAME_PREFIX}-${this.bastiId}`,
       inlinePolicies: {
-        'session-manager-policy': sessionManagerPolicy,
+        'session-manager-access': sessionManagerPolicy,
       },
     });
 
@@ -182,7 +182,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
 
     this.role.attachInlinePolicy(
       new aws_iam.Policy(this, 'basti-instance-policy', {
-        policyName: 'basti-instance-policy',
+        policyName: 'ec2-instance-access',
         document: bastiInstancePolicy,
       })
     );
