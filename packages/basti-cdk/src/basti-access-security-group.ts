@@ -9,8 +9,12 @@ import type { IBastiInstance } from './basti-instance';
 /**
  * The properties for the bastion access security group.
  */
-export interface BastiAccessSecurityGroupProps
-  extends aws_ec2.SecurityGroupProps {
+export interface BastiAccessSecurityGroupProps {
+  /**
+   * The VPC in which to create the security group.
+   */
+  readonly vpc: aws_ec2.IVpc;
+
   /**
    * Basti ID
    *
