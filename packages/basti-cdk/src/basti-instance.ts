@@ -160,7 +160,13 @@ export class BastiInstance extends Construct implements IBastiInstance {
       userData: aws_ec2.UserData.custom(BASTION_INSTANCE_CLOUD_INIT),
       vpc: props.vpc,
       vpcSubnets: props.vpcSubnets ?? defaultSubnetSelection,
+      propagateTagsToVolumeOnCreation: true,
     });
+    Tags.of(this.instance).add(BASTION_INSTANCE_ID_TAG_NAME, this.bastiId);
+    Tags.of(this.instance).add(
+      BASTION_INSTANCE_IN_USE_TAG_NAME,
+      new Date().toISOString()
+    );
 
     const bastiInstancePolicy = new aws_iam.PolicyDocument({
       statements: [
@@ -187,19 +193,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
       })
     );
 
-    // Combine tags from props and default tags this reduces duplication
-    const inUseDate = new Date().toISOString();
-    const bastiTags = {
-      [BASTION_INSTANCE_ID_TAG_NAME]: this.bastiId,
-      [BASTION_INSTANCE_CREATED_BY_TAG_NAME]: 'CDK',
-      [BASTION_INSTANCE_IN_USE_TAG_NAME]: inUseDate,
-    };
-
-    // Add tags to the bastion instance
-    // Basti Tags are also assigned to all resources.
-    for (const [key, value] of Object.entries(bastiTags)) {
-      Tags.of(this.instance).add(key, value);
-    }
+    Tags.of(this).add(BASTION_INSTANCE_CREATED_BY_TAG_NAME, 'basti-cdk');
   }
 
   /**

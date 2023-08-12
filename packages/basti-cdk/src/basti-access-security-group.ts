@@ -1,7 +1,10 @@
-import { aws_ec2 } from 'aws-cdk-lib';
+import { aws_ec2, Tags } from 'aws-cdk-lib';
 
 import { generateShortId } from './basti-helper';
-import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from './basti-constants';
+import {
+  BASTION_INSTANCE_CREATED_BY_TAG_NAME,
+  TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX,
+} from './basti-constants';
 
 import type { Construct } from 'constructs';
 import type { IBastiInstance } from './basti-instance';
@@ -41,13 +44,16 @@ export class BastiAccessSecurityGroup extends aws_ec2.SecurityGroup {
   ) {
     const bastiId = props.bastiId ?? generateShortId(id);
 
+    const securityGroupName = `${TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX}-${bastiId}`;
     super(scope, id, {
-      securityGroupName: `${TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX}-${bastiId}`,
+      securityGroupName,
       vpc: props.vpc,
       allowAllOutbound: true,
     });
 
     this.bastiId = bastiId;
+
+    Tags.of(this).add(BASTION_INSTANCE_CREATED_BY_TAG_NAME, 'basti-cdk');
   }
 
   /**
