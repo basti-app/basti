@@ -13,7 +13,7 @@ import {
 } from './basti-constants';
 
 /**
- * The properties for the bastion instance.
+ * The properties for the Basti instance.
  */
 export interface BastiInstanceProps {
   /**
@@ -22,29 +22,34 @@ export interface BastiInstanceProps {
   readonly vpc: aws_ec2.IVpc;
 
   /**
-   * (Optional) The ID of the bastion instance. The ID will be used to identify
-   * the bastion instance. If not specified, a random ID will be generated.
+   * (Optional) The ID of the Basti instance. The ID will be used to identify
+   * any resources created within this construct. If not specified, a random ID will be generated.
    *
-   * @default - A 8-character pseudo-random string
+   * @default An 8-character pseudo-random string
    */
   readonly bastiId?: string;
 
   /**
    * (Optional) The subnet selection to deploy the bastion instance into.
-   * If not specified, the default subnet selection will be used.
+   * If not specified, any public subnet in the VPC will be used.
    *
-   * @default - Public subnets in the VPC
+   * @default Public subnets in the VPC
    */
   readonly vpcSubnets?: aws_ec2.SubnetSelection;
 
   /**
    * (Optional) The instance type to use for the bastion instance.
    *
-   * @default t2.micro
+   * @default t2.micro (subject to change)
    */
   readonly instanceType?: aws_ec2.InstanceType;
+
   /**
    * (Optional) The machine image to use for the bastion instance.
+   * The specified machine image must have SSM agent installed and configured.
+   * If not specified, the latest  Amazon Linux 2 - Kernel 5.10 AMI will be used.
+   *
+   * @default Latest Amazon Linux 2 - Kernel 5.10
    */
   readonly machineImage?: aws_ec2.IMachineImage;
 }
@@ -61,7 +66,7 @@ export interface IBastiInstance {
   readonly securityGroup: aws_ec2.ISecurityGroup;
 
   /**
-   * The ID of the bastion instance.
+   * The ID of the Basti instance.
    */
   readonly bastiId: string;
 
@@ -72,7 +77,7 @@ export interface IBastiInstance {
 }
 
 /**
- * The basti instance.
+ * The Basti instance.
  */
 export class BastiInstance extends Construct implements IBastiInstance {
   /**
@@ -91,7 +96,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
   public readonly securityGroup: aws_ec2.ISecurityGroup;
 
   /**
-   * The ID of the bastion instance.
+   * The ID of the Basti instance.
    */
   public readonly bastiId: string;
 
@@ -198,8 +203,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
   }
 
   /**
-   * Grants an IAM principal permission to connect to the bastion instance.
-   * Using the Basti CLI.
+   * Grants an IAM principal permission to connect to the Basti instance via Basti CLI.
    *
    * @param grantee The principal to grant permission to.
    */
@@ -230,12 +234,12 @@ export class BastiInstance extends Construct implements IBastiInstance {
   }
 
   /**
-   * Create a bastion instance from an existing Basti ID.
+   * Looks up an existing Basti instance from its ID.
    *
-   * @param scope CDK construct scope
-   * @param id CDK construct ID
-   * @param bastiId The ID of the basti instance
-   * @param vpc The VPC that the bastion is deployed into
+   * @param scope CDK construct scope.
+   * @param id CDK construct ID.
+   * @param bastiId The ID of the Basti instance.
+   * @param vpc The VPC that the bastion is deployed into.
    */
   static fromBastiId(
     scope: Construct,
