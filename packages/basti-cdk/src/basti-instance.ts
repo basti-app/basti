@@ -187,7 +187,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
     });
 
     this.role.attachInlinePolicy(
-      new aws_iam.Policy(this, 'basti-instance-policy', {
+      new aws_iam.Policy(this, 'basti-instance-policy-ec2-instance-access', {
         policyName: 'ec2-instance-access',
         document: bastiInstancePolicy,
       })
@@ -244,7 +244,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
     const roleName = `${BASTION_INSTANCE_ROLE_NAME_PREFIX}-${bastiId}`;
     const role = aws_iam.Role.fromRoleName(
       scope,
-      `basti-instance-irole-${id}`,
+      `basti-instance-role-${id}`,
       roleName
     );
 
@@ -252,7 +252,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
 
     const securityGroup = aws_ec2.SecurityGroup.fromLookupByName(
       scope,
-      'basti-instance-sg',
+      `basti-instance-sg-${id}`,
       securityGroupName,
       vpc
     );
