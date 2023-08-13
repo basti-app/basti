@@ -136,7 +136,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
       ],
     });
 
-    this.role = new aws_iam.Role(this, 'basti-instance-role', {
+    this.role = new aws_iam.Role(this, 'bastion-instance-role', {
       assumedBy: new aws_iam.ServicePrincipal('ec2.amazonaws.com'),
       roleName: `${BASTION_INSTANCE_ROLE_NAME_PREFIX}-${this.bastiId}`,
       inlinePolicies: {
@@ -144,13 +144,17 @@ export class BastiInstance extends Construct implements IBastiInstance {
       },
     });
 
-    this.securityGroup = new aws_ec2.SecurityGroup(this, 'basti-instance-sg', {
-      vpc: props.vpc,
-      allowAllOutbound: true,
-      securityGroupName: `${BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX}-${this.bastiId}`,
-    });
+    this.securityGroup = new aws_ec2.SecurityGroup(
+      this,
+      'bastion-instance-sg',
+      {
+        vpc: props.vpc,
+        allowAllOutbound: true,
+        securityGroupName: `${BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX}-${this.bastiId}`,
+      }
+    );
 
-    this.instance = new aws_ec2.Instance(this, 'basti-instance', {
+    this.instance = new aws_ec2.Instance(this, 'bastion-instance', {
       instanceName: `${BASTION_INSTANCE_NAME_PREFIX}-${this.bastiId}`,
       machineImage: props.machineImage ?? defaultMachineImage,
       instanceType: props.instanceType ?? defaultInstanceType,
@@ -187,7 +191,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
     });
 
     this.role.attachInlinePolicy(
-      new aws_iam.Policy(this, 'basti-instance-policy-ec2-instance-access', {
+      new aws_iam.Policy(this, 'bastion-instance-policy-ec2-instance-access', {
         policyName: 'ec2-instance-access',
         document: bastiInstancePolicy,
       })
@@ -244,7 +248,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
     const roleName = `${BASTION_INSTANCE_ROLE_NAME_PREFIX}-${bastiId}`;
     const role = aws_iam.Role.fromRoleName(
       scope,
-      `basti-instance-role-${id}`,
+      `bastion-instance-role-${id}`,
       roleName
     );
 
@@ -252,7 +256,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
 
     const securityGroup = aws_ec2.SecurityGroup.fromLookupByName(
       scope,
-      `basti-instance-sg-${id}`,
+      `bastion-instance-sg-${id}`,
       securityGroupName,
       vpc
     );
