@@ -171,7 +171,7 @@ describe('BastiAccessSecurityGroupTest', () => {
         'Fn::GetAtt': ['rdsInstance05F4B4B0', 'Endpoint.Port'],
       },
       SourceSecurityGroupId: {
-        'Fn::GetAtt': ['bastibastiinstancesg0EAC2736', 'GroupId'],
+        'Fn::GetAtt': ['bastibastioninstancesgDEAECD68', 'GroupId'],
       },
     });
 

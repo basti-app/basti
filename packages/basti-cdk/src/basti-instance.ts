@@ -13,7 +13,7 @@ import {
 } from './basti-constants';
 
 /**
- * The properties for the bastion instance.
+ * The properties for the Basti instance.
  */
 export interface BastiInstanceProps {
   /**
@@ -22,29 +22,34 @@ export interface BastiInstanceProps {
   readonly vpc: aws_ec2.IVpc;
 
   /**
-   * (Optional) The ID of the bastion instance. The ID will be used to identify
-   * the bastion instance. If not specified, a random ID will be generated.
+   * (Optional) The ID of the Basti instance. The ID will be used to identify
+   * any resources created within this construct. If not specified, a random ID will be generated.
    *
-   * @default - A 8-character pseudo-random string
+   * @default An 8-character pseudo-random string
    */
   readonly bastiId?: string;
 
   /**
    * (Optional) The subnet selection to deploy the bastion instance into.
-   * If not specified, the default subnet selection will be used.
+   * If not specified, any public subnet in the VPC will be used.
    *
-   * @default - Public subnets in the VPC
+   * @default Public subnets in the VPC
    */
   readonly vpcSubnets?: aws_ec2.SubnetSelection;
 
   /**
    * (Optional) The instance type to use for the bastion instance.
    *
-   * @default t2.micro
+   * @default t2.micro (subject to change)
    */
   readonly instanceType?: aws_ec2.InstanceType;
+
   /**
    * (Optional) The machine image to use for the bastion instance.
+   * The specified machine image must have SSM agent installed and configured.
+   * If not specified, the latest  Amazon Linux 2 - Kernel 5.10 AMI will be used.
+   *
+   * @default Latest Amazon Linux 2 - Kernel 5.10
    */
   readonly machineImage?: aws_ec2.IMachineImage;
 }
@@ -61,7 +66,7 @@ export interface IBastiInstance {
   readonly securityGroup: aws_ec2.ISecurityGroup;
 
   /**
-   * The ID of the bastion instance.
+   * The ID of the Basti instance.
    */
   readonly bastiId: string;
 
@@ -72,7 +77,7 @@ export interface IBastiInstance {
 }
 
 /**
- * The basti instance.
+ * The Basti instance.
  */
 export class BastiInstance extends Construct implements IBastiInstance {
   /**
@@ -91,7 +96,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
   public readonly securityGroup: aws_ec2.ISecurityGroup;
 
   /**
-   * The ID of the bastion instance.
+   * The ID of the Basti instance.
    */
   public readonly bastiId: string;
 
@@ -131,21 +136,25 @@ export class BastiInstance extends Construct implements IBastiInstance {
       ],
     });
 
-    this.role = new aws_iam.Role(this, 'basti-instance-role', {
+    this.role = new aws_iam.Role(this, 'bastion-instance-role', {
       assumedBy: new aws_iam.ServicePrincipal('ec2.amazonaws.com'),
       roleName: `${BASTION_INSTANCE_ROLE_NAME_PREFIX}-${this.bastiId}`,
       inlinePolicies: {
-        'session-manager-policy': sessionManagerPolicy,
+        'session-manager-access': sessionManagerPolicy,
       },
     });
 
-    this.securityGroup = new aws_ec2.SecurityGroup(this, 'basti-instance-sg', {
-      vpc: props.vpc,
-      allowAllOutbound: true,
-      securityGroupName: `${BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX}-${this.bastiId}`,
-    });
+    this.securityGroup = new aws_ec2.SecurityGroup(
+      this,
+      'bastion-instance-sg',
+      {
+        vpc: props.vpc,
+        allowAllOutbound: true,
+        securityGroupName: `${BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX}-${this.bastiId}`,
+      }
+    );
 
-    this.instance = new aws_ec2.Instance(this, 'basti-instance', {
+    this.instance = new aws_ec2.Instance(this, 'bastion-instance', {
       instanceName: `${BASTION_INSTANCE_NAME_PREFIX}-${this.bastiId}`,
       machineImage: props.machineImage ?? defaultMachineImage,
       instanceType: props.instanceType ?? defaultInstanceType,
@@ -155,7 +164,13 @@ export class BastiInstance extends Construct implements IBastiInstance {
       userData: aws_ec2.UserData.custom(BASTION_INSTANCE_CLOUD_INIT),
       vpc: props.vpc,
       vpcSubnets: props.vpcSubnets ?? defaultSubnetSelection,
+      propagateTagsToVolumeOnCreation: true,
     });
+    Tags.of(this.instance).add(BASTION_INSTANCE_ID_TAG_NAME, this.bastiId);
+    Tags.of(this.instance).add(
+      BASTION_INSTANCE_IN_USE_TAG_NAME,
+      new Date().toISOString()
+    );
 
     const bastiInstancePolicy = new aws_iam.PolicyDocument({
       statements: [
@@ -176,30 +191,17 @@ export class BastiInstance extends Construct implements IBastiInstance {
     });
 
     this.role.attachInlinePolicy(
-      new aws_iam.Policy(this, 'basti-instance-policy', {
-        policyName: 'basti-instance-policy',
+      new aws_iam.Policy(this, 'bastion-instance-policy-ec2-instance-access', {
+        policyName: 'ec2-instance-access',
         document: bastiInstancePolicy,
       })
     );
 
-    // Combine tags from props and default tags this reduces duplication
-    const inUseDate = new Date().toISOString();
-    const bastiTags = {
-      [BASTION_INSTANCE_ID_TAG_NAME]: this.bastiId,
-      [BASTION_INSTANCE_CREATED_BY_TAG_NAME]: 'CDK',
-      [BASTION_INSTANCE_IN_USE_TAG_NAME]: inUseDate,
-    };
-
-    // Add tags to the bastion instance
-    // Basti Tags are also assigned to all resources.
-    for (const [key, value] of Object.entries(bastiTags)) {
-      Tags.of(this.instance).add(key, value);
-    }
+    Tags.of(this).add(BASTION_INSTANCE_CREATED_BY_TAG_NAME, 'basti-cdk');
   }
 
   /**
-   * Grants an IAM principal permission to connect to the bastion instance.
-   * Using the Basti CLI.
+   * Grants an IAM principal permission to connect to the Basti instance via Basti CLI.
    *
    * @param grantee The principal to grant permission to.
    */
@@ -230,12 +232,12 @@ export class BastiInstance extends Construct implements IBastiInstance {
   }
 
   /**
-   * Create a bastion instance from an existing Basti ID.
+   * Looks up an existing Basti instance from its ID.
    *
-   * @param scope CDK construct scope
-   * @param id CDK construct ID
-   * @param bastiId The ID of the basti instance
-   * @param vpc The VPC that the bastion is deployed into
+   * @param scope CDK construct scope.
+   * @param id CDK construct ID.
+   * @param bastiId The ID of the Basti instance.
+   * @param vpc The VPC that the bastion is deployed into.
    */
   static fromBastiId(
     scope: Construct,
@@ -246,7 +248,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
     const roleName = `${BASTION_INSTANCE_ROLE_NAME_PREFIX}-${bastiId}`;
     const role = aws_iam.Role.fromRoleName(
       scope,
-      `basti-instance-irole-${id}`,
+      `bastion-instance-role-${id}`,
       roleName
     );
 
@@ -254,7 +256,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
 
     const securityGroup = aws_ec2.SecurityGroup.fromLookupByName(
       scope,
-      'basti-instance-sg',
+      `bastion-instance-sg-${id}`,
       securityGroupName,
       vpc
     );

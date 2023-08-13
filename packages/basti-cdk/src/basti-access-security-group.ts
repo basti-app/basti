@@ -1,48 +1,49 @@
-import { aws_ec2 } from 'aws-cdk-lib';
+import { aws_ec2, Tags } from 'aws-cdk-lib';
 
 import { generateShortId } from './basti-helper';
-import { TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX } from './basti-constants';
+import {
+  BASTION_INSTANCE_CREATED_BY_TAG_NAME,
+  TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX,
+} from './basti-constants';
 
 import type { Construct } from 'constructs';
 import type { IBastiInstance } from './basti-instance';
 
 /**
- * The properties for the bastion access security group.
+ * The properties for the Basti access security group.
  */
-export interface BastiAccessSecurityGroupProps
-  extends aws_ec2.SecurityGroupProps {
+export interface BastiAccessSecurityGroupProps {
   /**
-   * Basti ID
+   * The VPC in which to create the security group.
+   */
+  readonly vpc: aws_ec2.IVpc;
+
+  /**
+   * (Optional) The ID of the Basti access security group. The ID will be used to identify
+   * any resources created within this construct. If not specified, a random ID will be generated.
    *
-   * This ID is used as a suffix for the name, it is not the ID of the basti
-   * instance.
-   *
-   * @default - A 8-character pseudo-random string
+   * @default An 8-character pseudo-random string
    */
   readonly bastiId?: string;
 }
 
 /**
- * The security group for the bastion instance.
+ * The Basti access security group. This security group is used to allow access to a connection
+ * target from a Basti instance.
  */
 export class BastiAccessSecurityGroup extends aws_ec2.SecurityGroup {
   /**
-   * The basti custom ID for the security group.
+   * The ID of the Basti access security group.
    */
   readonly bastiId: string;
 
-  /**
-   * Constructs a new instance of the BastiAccessSecurityGroup class.
-   * @param scope The scope of the construct.
-   * @param id The ID of the construct.
-   * @param props The properties of the construct.
-   */
   constructor(
     scope: Construct,
     id: string,
     props: BastiAccessSecurityGroupProps
   ) {
     const bastiId = props.bastiId ?? generateShortId(id);
+
     super(scope, id, {
       securityGroupName: `${TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX}-${bastiId}`,
       vpc: props.vpc,
@@ -50,14 +51,16 @@ export class BastiAccessSecurityGroup extends aws_ec2.SecurityGroup {
     });
 
     this.bastiId = bastiId;
+
+    Tags.of(this).add(BASTION_INSTANCE_CREATED_BY_TAG_NAME, 'basti-cdk');
   }
 
   /**
-   * Adds an ingress rule to the security group. That allows the
-   * bastion instance to access the target instance.
+   * Allows connection from the provided Basti instance to the given port
+   * by creating an ingress rule.
    *
-   * @param bastiInstance The Basti instance
-   * @param port The port to allow access to
+   * @param bastiInstance The Basti instance.
+   * @param port The port to allow access to.
    */
   public allowBastiInstanceConnection(
     bastiInstance: IBastiInstance,
