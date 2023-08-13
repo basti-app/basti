@@ -41,6 +41,9 @@
   - [Use target on _localhost_](#use-target-on-localhost)
   - [Cleanup (optional)](#cleanup-optional)
 - [Custom connection targets](#custom-connection-targets)
+- [Advanced initialization options](#advanced-initialization-options)
+  - [Resource tags](#resource-tags)
+  - [Bastion instance type](#bastion-instance-type)
 - [Basti in CI/CD pipelines](#basti-in-cicd-pipelines)
   - [Automatic mode](#automatic-mode)
 - [Basti configuration file](#basti-configuration-file)
@@ -136,6 +139,35 @@ Basti provides first class support for RDS instances and Aurora clusters. Howeve
 To connect to a custom target, select the `Custom` option when prompted for a target to initialize or connect to. You will be prompted for the target's VPC, IP address and port.
 
 > 🤝 Feel free to open an issue or a pull request if you want to extend the list of natively supported targets
+
+## Advanced initialization options
+
+The `basti init` command has a number of advanced options that can be used to customize the bastion instance and other resources created by Basti.
+
+### Resource tags
+
+You can specify tags to be applied to the bastion instance and other resources created by Basti. This can be done in three ways:
+
+1. By entering the tags in the advanced options section of the interactive mode.
+2. By passing the `--tag` option. This option accepts tag name and value separated by an equal sign. For example, `--tag Project=my-project` This option can be used multiple times to specify multiple tags.
+3. By passing the `--tags-file` option. This option accepts a path to a JSON file with tags. The option can be used multiple times to specify multiple files.
+
+Example of a tags file:
+
+```json
+{
+  "Project": "my-project",
+  "Environment": "production"
+}
+```
+
+Tags with the same name will be overwritten in the order they are specified. Tags specified with the `--tag` option will always overwrite tags specified in the tags file.
+
+> 💡 If your tags contain special characters, it might be easier to use interactive mode or the `--tags-file` command than escaping the characters in the `--tag` option.
+
+### Bastion instance type
+
+You can specify the EC2 instance type to be used for the bastion instance using the `--bastion-instance-type` option or by entering it in the advanced options section of the interactive mode. The default instance type is `t2.micro`, but it's subject to change in the future.
 
 ## Basti in CI/CD pipelines
 

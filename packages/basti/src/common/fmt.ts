@@ -1,6 +1,10 @@
 import chalk from 'chalk';
 
 export class Fmt {
+  reset(message: string): string {
+    return chalk.reset(message);
+  }
+
   value(message: string): string {
     return chalk.cyan(message);
   }

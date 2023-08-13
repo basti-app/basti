@@ -3,6 +3,7 @@ import ora from 'ora';
 
 import { isDebugMode } from './debug.js';
 import { fmt } from './fmt.js';
+import { toArray } from './data-structures.js';
 
 import type { Ora } from 'ora';
 
@@ -162,10 +163,27 @@ export class Cli {
   }
 
   prompt<T extends inquirer.Answers>(
-    ...params: Parameters<typeof inquirer.prompt<T>>
+    questions:
+      | inquirer.DistinctQuestion<T>
+      | ReadonlyArray<inquirer.DistinctQuestion<T>>,
+    initialAnswers?: Partial<T>
   ): ReturnType<typeof inquirer.prompt<T>> {
+    const unifiedQuestions = toArray(questions).map(question => {
+      const { message, prefix } = question;
+      return {
+        ...question,
+        message:
+          typeof message === 'function'
+            ? async (answers: T) => fmt.reset(await message(answers))
+            : typeof message === 'string'
+            ? fmt.reset(message)
+            : message,
+        prefix: this.indentText(prefix ?? fmt.green('?')),
+      };
+    });
+
     this.changeContext('none');
-    return inquirer.prompt(...params);
+    return inquirer.prompt(unifiedQuestions, initialAnswers);
   }
 
   private print(text: string): void {

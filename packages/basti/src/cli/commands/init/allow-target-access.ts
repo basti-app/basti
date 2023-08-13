@@ -1,4 +1,5 @@
 import { AwsTooManySecurityGroupsAttachedError } from '#src/aws/rds/rds-errors.js';
+import type { AwsTag } from '#src/aws/tags/types.js';
 import type { Bastion } from '#src/bastion/bastion.js';
 import { cli } from '#src/common/cli.js';
 import { fmt } from '#src/common/fmt.js';
@@ -14,11 +15,13 @@ import { OperationError } from '../../error/operation-error.js';
 export interface AllowTargetAccessInput {
   target: InitTarget;
   bastion: Bastion;
+  tags: AwsTag[];
 }
 
 export async function allowTargetAccess({
   target,
   bastion,
+  tags,
 }: AllowTargetAccessInput): Promise<void> {
   if (!target.allowAccess) {
     cli.info(
@@ -35,6 +38,7 @@ export async function allowTargetAccess({
     cli.out(`${fmt.green('❯')} Configuring target access:`);
     await target.allowAccess({
       bastion,
+      tags,
       hooks: {
         onCreatingSecurityGroup: () =>
           subCli.progressStart('Creating access security group'),

@@ -8,6 +8,7 @@ import { attachIamPolicy } from './attach-iam-policy.js';
 import { iamClient } from './iam-client.js';
 import { parseRoleResponse } from './parse-iam-response.js';
 
+import type { AwsTag } from '../tags/types.js';
 import type { AwsRole } from './types.js';
 
 export interface InlinePolicyInput {
@@ -21,6 +22,7 @@ export interface CreateIamRoleInput {
   principalService: string;
   managedPolicies?: string[];
   inlinePolicies?: InlinePolicyInput[];
+  tags?: AwsTag[];
 }
 
 export async function createIamRole({
@@ -29,6 +31,7 @@ export async function createIamRole({
   principalService,
   managedPolicies,
   inlinePolicies,
+  tags,
 }: CreateIamRoleInput): Promise<AwsRole> {
   const { Role } = await iamClient.send(
     new CreateRoleCommand({
@@ -36,6 +39,7 @@ export async function createIamRole({
       Path: path,
       AssumeRolePolicyDocument:
         formatAssumeRolePolicyDocument(principalService),
+      Tags: tags?.map(tag => ({ Key: tag.key, Value: tag.value })),
     })
   );
 

@@ -1,5 +1,7 @@
 import { InstanceStateName } from '@aws-sdk/client-ec2';
 
+import type { AwsTag } from '#src/aws/tags/types.js';
+
 import { createEc2Instance } from '../aws/ec2/create-ec2-instance.js';
 import { createSecurityGroup } from '../aws/ec2/create-security-group.js';
 import { getStringSsmParameter } from '../aws/ssm/get-ssm-parameter.js';
@@ -20,6 +22,7 @@ import {
   BASTION_INSTANCE_NAME_PREFIX,
   BASTION_INSTANCE_PROFILE_PATH,
   BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
+  BASTION_INSTANCE_DEFAULT_INSTANCE_TYPE,
 } from './bastion.js';
 
 import type { Bastion } from './bastion.js';
@@ -43,23 +46,28 @@ interface CreateBastionHooks {
 export interface CreateBastionInput {
   vpcId: string;
   subnetId: string;
+  instanceType: string | undefined;
+  tags: AwsTag[];
   hooks?: CreateBastionHooks;
 }
 
 export async function createBastion({
   vpcId,
   subnetId,
+  instanceType,
+  tags,
   hooks,
 }: CreateBastionInput): Promise<Bastion> {
   const bastionId = generateShortId();
 
   const bastionImageId = await getBastionImageId(hooks);
 
-  const bastionRole = await createBastionRole(bastionId, hooks);
+  const bastionRole = await createBastionRole(bastionId, tags, hooks);
 
   const bastionSecurityGroup = await createBastionSecurityGroup(
     bastionId,
     vpcId,
+    tags,
     hooks
   );
 
@@ -69,6 +77,8 @@ export async function createBastion({
     bastionRole,
     subnetId,
     bastionSecurityGroup,
+    instanceType,
+    tags,
     hooks
   );
 
@@ -116,12 +126,14 @@ async function getBastionImageId(hooks?: CreateBastionHooks): Promise<string> {
 
 async function createBastionRole(
   bastionId: string,
+  tags: AwsTag[],
   hooks?: CreateBastionHooks
 ): Promise<AwsRole> {
   try {
     hooks?.onCreatingRole?.();
     const bastionRole = await bastionRoleOps.createBastionRole({
       bastionId,
+      tags,
     });
     hooks?.onRoleCreated?.(bastionRole.name);
     return bastionRole;
@@ -150,6 +162,7 @@ async function createBastionRoleInlinePolicies(
 async function createBastionSecurityGroup(
   bastionId: string,
   vpcId: string,
+  tags: AwsTag[],
   hooks?: CreateBastionHooks
 ): Promise<AwsSecurityGroup> {
   try {
@@ -159,6 +172,7 @@ async function createBastionSecurityGroup(
       description:
         'Identifies Basti instance and allows connection to the Internet',
       vpcId,
+      tags,
       ingressRules: [],
     });
     hooks?.onSecurityGroupCreated?.(bastionSecurityGroup.id);
@@ -174,6 +188,8 @@ async function createBastionInstance(
   bastionRole: AwsRole,
   subnetId: string,
   bastionSecurityGroup: AwsSecurityGroup,
+  instanceType: string | undefined,
+  tags: AwsTag[],
   hooks?: CreateBastionHooks
 ): Promise<AwsEc2Instance> {
   try {
@@ -181,7 +197,7 @@ async function createBastionInstance(
     const bastionInstance = await createEc2Instance({
       name: `${BASTION_INSTANCE_NAME_PREFIX}-${bastionId}`,
       imageId: bastionImageId,
-      instanceType: 't2.micro',
+      instanceType: instanceType ?? BASTION_INSTANCE_DEFAULT_INSTANCE_TYPE,
       roleNames: [bastionRole.name],
       profilePath: BASTION_INSTANCE_PROFILE_PATH,
       subnetId,
@@ -189,7 +205,7 @@ async function createBastionInstance(
       securityGroupIds: [bastionSecurityGroup.id],
       userData: BASTION_INSTANCE_CLOUD_INIT,
       requireIMDSv2: true,
-      tags: [
+      instanceTags: [
         {
           key: BASTION_INSTANCE_ID_TAG_NAME,
           value: bastionId,
@@ -199,6 +215,7 @@ async function createBastionInstance(
           value: new Date().toISOString(),
         },
       ],
+      tags,
     });
     hooks?.onInstanceCreated?.(bastionInstance.id);
     return bastionInstance;
