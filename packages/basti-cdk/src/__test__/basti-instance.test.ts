@@ -45,7 +45,7 @@ describe('BastiInstanceTest', () => {
       },
       Policies: [
         {
-          PolicyName: 'session-manager-policy',
+          PolicyName: 'session-manager-access',
           PolicyDocument: {
             Statement: [
               {
@@ -90,7 +90,7 @@ describe('BastiInstanceTest', () => {
                   },
                   ':instance/',
                   {
-                    Ref: 'bastiInstancebastiinstance6956A218',
+                    Ref: 'bastiInstancebastioninstanceB135DE1A',
                   },
                 ],
               ],
@@ -99,10 +99,10 @@ describe('BastiInstanceTest', () => {
         ],
         Version: '2012-10-17',
       },
-      PolicyName: 'basti-instance-policy',
+      PolicyName: 'ec2-instance-access',
       Roles: [
         {
-          Ref: 'bastiInstancebastiinstanceroleFC226E9F',
+          Ref: 'bastiInstancebastioninstanceroleB51F4B5F',
         },
       ],
     });
@@ -121,7 +121,7 @@ describe('BastiInstanceTest', () => {
     });
     expect(tags).toContainEqual({
       Key: 'basti:created-by',
-      Value: 'CDK',
+      Value: 'basti-cdk',
     });
     expect(tags).toContainEqual({
       Key: 'basti:id',
@@ -190,7 +190,7 @@ describe('BastiInstanceTest', () => {
     });
     expect(tags).toContainEqual({
       Key: 'basti:created-by',
-      Value: 'CDK',
+      Value: 'basti-cdk',
     });
     expect(tags).toContainEqual({
       Key: 'basti:id',
@@ -244,7 +244,7 @@ describe('BastiInstanceTest', () => {
                   { Ref: 'AWS::AccountId' },
                   ':instance/',
                   {
-                    Ref: 'bastiInstancebastiinstance6956A218',
+                    Ref: 'bastiInstancebastioninstanceB135DE1A',
                   },
                 ],
               ],
@@ -264,7 +264,7 @@ describe('BastiInstanceTest', () => {
                     { Ref: 'AWS::AccountId' },
                     ':instance/',
                     {
-                      Ref: 'bastiInstancebastiinstance6956A218',
+                      Ref: 'bastiInstancebastioninstanceB135DE1A',
                     },
                   ],
                 ],
