@@ -264,7 +264,7 @@ targets:
 
 ## Basti infrastructure as code (IaC)
 
-Introducing, [Basti CDK](https://constructs.dev/packages/basti-cdk), an [AWS CDK](https://aws.amazon.com/cdk/) construct library that allows you to integrate Basti with your existing CDK-managed infrastructure.
+Introducing, [Basti CDK](https://github.com/BohdanPetryshyn/basti/tree/main/packages/basti-cdk), an [AWS CDK](https://aws.amazon.com/cdk/) construct library that allows you to integrate Basti with your existing CDK-managed infrastructure.
 
 Feel free to open an issue if you want to see Basti in Terraform or other IaC tools. Contributions are welcome 🤗
 

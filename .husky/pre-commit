@@ -2,3 +2,6 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 npm run sync-readme -w basti
+
+git add packages/basti/README.md
+
