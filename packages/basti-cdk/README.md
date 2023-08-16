@@ -105,7 +105,7 @@ Use `BastiInstance` construct to create Basti EC2 instance.
 ```ts
 const bastiInstance = new BastiInstance(
   stack,
-  'basti-instance',
+  'BastiInstance',
   {
     vpc,
     
@@ -125,7 +125,7 @@ Use `BastiAccessSecurityGroup` construct to create a security group for your tar
 // Create a security group for your target
 const bastiAccessSecurityGroup = new BastiAccessSecurityGroup(
   stack,
-  'basti-access-security-group', 
+  'BastiAccessSecurityGroup', 
   {
     vpc,
 
@@ -139,7 +139,7 @@ const bastiAccessSecurityGroup = new BastiAccessSecurityGroup(
 // Create the target
 const rdsInstance = new aws_rds.DatabaseInstance(
   stack,
-  'rds-instance',
+  'RdsInstance',
   {
     // Unrelated properties are omitted for brevity
 
@@ -175,13 +175,13 @@ When sharing a Basti instance across stacks, you can just pass it as a property 
 
 ```ts
 // Most likely, the VPC was created separately as well
-const vpc = aws_ec2.Vpc.fromLookup(stack, 'vpc', {
+const vpc = aws_ec2.Vpc.fromLookup(stack, 'Vpc', {
     vpcName: 'existing-vpc-id',
 });
 
 const bastiInstance = BastiInstance.fromBastiId(
     this,
-    'basti-instance',
+    'BastiInstance',
     // The BastiID of the Basti instance you want to import
     'existing-basti-id',
     vpc
