@@ -1,7 +1,7 @@
 {
   "name": "basti-cdk",
   "version": "1.0.0-alpha.4",
-  "description": "A CDK Construct for Basti",
+  "description": "Cost-efficient bastion host with a CLI tool for convenient access to your AWS resources",
   "author": {
     "name": "BohdanPetryshyn",
     "email": "bohdan.y.petryshyn@gmail.com"
