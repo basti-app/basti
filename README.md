@@ -348,8 +348,8 @@ The bastion instance is being stopped when it's not used for some short period o
 
 First of all, thank you for your interest in contributing to Basti! 🎉
 
-The following section describes how to run your local version of Basti
-as you make changes to the code.
+The following section describes how to run your local version of Basti CLI
+as you make changes to the code. Please, feel free to open an issue if you want to see Basti CDK development guide!
 
 ### Build
 
