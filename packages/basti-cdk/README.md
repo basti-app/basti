@@ -15,7 +15,7 @@
 <br/>
 
 <div align="center">
-  <a href="https://github.com/BohdanPetryshyn/basti/tree/main/packages/basti-cdk">Basti CDK</a> is a construct library that allows you to create cost efficient <a href="https://en.wikipedia.org/wiki/Bastion_host">bastion instances</a> and easily connect to your infrastructure with <a href="https://github.com/BohdanPetryshyn/basti">Basti CLI</a>.
+  <a href="https://github.com/BohdanPetryshyn/basti/tree/main/packages/basti-cdk">Basti CDK</a> is a construct library that allows you to create cost-efficient <a href="https://en.wikipedia.org/wiki/Bastion_host">bastion instances</a> and easily connect to your infrastructure with <a href="https://github.com/BohdanPetryshyn/basti">Basti CLI</a>.
   <br/>
   <br/>
   💵 <em>No idle costs.</em>  🔑 <em>No SSH keys.</em> 🔒 <em>Fully IAM-driven.</em>
@@ -191,7 +191,7 @@ const bastiInstance = BastiInstance.fromBastiId(
 bastiAccessSecurityGroup.allowBastiInstanceConnection(
   bastiInstance,
   aws_ec2.Port.tcp(1717)
-)
+);
 ```
 
 ### Granting access to use Basti instance
