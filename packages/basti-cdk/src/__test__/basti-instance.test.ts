@@ -90,7 +90,7 @@ describe('BastiInstanceTest', () => {
                   },
                   ':instance/',
                   {
-                    Ref: 'bastiInstancebastioninstanceB135DE1A',
+                    Ref: 'bastiInstanceEc2InstanceBastionFAB2FC2A',
                   },
                 ],
               ],
@@ -102,7 +102,7 @@ describe('BastiInstanceTest', () => {
       PolicyName: 'ec2-instance-access',
       Roles: [
         {
-          Ref: 'bastiInstancebastioninstanceroleB51F4B5F',
+          Ref: 'bastiInstanceIamRoleBastionInstanceDA8B2057',
         },
       ],
     });
@@ -244,7 +244,7 @@ describe('BastiInstanceTest', () => {
                   { Ref: 'AWS::AccountId' },
                   ':instance/',
                   {
-                    Ref: 'bastiInstancebastioninstanceB135DE1A',
+                    Ref: 'bastiInstanceEc2InstanceBastionFAB2FC2A',
                   },
                 ],
               ],
@@ -264,7 +264,7 @@ describe('BastiInstanceTest', () => {
                     { Ref: 'AWS::AccountId' },
                     ':instance/',
                     {
-                      Ref: 'bastiInstancebastioninstanceB135DE1A',
+                      Ref: 'bastiInstanceEc2InstanceBastionFAB2FC2A',
                     },
                   ],
                 ],

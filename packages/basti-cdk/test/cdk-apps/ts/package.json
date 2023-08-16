@@ -9,7 +9,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy": "cdk deploy BastiInstance --require-approval never && cdk deploy --all --require-approval never",
+    "deploy": "rimraf cdk.out cdk.context.json && cdk deploy BastiInstance --require-approval never && cdk deploy --all --require-approval never",
     "destroy": "cdk destroy --all --force"
   },
   "devDependencies": {
@@ -25,6 +25,7 @@
     "aws-cdk-lib": "2.86.0",
     "basti-cdk": "file:../../..",
     "constructs": "10.0.5",
+    "rimraf": "^5.0.1",
     "source-map-support": "^0.5.21"
   }
 }
