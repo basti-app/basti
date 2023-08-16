@@ -43,15 +43,17 @@ export class BastiAccessSecurityGroup extends aws_ec2.SecurityGroup {
     props: BastiAccessSecurityGroupProps
   ) {
     const bastiId = props.bastiId ?? generateShortId(id);
+    const securityGroupName = `${TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX}-${bastiId}`;
 
     super(scope, id, {
-      securityGroupName: `${TARGET_ACCESS_SECURITY_GROUP_NAME_PREFIX}-${bastiId}`,
+      securityGroupName,
       vpc: props.vpc,
       allowAllOutbound: true,
     });
 
     this.bastiId = bastiId;
 
+    Tags.of(this).add('Name', securityGroupName);
     Tags.of(this).add(BASTION_INSTANCE_CREATED_BY_TAG_NAME, 'basti-cdk');
   }
 

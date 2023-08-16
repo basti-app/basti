@@ -144,11 +144,13 @@ export class BastiInstance extends Construct implements IBastiInstance {
       },
     });
 
+    const securityGroupName = `${BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX}-${this.bastiId}`;
     this.securityGroup = new aws_ec2.SecurityGroup(this, 'SgBastionInstance', {
       vpc: props.vpc,
       allowAllOutbound: true,
-      securityGroupName: `${BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX}-${this.bastiId}`,
+      securityGroupName,
     });
+    Tags.of(this.securityGroup).add('Name', securityGroupName);
 
     this.instance = new aws_ec2.Instance(this, 'Ec2InstanceBastion', {
       instanceName: `${BASTION_INSTANCE_NAME_PREFIX}-${this.bastiId}`,
