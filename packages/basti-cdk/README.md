@@ -45,7 +45,7 @@
   - [Connect to target](#connect-to-target)
 - [Advanced usage](#advanced-usage)
   - [Importing existing Basti instance](#importing-existing-basti-instance)
-  - [Granting access to a Basti instance](#granting-access-to-a-basti-instance)
+  - [Granting access to use Basti instance](#granting-access-to-use-basti-instance)
 - [License](#license)
 
 <br/>
@@ -56,7 +56,7 @@ With [Basti](https://github.com/BohdanPetryshyn/basti), you can securely connect
 
 ## How it works
 
-- 🏰 You set up a bastion instance in the connection target's VPC.
+- 🏰 Using Basti CDK, you set up a bastion instance in the connection target's VPC.
 
 - 🧑‍💻 You use [Basti CLI](https://github.com/BohdanPetryshyn/basti) to conveniently connect to your target through the bastion instance.
 
@@ -86,7 +86,7 @@ See the full API reference [on Construct Hub](https://constructs.dev/packages/ba
 
 ## Examples
 
-See [test CDK apps](https://github.com/BohdanPetryshyn/basti/tree/packages/basti-cdk/test/cdk-apps) for working examples of each feature the library provides.
+See [the test CDK apps](https://github.com/BohdanPetryshyn/basti/tree/packages/basti-cdk/test/cdk-apps) for working examples of each feature the library provides.
 
 ## Basic usage
 
@@ -96,7 +96,7 @@ Basti constructs can be imported from the `basti-cdk` package.
 import { BastiAccessSecurityGroup, BastiInstance } from 'basti-cdk';
 ```
 
-> 💡 RDS instance is used as an example target. You can use Basti connect to any other AWS resource that supports security groups.
+> 💡 RDS instance is used as an example target. You can use Basti to connect to any other AWS resource that supports security groups.
 
 ### Set up Basti instance
 
@@ -107,14 +107,19 @@ const bastiInstance = new BastiInstance(
   stack,
   'basti-instance',
   {
-    vpc: vpc
+    vpc,
+    
+    // Optional. Randomly generated if omitted.
+    // Used to name the EC2 instance and other resources.
+    // The resulting name will be "basti-instance-my-bastion"
+    bastiId: 'my-bastion'
   }
 );
 ```
 
 ### Allow connection to target
 
-Use `BastiAccessSecurityGroup` construct to create a security group for your target. This security group will allow Basti instance to connect to the target. 
+Use `BastiAccessSecurityGroup` construct to create a security group for your target. This security group will allow the Basti instance to connect to the target. 
 
 ```ts
 // Create a security group for your target
@@ -122,7 +127,12 @@ const bastiAccessSecurityGroup = new BastiAccessSecurityGroup(
   stack,
   'basti-access-security-group', 
   {
-    vpc: vpc
+    vpc,
+
+    // Optional. Randomly generated if omitted.
+    // Used to name the security group and other resources.
+    // The resulting name will be "basti-access-my-target"
+    bastiId: 'my-target'
   }
 );
 
@@ -142,7 +152,7 @@ const rdsInstance = new aws_rds.DatabaseInstance(
   }
 );
 
-// Allow Basti instance to connect to the target on the specified port
+// Allow the Basti instance to connect to the target on the specified port
 bastiAccessSecurityGroup.allowBastiInstanceConnection(
   bastiInstance,
   aws_ec2.Port.tcp(rdsInstance.instanceEndpoint.port)
@@ -161,7 +171,7 @@ basti connect
 
 ### Importing existing Basti instance
 
-When sharing Basti instance between stacks, you can just pass it as a property to the other stack. In case you need to import Basti instance created in a separate CDK app or not managed by CDK at all, you can use the `BastiInstance.fromBastiId` method. The method returns an `IBastiInstance` object which is sufficient for granting access to a connection target.
+When sharing a Basti instance across stacks, you can just pass it as a property to the other stack. In case you need to import a Basti instance created in a separate CDK app or not managed by CDK at all, you can use the `BastiInstance.fromBastiId` method. The method returns an `IBastiInstance` object which is sufficient for granting access to a connection target.
 
 ```ts
 // Most likely, the VPC was created separately as well
@@ -177,11 +187,14 @@ const bastiInstance = BastiInstance.fromBastiId(
     vpc
 );
 
-// bastiInstance can now be used in the 
-// bastiAccessSecurityGroup.allowBastiInstanceConnection method
+// bastiInstance can now be used to allow access to a connection target
+bastiAccessSecurityGroup.allowBastiInstanceConnection(
+  bastiInstance,
+  aws_ec2.Port.tcp(1717)
+)
 ```
 
-### Granting access to a Basti instance
+### Granting access to use Basti instance
 
 You can grant the ability to connect to a Basti instance to other resources (users, roles, etc.) using the `grantBastiCliConnect` method of an existing Basti instance.
 
