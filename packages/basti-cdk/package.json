@@ -1,0 +1,77 @@
+{
+  "name": "basti-cdk",
+  "version": "1.0.0-alpha.4",
+  "description": "Cost-efficient bastion host with a CLI tool for convenient access to your AWS resources",
+  "author": {
+    "name": "BohdanPetryshyn",
+    "email": "bohdan.y.petryshyn@gmail.com"
+  },
+  "contributors": [
+    {
+      "name": "BobVeringa",
+      "email": "veringabob@gmail.com"
+    }
+  ],
+  "homepage": "https://github.com/BohdanPetryshyn/basti/tree/main/packages/basti-cdk",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BohdanPetryshyn/basti.git",
+    "directory": "packages/basti-cdk"
+  },
+  "bugs": {
+    "url": "https://github.com/BohdanPetryshyn/basti/issues"
+  },
+  "license": "MIT",
+  "main": "dist/js/index.js",
+  "types": "dist/js/index.d.ts",
+  "stability": "stable",
+  "scripts": {
+    "test": "npm run check && npm run test-unit",
+    "test-unit": "jest",
+    "build": "jsii",
+    "build:watch": "jsii --watch",
+    "check": "npm run check-types && npm run check-style",
+    "check-types": "tsc --noEmit",
+    "check-style": "eslint src",
+    "package": "jsii-pacmak",
+    "release": "npm run build && npm run test && npm run package && source .release-creds.sh && publib dist/packages"
+  },
+  "peerDependencies": {
+    "aws-cdk-lib": "^2.86.0",
+    "constructs": "^10.0.5"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.3",
+    "@types/node": "^20.4.2",
+    "aws-cdk-lib": "2.86.0",
+    "constructs": "10.0.5",
+    "jest": "^29.6.1",
+    "jsii": "^5.1.8",
+    "jsii-pacmak": "^1.85.0",
+    "jsii-release": "^0.2.735",
+    "ts-jest": "^29.1.1"
+  },
+  "files": [
+    "dist/js",
+    ".jsii",
+    ".jsii.gz",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "jsii": {
+    "outdir": "dist/packages",
+    "versionFormat": "full",
+    "targets": {
+      "python": {
+        "distName": "basti-cdk",
+        "module": "basti_cdk"
+      }
+    },
+    "tsc": {
+      "rootDir": "src",
+      "outDir": "dist/js",
+      "forceConsistentCasingInFileNames": true
+    }
+  }
+}

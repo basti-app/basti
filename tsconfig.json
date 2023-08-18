@@ -1,20 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es2016",
-    "module": "ESNext",
     "moduleResolution": "NodeNext",
-    "baseUrl": "./",
+    "resolveJsonModule": true,
+
     "paths": {
       "#src/*.js": ["./src/*.js"]
     },
-    "resolveJsonModule": true,
-    "sourceMap": true,
-    "outDir": "dist",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
+
     "strict": true,
+    "forceConsistentCasingInFileNames": true,
     "noUncheckedIndexedAccess": true,
     "skipLibCheck": true
-  },
-  "include": ["./package.json", "./src/**/*", "./scripts/**/*"]
+  }
 }

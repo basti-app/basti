@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "baseUrl": "./",
+
+    "target": "es2016",
+    "module": "ESNext",
+    "sourceMap": true,
+    "esModuleInterop": true
+  },
+  "include": ["./package.json", "./src/**/*", "./scripts/**/*"]
+}
