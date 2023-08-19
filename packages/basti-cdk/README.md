@@ -86,7 +86,7 @@ See the full API reference [on Construct Hub](https://constructs.dev/packages/ba
 
 ## Examples
 
-See [the test CDK apps](https://github.com/BohdanPetryshyn/basti/tree/packages/basti-cdk/test/cdk-apps) for working examples of each feature the library provides.
+See [the test CDK apps](https://github.com/BohdanPetryshyn/basti/tree/main/packages/basti-cdk/test/cdk-apps) for working examples of each feature the library provides.
 
 ## Basic usage
 
