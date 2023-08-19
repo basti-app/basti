@@ -1,6 +1,6 @@
 {
   "name": "basti-cdk",
-  "version": "1.0.0-alpha.4",
+  "version": "1.0.0",
   "description": "Cost-efficient bastion host with a CLI tool for convenient access to your AWS resources",
   "author": {
     "name": "BohdanPetryshyn",
