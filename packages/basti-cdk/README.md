@@ -4,7 +4,7 @@
   <a href="https://www.npmjs.com/package/basti-cdk">
     <img alt="NPM Package" src="https://img.shields.io/npm/v/basti-cdk?color=green">
   </a>
-  <a href="https://www.npmjs.com/package/basti-cdk">
+  <a href="https://pypi.org/project/basti-cdk">
     <img alt="PyPI" src="https://img.shields.io/pypi/v/basti-cdk?color=blue">
   </a>
   <a href="https://github.com/BohdanPetryshyn/basti/blob/main/packages/basti-cdk/LICENSE">
