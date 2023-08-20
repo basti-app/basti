@@ -44,7 +44,7 @@ async function hydrateInput(
 }
 
 async function promptForTarget(): Promise<InitTargetInput> {
-  return (await promptForAwsTarget()) ?? (await promptForCustomTarget());
+  return (await promptForAwsTarget('init')) ?? (await promptForCustomTarget());
 }
 
 async function promptForCustomTarget(): Promise<CustomInitTargetInput> {

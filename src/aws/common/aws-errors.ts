@@ -22,3 +22,9 @@ export class AwsDependencyViolationError extends AwsError {
     super('Resource has dependent resources');
   }
 }
+
+export class AwsTooManySecurityGroupsAttachedError extends AwsError {
+  constructor() {
+    super(`Too many security groups attached`);
+  }
+}

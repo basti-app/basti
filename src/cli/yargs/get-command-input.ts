@@ -12,6 +12,14 @@ export interface RdsClusterOptions {
   rdsCluster: string;
 }
 
+export interface ElasticacheClusterOptions {
+  elasticacheCluster: string;
+}
+
+export interface ElasticacheNodeOptions {
+  elasticachenode: string;
+}
+
 export interface CustomTargetVpcOptions {
   customTargetVpc: string;
 }
@@ -24,6 +32,7 @@ export interface CustomTargetOptions {
 
 export type InitOptions = Partial<RdsInstanceOptions> &
   Partial<RdsClusterOptions> &
+  Partial<ElasticacheClusterOptions> &
   Partial<CustomTargetVpcOptions> & {
     bastionSubnet?: string;
     bastionInstanceType?: string;
@@ -31,6 +40,7 @@ export type InitOptions = Partial<RdsInstanceOptions> &
 
 export type ConnectOptions = Partial<RdsInstanceOptions> &
   Partial<RdsClusterOptions> &
+  Partial<ElasticacheNodeOptions> &
   Partial<CustomTargetOptions> & {
     localPort?: number;
   };
@@ -50,6 +60,10 @@ export function getInitCommandInputFromOptions(
       : isRdsClusterOptions(options)
       ? {
           rdsClusterId: options.rdsCluster,
+        }
+      : isElasticacheClusterOptions(options)
+      ? {
+          elasticacheCluster: options.elasticacheCluster,
         }
       : isCustomTargetOptions(options)
       ? {
@@ -103,6 +117,12 @@ function isRdsClusterOptions(
   options: ConnectOptions | InitOptions
 ): options is RdsClusterOptions {
   return 'rdsCluster' in options;
+}
+
+function isElasticacheClusterOptions(
+  options: ConnectOptions | InitOptions
+): options is ElasticacheClusterOptions {
+  return 'elasticacheCluster' in options;
 }
 
 function isCustomTargetOptions(

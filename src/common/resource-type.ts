@@ -11,6 +11,8 @@ export type ManagedResourceType =
 export const TargetTypes = {
   RDS_INSTANCE: 'RDS_INSTANCE',
   RDS_CLUSTER: 'RDS_CLUSTER',
+  ELASTICACHE_CLUSTER: 'ELASTICACHE_CLUSTER',
+  ELASTICACHE_NODE: 'ELASTICACHE_NODE',
   CUSTOM: 'CUSTOM',
 } as const;
 export type TargetType = typeof TargetTypes[keyof typeof TargetTypes];
