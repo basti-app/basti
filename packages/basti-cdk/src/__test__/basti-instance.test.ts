@@ -269,18 +269,7 @@ describe('BastiInstanceTest', () => {
                   ],
                 ],
               },
-              {
-                'Fn::Join': [
-                  '',
-                  [
-                    'arn:aws:ssm:',
-                    { Ref: 'AWS::Region' },
-                    ':',
-                    { Ref: 'AWS::AccountId' },
-                    ':document/AWS-StartPortForwardingSessionToRemoteHost',
-                  ],
-                ],
-              },
+              'arn:aws:ssm:*:*:document/AWS-StartPortForwardingSessionToRemoteHost',
             ],
             Condition: {
               BoolIfExists: {
