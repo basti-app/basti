@@ -1,7 +1,7 @@
 import type { AwsClientConfiguration } from '#src/aws/common/aws-client.js';
 
 import type { AwsDbCluster, AwsDbInstance } from '../aws/rds/rds-types.js';
-import type { awsElasticacheCluster } from '../aws/elasticache/elasticache-types.js';
+import type { AwsElasticacheGenericObject } from '../aws/elasticache/elasticache-types.js';
 export type InitTargetInput =
   | DbClusterTargetInput
   | DbInstanceTargetInput
@@ -25,7 +25,7 @@ export interface DbInstanceTargetInput {
   dbInstance: AwsDbInstance;
 }
 export interface ElasticacheClusterTargetInput {
-  elasticacheCluster: awsElasticacheCluster;
+  elasticacheCluster: AwsElasticacheGenericObject;
 }
 
 export interface CustomInitTargetInput {

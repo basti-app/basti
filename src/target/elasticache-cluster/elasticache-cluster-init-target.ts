@@ -1,25 +1,23 @@
 import { getCacheClusterSubnetGroup } from '#src/aws/elasticache/get-cache-cluster-subnet-group.js';
 import { modifyElasticacheReplicationGroup } from '#src/aws/elasticache/modify-elasticache-replication-group.js';
-import type { awsElasticacheCluster } from '#src/aws/elasticache/elasticache-types.js';
+import type { AwsElasticacheGenericObject } from '#src/aws/elasticache/elasticache-types.js';
 import { AwsError } from '#src/aws/common/aws-errors.js';
-import {
-  getDescribedreplicationGroup,
-  getDescribedCacheCluster,
-} from '#src/aws/elasticache/get-elasticache-replication-groups.js';
+import { getDescribedreplicationGroup } from '#src/aws/elasticache/get-elasticache-replication-groups.js';
+import { getDescribedCacheCluster } from '#src/aws/elasticache/get-elasticache-cache-clusters.js';
 
 import { InitTargetBase } from '../init-target.js';
 
 import type { CacheCluster } from '@aws-sdk/client-elasticache';
 
 export class ElasticacheClusterInitTarget extends InitTargetBase {
-  private readonly elasticacheCluster: awsElasticacheCluster;
+  private readonly elasticacheCluster: AwsElasticacheGenericObject;
   private readonly securityGroups: Promise<string[]>;
   private readonly elasticacheSubnetGroupName: Promise<string | undefined>;
   private readonly detaliedInformationCluster: Promise<CacheCluster>;
   constructor({
     elasticacheCluster,
   }: {
-    elasticacheCluster: awsElasticacheCluster;
+    elasticacheCluster: AwsElasticacheGenericObject;
   }) {
     super();
     this.elasticacheCluster = elasticacheCluster;
@@ -55,11 +53,14 @@ export class ElasticacheClusterInitTarget extends InitTargetBase {
 
   protected async getSecurityGroupIds(): Promise<string[]> {
     const detailedCache = await this.detaliedInformationCluster;
-    const array: string[] = [];
+    let array: string[] = [];
     if (detailedCache.SecurityGroups !== undefined)
-      detailedCache.SecurityGroups?.forEach(element => {
-        if (element.SecurityGroupId !== undefined)
-          array.push(element.SecurityGroupId);
+      array = detailedCache.SecurityGroups.map(element => {
+        return element.SecurityGroupId !== undefined
+          ? element.SecurityGroupId
+          : 'undefined';
+      }).filter(str => {
+        return str !== 'undefined';
       });
     return array;
   }
@@ -74,19 +75,10 @@ export class ElasticacheClusterInitTarget extends InitTargetBase {
       cluster.NodeGroups[0].NodeGroupMembers === undefined ||
       cluster.NodeGroups[0].NodeGroupMembers[0] === undefined ||
       cluster.NodeGroups[0].NodeGroupMembers[0].CacheClusterId === undefined
-    ) {
-      throw new AwsError(
-        `replication group id ${this.elasticacheCluster.identifier} not found`
-      );
-    }
+    )
+      throw new AwsError('unexpected Elasticache Response');
     const cacheId = cluster.NodeGroups[0].NodeGroupMembers[0].CacheClusterId;
-    const node = await getDescribedCacheCluster(cacheId);
-    if (node.length !== 1 || node[0] === undefined) {
-      throw new AwsError(
-        `replication group id ${this.elasticacheCluster.identifier} not found`
-      );
-    }
-    return node[0];
+    return await getDescribedCacheCluster(cacheId);
   }
 
   protected async getSubnetGroupName(): Promise<string | undefined> {
@@ -97,7 +89,7 @@ export class ElasticacheClusterInitTarget extends InitTargetBase {
   protected async attachSecurityGroup(securityGroupId: string): Promise<void> {
     const securityGroups = await this.securityGroups;
     const detailedCache = await this.detaliedInformationCluster;
-    await (this.elasticacheCluster.ClusterMode === 'enabled'
+    await (this.elasticacheCluster.clusterMode === 'enabled'
       ? modifyElasticacheReplicationGroup({
           identifier: this.elasticacheCluster.identifier,
           securityGroupIds: [...securityGroups, securityGroupId],

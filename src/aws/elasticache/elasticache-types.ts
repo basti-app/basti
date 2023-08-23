@@ -1,10 +1,10 @@
 import type { NodeGroup } from '@aws-sdk/client-elasticache';
 
-export interface awsElasticacheCluster {
+export interface AwsElasticacheGenericObject {
   identifier: string;
-  ClusterMode: string;
+  clusterMode: string;
   replicationGroupId: string;
-  NodeGroups: NodeGroup[];
+  nodeGroups: NodeGroup[];
   host: string;
   port: number;
 }

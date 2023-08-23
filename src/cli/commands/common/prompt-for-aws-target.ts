@@ -1,11 +1,11 @@
 import inquirer from 'inquirer';
 
 import { getReplicationGroupsByClusterMode } from '#src/aws/elasticache/get-elasticache-replication-groups.js';
-import { getCacheClusters } from '#src/aws/elasticache/get-elasticache-node.js';
-import type { awsElasticacheCluster } from '#src/aws/elasticache/elasticache-types.js';
+import { getCacheClusters } from '#src/aws/elasticache/get-elasticache-cache-clusters.js';
+import type { AwsElasticacheGenericObject } from '#src/aws/elasticache/elasticache-types.js';
 import {
-  parseNodeGroupMemberResponse,
-  parseNodeGroupResponse,
+  parseNodeGroupMemberResponseFunction,
+  parseNodeGroupResponseFunction,
 } from '#src/aws/elasticache/parse-elasticache-response.js';
 import { getDbClusters } from '#src/aws/rds/get-db-clusters.js';
 import { getDbInstances } from '#src/aws/rds/get-db-instances.js';
@@ -21,6 +21,7 @@ import type {
 
 import { getErrorDetail } from '../../error/get-error-detail.js';
 
+import type { NodeGroup } from '@aws-sdk/client-elasticache';
 import type { DistinctChoice } from 'inquirer';
 
 export type AwsTargetInput =
@@ -31,8 +32,12 @@ export type AwsTargetInput =
 export async function promptForAwsTarget(
   commandType: string
 ): Promise<AwsTargetInput | undefined> {
-  const { instances, clusters, elasticacheClusters, elasticacheNodes } =
-    await getTargets();
+  const {
+    instances,
+    clusters,
+    elasticacheReplicationGroups: elasticacheClusters,
+    elasticacheCacheClusters: elasticacheNodes,
+  } = await getTargets();
 
   const { target } = await cli.prompt({
     type: 'list',
@@ -56,8 +61,8 @@ export async function promptForAwsTarget(
 async function getTargets(): Promise<{
   instances: AwsDbInstance[];
   clusters: AwsDbCluster[];
-  elasticacheClusters: awsElasticacheCluster[][];
-  elasticacheNodes: awsElasticacheCluster[];
+  elasticacheReplicationGroups: AwsElasticacheGenericObject[][];
+  elasticacheCacheClusters: AwsElasticacheGenericObject[];
 }> {
   const subCli = cli.createSubInstance({ indent: 2 });
 
@@ -76,16 +81,21 @@ async function getTargets(): Promise<{
   );
   const elasticacheClusters = await getTargetResources(
     async () => await getReplicationGroupsByClusterMode(),
-    'Elasticache clusters',
+    'Elasticache replication groups',
     subCli
   );
 
   const elasticacheNodes = await getTargetResources(
     async () => await getCacheClusters(),
-    'Elasticache Nodes',
+    'Elasticache cache clusters',
     subCli
   );
-  return { instances, clusters, elasticacheClusters, elasticacheNodes };
+  return {
+    instances,
+    clusters,
+    elasticacheReplicationGroups: elasticacheClusters,
+    elasticacheCacheClusters: elasticacheNodes,
+  };
 }
 
 function toInstanceChoices(instances: AwsDbInstance[]): DistinctChoice[] {
@@ -156,65 +166,83 @@ function toClusterChoice(dbCluster: AwsDbCluster): DistinctChoice {
   };
 }
 function toElasticacheClusterChoices(
-  clusters: awsElasticacheCluster[][],
+  clusters: AwsElasticacheGenericObject[][],
   commandType: string,
-  elasticacheNodes: awsElasticacheCluster[]
+  cacheClusters: AwsElasticacheGenericObject[]
 ): DistinctChoice[] {
-  if (clusters.length === 0) {
+  if (
+    clusters.length < 2 ||
+    ((clusters[0] === undefined || clusters[0].length === 0) &&
+      (clusters[1] === undefined || clusters[1].length === 0))
+  ) {
     return [];
   }
   return commandType === 'init'
     ? toInitElasticacheClusterChoices(clusters)
     : [
         new inquirer.Separator('Redis clusters:'),
-        ...toConnectElasticacheClusterChoices(clusters, elasticacheNodes),
+        ...toConnectElasticacheClusterChoices(
+          clusters[0],
+          cacheClusters,
+          'clusterModeEnabled'
+        ),
+        ...toConnectElasticacheClusterChoices(
+          clusters[1],
+          cacheClusters,
+          'clusterModeDisabled'
+        ),
       ];
 }
 
 function toInitElasticacheClusterChoices(
-  clusters: awsElasticacheCluster[][]
+  clusters: AwsElasticacheGenericObject[][]
 ): Array<DistinctChoice<ElasticacheClusterTargetInput>> {
   return [
-    new inquirer.Separator('Elasticache clusters:'),
+    new inquirer.Separator('redis clusters:'),
     ...clusters[0]!.map(cluster => toElasticacheClusterChoice(cluster)),
     ...clusters[1]!.map(cluster => toElasticacheClusterChoice(cluster)),
   ];
 }
 
 function toConnectElasticacheClusterChoices(
-  clusters: awsElasticacheCluster[][],
-  elasticacheNodes: awsElasticacheCluster[]
+  clusters: AwsElasticacheGenericObject[] | undefined,
+  cacheClusters: AwsElasticacheGenericObject[],
+  clustermMode: string
 ): Array<DistinctChoice<ElasticacheClusterTargetInput>> {
-  const res: DistinctChoice[] = [];
-  if (clusters[0]) {
-    clusters[0].forEach(clusterModeEnabled => {
-      if (clusterModeEnabled.ClusterMode === 'enabled') {
-        res.push({
-          name: clusterModeEnabled.identifier + '- Configuration Endpoint',
-          value: { elasticacheCluster: clusterModeEnabled },
-        });
-      }
-      res.push(
-        ...toClusterModeEnabledChoicesFromNodeGroups(
-          clusterModeEnabled,
-          elasticacheNodes
-        )
-      );
-    });
+  if (clusters === undefined) return [];
+  if (clustermMode === 'clusterModeEnabled') {
+    let arr: Array<Array<DistinctChoice<ElasticacheClusterTargetInput>>> = [];
+    arr = clusters.map(clusterModeEnabled =>
+      toElasticacheReplicationGroupChoises(clusterModeEnabled, cacheClusters)
+    );
+    return arr.flat();
+  } else {
+    let arr: Array<Array<DistinctChoice<ElasticacheClusterTargetInput>>> = [];
+    arr = clusters.map(clusterModeDisabled =>
+      toClusterModeDisabledReplicationGroups(clusterModeDisabled)
+    );
+    return arr.flat();
   }
-  if (clusters[1]) {
-    clusters[1].forEach(clusterModeDisabled => {
-      res.push(
-        ...toClusterModeDisabledChoicesFromNodeGroups(clusterModeDisabled)
-      );
-    });
-  }
-
-  return res;
+}
+function toElasticacheReplicationGroupChoises(
+  replicationGroup: AwsElasticacheGenericObject,
+  cacheClusters: AwsElasticacheGenericObject[]
+): Array<DistinctChoice<ElasticacheClusterTargetInput>> {
+  return [
+    {
+      name: replicationGroup.identifier + '- Configuration Endpoint',
+      value: { elasticacheCluster: replicationGroup },
+    },
+    ...toClusterModeEnabledChoicesFromNodeGroups(
+      replicationGroup,
+      cacheClusters
+    ),
+    new inquirer.Separator(' '),
+  ];
 }
 
 function toElasticacheClusterChoice(
-  elasticacheCluster: awsElasticacheCluster
+  elasticacheCluster: AwsElasticacheGenericObject
 ): DistinctChoice<ElasticacheClusterTargetInput> {
   return {
     name: elasticacheCluster.identifier,
@@ -225,68 +253,74 @@ function toElasticacheClusterChoice(
 }
 
 function toClusterModeEnabledChoicesFromNodeGroups(
-  elasticacheCluster: awsElasticacheCluster,
-  elasticacheNodes: awsElasticacheCluster[]
+  elasticacheReplicationGroup: AwsElasticacheGenericObject,
+  elasticacheCacheCluster: AwsElasticacheGenericObject[]
 ): DistinctChoice[] {
-  const choises: DistinctChoice[] = [];
-  elasticacheCluster.NodeGroups.forEach(nodeGroup => {
-    if (
-      nodeGroup.NodeGroupMembers &&
-      nodeGroup.NodeGroupMembers.length > 0 &&
-      nodeGroup.NodeGroupId !== undefined
-    ) {
-      choises.push(new inquirer.Separator(` Shard ${nodeGroup.NodeGroupId}`));
-      const nodeChoises: Array<{
-        name: string;
-        value: { elasticacheCluster: awsElasticacheCluster };
-      }> = [];
-      nodeGroup.NodeGroupMembers.forEach(NodeGroupMember => {
-        // clusterMode Enabled
-        const Node = elasticacheNodes.find(cache => {
-          return cache.identifier === NodeGroupMember.CacheClusterId;
-        })!;
-        Node.replicationGroupId = elasticacheCluster.replicationGroupId;
-        nodeChoises.push({
-          name: '   '.concat(NodeGroupMember.CacheClusterId!),
-          value: { elasticacheCluster: Node },
-        });
-      });
-      choises.push(...nodeChoises);
-    }
-  });
-  return [...choises];
+  const unFlat = elasticacheReplicationGroup.nodeGroups.map(nodeGroup =>
+    toClusterModeEnabledChoicesFromNodeGroup(
+      nodeGroup,
+      elasticacheCacheCluster,
+      elasticacheReplicationGroup.identifier
+    )
+  );
+  return [...unFlat.flat()];
 }
 
-function toClusterModeDisabledChoicesFromNodeGroups(
-  elasticacheCluster: awsElasticacheCluster
+function toClusterModeEnabledChoicesFromNodeGroup(
+  elasticacheNodeGroup: NodeGroup,
+  elasticacheCacheCluster: AwsElasticacheGenericObject[],
+  replicationGroupId: string
+): DistinctChoice[] {
+  return elasticacheNodeGroup.NodeGroupMembers === undefined
+    ? []
+    : [
+        new inquirer.Separator(
+          ` Shard ${elasticacheNodeGroup.NodeGroupId ?? ' '}`
+        ),
+        ...elasticacheNodeGroup.NodeGroupMembers.map(member => {
+          const cacheCluster = elasticacheCacheCluster.find(cache => {
+            return cache.identifier === member.CacheClusterId;
+          })!;
+          cacheCluster.replicationGroupId = replicationGroupId;
+          return {
+            name: '   '.concat(member.CacheClusterId!),
+            value: { elasticacheCluster: cacheCluster },
+          };
+        }),
+      ];
+}
+
+function toClusterModeDisabledReplicationGroups(
+  elasticacheCluster: AwsElasticacheGenericObject
 ): Array<DistinctChoice<ElasticacheClusterTargetInput>> {
-  const choises: Array<{
-    name: string;
-    value: { elasticacheCluster: awsElasticacheCluster };
-  }> = [];
+  const NodeGroup = elasticacheCluster.nodeGroups[0]!;
+  if (
+    NodeGroup.NodeGroupMembers === undefined ||
+    NodeGroup.NodeGroupMembers.length === 0
+  )
+    return [];
+  return [
+    {
+      name: elasticacheCluster.replicationGroupId.concat('- Primary Endpoint'),
 
-  const NodeGroup = elasticacheCluster.NodeGroups[0]!;
-  const Parsed: awsElasticacheCluster = parseNodeGroupResponse(NodeGroup);
-  Parsed.replicationGroupId = elasticacheCluster.replicationGroupId;
-
-  const name =
-    elasticacheCluster.replicationGroupId.concat('- Primary Endpoint');
-
-  choises.push({
-    name,
-
-    value: { elasticacheCluster: Parsed },
-  });
-
-  if (NodeGroup.NodeGroupMembers && NodeGroup.NodeGroupMembers.length > 0)
-    NodeGroup.NodeGroupMembers.forEach(member => {
-      const Parsed: awsElasticacheCluster =
-        parseNodeGroupMemberResponse(member);
-      Parsed.replicationGroupId = elasticacheCluster.replicationGroupId;
-      choises.push({
+      value: {
+        elasticacheCluster: parseNodeGroupResponseFunction(
+          NodeGroup,
+          elasticacheCluster.replicationGroupId
+        ),
+      },
+    },
+    ...NodeGroup.NodeGroupMembers.map(member => {
+      return {
         name: '   '.concat(member.CacheClusterId!, ' - ', member.CurrentRole!),
-        value: { elasticacheCluster: Parsed },
-      });
-    });
-  return [...choises];
+        value: {
+          elasticacheCluster: parseNodeGroupMemberResponseFunction(
+            member,
+            elasticacheCluster.replicationGroupId
+          ),
+        },
+      };
+    }),
+    new inquirer.Separator(' '),
+  ];
 }

@@ -8,21 +8,39 @@ import type {
   CacheSubnetGroup,
 } from '@aws-sdk/client-elasticache';
 import type {
-  awsElasticacheCluster,
+  AwsElasticacheGenericObject,
   AwsElasticacheSubnetGroup,
 } from './elasticache-types.js';
 
 export function parseElasticacheResponse(
   response: ReplicationGroup
-): awsElasticacheCluster {
+): AwsElasticacheGenericObject {
   return response.ClusterEnabled !== undefined && response.ClusterEnabled
     ? parseElasticacheReplicationGroupCMEResponse(response)
     : parseElasticacheReplicationGroupCMDResponse(response);
 }
 
+export function parseNodeGroupMemberResponseFunction(
+  nodeGroupMember: NodeGroupMember,
+  replicationGroupId: string
+): AwsElasticacheGenericObject {
+  const Parsed: AwsElasticacheGenericObject =
+    parseNodeGroupMemberResponse(nodeGroupMember);
+  Parsed.replicationGroupId = replicationGroupId;
+  return Parsed;
+}
+export function parseNodeGroupResponseFunction(
+  nodeGroup: NodeGroup,
+  replicationGroupId: string
+): AwsElasticacheGenericObject {
+  const Parsed: AwsElasticacheGenericObject = parseNodeGroupResponse(nodeGroup);
+  Parsed.replicationGroupId = replicationGroupId;
+  return Parsed;
+}
+
 export const parseCacheNodeResponse: (
   response?: CacheNode
-) => awsElasticacheCluster = z
+) => AwsElasticacheGenericObject = z
   .object({
     CacheNodeId: z.string(),
     Endpoint: z.object({
@@ -34,14 +52,14 @@ export const parseCacheNodeResponse: (
     identifier: response.CacheNodeId,
     host: response.Endpoint.Address,
     port: response.Endpoint.Port,
-    ClusterMode: 'enabled',
-    NodeGroups: [],
+    clusterMode: 'enabled',
+    nodeGroups: [],
     replicationGroupId: '',
   })).parse;
 
 export const parseElasticacheReplicationGroupCMDResponse: (
   response?: ReplicationGroup
-) => awsElasticacheCluster = z
+) => AwsElasticacheGenericObject = z
   .object({
     NodeGroups: z.any(),
     ReplicationGroupId: z.string(),
@@ -50,14 +68,14 @@ export const parseElasticacheReplicationGroupCMDResponse: (
     identifier: response.ReplicationGroupId,
     host: response.NodeGroups[0].PrimaryEndpoint.Address,
     port: response.NodeGroups[0].PrimaryEndpoint.Port,
-    ClusterMode: 'disabled',
-    NodeGroups: response.NodeGroups,
+    clusterMode: 'disabled',
+    nodeGroups: response.NodeGroups,
     replicationGroupId: response.ReplicationGroupId,
   })).parse;
 
 export const parseElasticacheReplicationGroupCMEResponse: (
   response?: ReplicationGroup
-) => awsElasticacheCluster = z
+) => AwsElasticacheGenericObject = z
   .object({
     ReplicationGroupId: z.string(),
     ConfigurationEndpoint: z.object({
@@ -71,8 +89,8 @@ export const parseElasticacheReplicationGroupCMEResponse: (
     identifier: response.ReplicationGroupId,
     host: response.ConfigurationEndpoint.Address,
     port: response.ConfigurationEndpoint.Port,
-    ClusterMode: response.ClusterMode,
-    NodeGroups: response.NodeGroups,
+    clusterMode: response.ClusterMode,
+    nodeGroups: response.NodeGroups,
     replicationGroupId: response.ReplicationGroupId,
   })).parse;
 
@@ -88,9 +106,9 @@ export const parseElasticacheSubnetGroup: (
     vpcId: response.VpcId,
   })).parse;
 
-export const parseNodeGroupMemberResponse: (
+const parseNodeGroupMemberResponse: (
   response?: NodeGroupMember
-) => awsElasticacheCluster = z
+) => AwsElasticacheGenericObject = z
   .object({
     CacheClusterId: z.string(),
     ReadEndpoint: z.object({
@@ -103,14 +121,14 @@ export const parseNodeGroupMemberResponse: (
     identifier: response.CacheClusterId,
     host: response.ReadEndpoint.Address,
     port: response.ReadEndpoint.Port,
-    ClusterMode: 'disabled',
-    NodeGroups: [],
+    clusterMode: 'disabled',
+    nodeGroups: [],
     replicationGroupId: '',
   })).parse;
 
 export const parseNodeGroupResponse: (
   response?: NodeGroup
-) => awsElasticacheCluster = z
+) => AwsElasticacheGenericObject = z
   .object({
     NodeGroupId: z.string(),
     PrimaryEndpoint: z.object({
@@ -122,7 +140,9 @@ export const parseNodeGroupResponse: (
     identifier: response.NodeGroupId,
     host: response.PrimaryEndpoint.Address,
     port: response.PrimaryEndpoint.Port,
-    ClusterMode: 'disabled',
-    NodeGroups: [],
+    clusterMode: 'disabled',
+    nodeGroups: [],
     replicationGroupId: '',
   })).parse;
+
+// export function transformReplicationGroupsCmeToChoises(replicationGroup: ReplicationGroup[]):

@@ -5,10 +5,8 @@ import { getDbInstances } from '../aws/rds/get-db-instances.js';
 import { modifyDBCluster } from '../aws/rds/modify-db-cluster.js';
 import { modifyDbInstance } from '../aws/rds/modify-db-instance.js';
 import { retry } from '../common/retry.js';
-import {
-  getRawCacheClusters,
-  getRawReplicationGroups,
-} from '../aws/elasticache/get-elasticache-replication-groups.js';
+import { getRawReplicationGroups } from '../aws/elasticache/get-elasticache-replication-groups.js';
+import { getRawCacheClusters } from '../aws/elasticache/get-elasticache-cache-clusters.js';
 import { modifyElasticacheReplicationGroup } from '../aws/elasticache/modify-elasticache-replication-group.js';
 
 import type {
