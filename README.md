@@ -307,7 +307,12 @@ Minimal policy:
       "Resource": [
         "arn:aws:ssm:*:*:document/AWS-StartPortForwardingSessionToRemoteHost",
         "arn:aws:ec2:<your-region>:<your-account-id>:instance/<your-basti-instance-id>"
-      ]
+      ],
+      "Condition": {
+          "BoolIfExists": {
+              "ssm:SessionDocumentAccessCheck": "true"
+          }
+      }
     }
   ]
 }

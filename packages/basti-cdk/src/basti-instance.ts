@@ -225,6 +225,11 @@ export class BastiInstance extends Construct implements IBastiInstance {
       new aws_iam.PolicyStatement({
         actions: ['ssm:StartSession'],
         resources: [instanceArn, documentArn],
+        conditions: {
+          BoolIfExists: {
+            'ssm:SessionDocumentAccessCheck': 'true',
+          },
+        },
       })
     );
   }
