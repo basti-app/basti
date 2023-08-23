@@ -206,7 +206,10 @@ export class BastiInstance extends Construct implements IBastiInstance {
   public grantBastiCliConnect(grantee: aws_iam.IGrantable): void {
     const account = Stack.of(this).account;
     const region = Stack.of(this).region;
+
     const instanceArn = `arn:aws:ec2:${region}:${account}:instance/${this.instance.instanceId}`;
+    const documentArn = `arn:aws:ssm:*:*:document/AWS-StartPortForwardingSessionToRemoteHost`;
+
     grantee.grantPrincipal.addToPrincipalPolicy(
       new aws_iam.PolicyStatement({
         actions: ['ec2:DescribeInstances'],
@@ -220,7 +223,6 @@ export class BastiInstance extends Construct implements IBastiInstance {
       })
     );
 
-    const documentArn = `arn:aws:ssm:${region}:${account}:document/AWS-StartPortForwardingSessionToRemoteHost`;
     grantee.grantPrincipal.addToPrincipalPolicy(
       new aws_iam.PolicyStatement({
         actions: ['ssm:StartSession'],
