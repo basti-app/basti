@@ -282,6 +282,11 @@ describe('BastiInstanceTest', () => {
                 ],
               },
             ],
+            Condition: {
+              BoolIfExists: {
+                'ssm:SessionDocumentAccessCheck': 'true',
+              },
+            },
           },
         ],
       },
