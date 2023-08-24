@@ -41,7 +41,8 @@ export async function modifyElasticacheReplicationGroup({
 async function getDefaultVpcIdFromSecurityGroup(
   SecurityGroupId: string | undefined
 ): Promise<string | undefined> {
-  if (SecurityGroupId === undefined) throw AwsError;
+  if (SecurityGroupId === undefined)
+    throw new AwsError('Security group not found');
   let params: DescribeSecurityGroupsCommandInput = {
     GroupIds: [SecurityGroupId],
   };

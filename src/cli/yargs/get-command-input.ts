@@ -17,7 +17,7 @@ export interface ElasticacheClusterOptions {
 }
 
 export interface ElasticacheNodeOptions {
-  elasticachenode: string;
+  elasticacheNode: string;
 }
 
 export interface CustomTargetVpcOptions {
@@ -40,6 +40,7 @@ export type InitOptions = Partial<RdsInstanceOptions> &
 
 export type ConnectOptions = Partial<RdsInstanceOptions> &
   Partial<RdsClusterOptions> &
+  Partial<ElasticacheClusterOptions> &
   Partial<ElasticacheNodeOptions> &
   Partial<CustomTargetOptions> & {
     localPort?: number;
@@ -63,7 +64,7 @@ export function getInitCommandInputFromOptions(
         }
       : isElasticacheClusterOptions(options)
       ? {
-          elasticacheCluster: options.elasticacheCluster,
+          elasticacheClusterId: options.elasticacheCluster,
         }
       : isCustomTargetOptions(options)
       ? {
@@ -87,6 +88,14 @@ export function getConnectCommandInputFromOptions(
       : isRdsClusterOptions(options)
       ? {
           rdsClusterId: options.rdsCluster,
+        }
+      : isElasticacheClusterOptions(options)
+      ? {
+          elasticacheClusterId: options.elasticacheCluster,
+        }
+      : isElasticacheNodeOptions(options)
+      ? {
+          elasticacheNodeId: options.elasticacheNode,
         }
       : isCustomTargetOptions(options)
       ? {
@@ -123,6 +132,11 @@ function isElasticacheClusterOptions(
   options: ConnectOptions | InitOptions
 ): options is ElasticacheClusterOptions {
   return 'elasticacheCluster' in options;
+}
+function isElasticacheNodeOptions(
+  options: ConnectOptions | InitOptions
+): options is ElasticacheNodeOptions {
+  return 'elasticacheNode' in options;
 }
 
 function isCustomTargetOptions(

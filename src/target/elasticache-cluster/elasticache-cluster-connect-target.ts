@@ -51,7 +51,7 @@ export class ElasticacheClusterConnectTarget extends ConnectTargetBase {
   async getVpcId(): Promise<string> {
     const awsSubnetGroup = await this.elasticacheSubnetGroupName;
     if (awsSubnetGroup === undefined) {
-      throw AwsError;
+      throw new AwsError('No subnet groups');
     }
 
     const dbSubnetGroup = await getCacheClusterSubnetGroup({

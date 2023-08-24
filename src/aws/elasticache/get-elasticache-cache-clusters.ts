@@ -1,10 +1,16 @@
 import { DescribeCacheClustersCommand } from '@aws-sdk/client-elasticache';
 
+import { AwsNotFoundError } from '../common/aws-errors.js';
+
 import { parseCacheNodeResponse } from './parse-elasticache-response.js';
 import { elasticacheClient } from './elasticache-client.js';
 
 import type { CacheCluster } from '@aws-sdk/client-elasticache';
 import type { AwsElasticacheGenericObject } from './elasticache-types.js';
+
+export interface getCacheClusterInput {
+  identifier: string;
+}
 
 export async function getCacheClusters(): Promise<
   AwsElasticacheGenericObject[]
@@ -20,7 +26,7 @@ export async function getCacheClusters(): Promise<
     if (nodeGroup.CacheNodes === undefined) return [];
     return nodeGroup.CacheNodes.map(cacheNode => {
       cacheNode.CacheNodeId = nodeGroup.CacheClusterId;
-      return parseCacheNodeResponse(cacheNode);
+      return parseCacheNodeResponse(cacheNode, nodeGroup.ReplicationGroupId!);
     });
   });
   return [...unFlatedArray.flat()];
@@ -44,6 +50,7 @@ export async function getDescribedCacheCluster(
   const clusters = await elasticacheClient.send(
     new DescribeCacheClustersCommand({
       CacheClusterId: clusterIdentifier,
+      ShowCacheNodeInfo: true,
     })
   );
   if (
@@ -55,4 +62,28 @@ export async function getDescribedCacheCluster(
     throw new Error(`Cluster ${clusterIdentifier} not found`);
   }
   return clusters.CacheClusters[0];
+}
+
+export async function getCacheCluster({
+  identifier,
+}: getCacheClusterInput): Promise<AwsElasticacheGenericObject | undefined> {
+  try {
+    const cacheCluster = await getDescribedCacheCluster(identifier);
+    if (
+      cacheCluster.ReplicationGroupId === undefined ||
+      cacheCluster.CacheNodes === undefined ||
+      cacheCluster.CacheNodes[0] === undefined
+    ) {
+      throw new Error(`Invalid response from AWS.`);
+    }
+    return parseCacheNodeResponse(
+      cacheCluster.CacheNodes[0],
+      cacheCluster.ReplicationGroupId
+    );
+  } catch (error) {
+    if (error instanceof AwsNotFoundError) {
+      return undefined;
+    }
+    throw error;
+  }
 }

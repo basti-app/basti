@@ -24,6 +24,24 @@ export type RdsClusterTargetConfig = z.infer<
   typeof RdsClusterTargetConfigParser
 >;
 
+const ElasticacheClusterTargetConfigParser = z
+  .object({
+    elasticacheCluster: z.string(),
+  })
+  .merge(TargetConfigBaseParser);
+export type ElasticacheClusterTargetConfig = z.infer<
+  typeof ElasticacheClusterTargetConfigParser
+>;
+
+const ElasticacheNodeTargetConfigParser = z
+  .object({
+    elasticacheNode: z.string(),
+  })
+  .merge(TargetConfigBaseParser);
+export type ElasticacheNodeTargetConfig = z.infer<
+  typeof ElasticacheNodeTargetConfigParser
+>;
+
 const CustomTargetConfigParser = z
   .object({
     customTargetVpc: z.string(),
@@ -36,6 +54,8 @@ export type CustomTargetConfig = z.infer<typeof CustomTargetConfigParser>;
 const ConnectionTargetConfigParser = z.union([
   RdsInstanceTargetConfigParser,
   RdsClusterTargetConfigParser,
+  ElasticacheClusterTargetConfigParser,
+  ElasticacheNodeTargetConfigParser,
   CustomTargetConfigParser,
 ]);
 export type ConnectionTargetConfig = z.infer<
@@ -64,6 +84,18 @@ export function isRdsClusterTargetConfig(
   target: ConnectionTargetConfig
 ): target is RdsClusterTargetConfig {
   return 'rdsCluster' in target;
+}
+
+export function isElasticacheClusterTargetConfig(
+  target: ConnectionTargetConfig
+): target is ElasticacheClusterTargetConfig {
+  return 'elasticacheCluster' in target;
+}
+
+export function isElasticacheNodeTargetConfig(
+  target: ConnectionTargetConfig
+): target is ElasticacheNodeTargetConfig {
+  return 'elasticacheNode' in target;
 }
 
 export function isCustomTargetConfig(

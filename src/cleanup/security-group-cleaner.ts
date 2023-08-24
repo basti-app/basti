@@ -103,23 +103,36 @@ async function cleanReplicationGroup(
   CacheClusters: CacheCluster[],
   groupIds: Set<string>
 ): Promise<void> {
+  if (
+    replicationGroup.NodeGroups === undefined ||
+    replicationGroup.NodeGroups[0] === undefined ||
+    replicationGroup.NodeGroups[0].NodeGroupMembers === undefined ||
+    replicationGroup.NodeGroups[0].NodeGroupMembers[0] === undefined
+  )
+    return;
   const exampleCacheCluster =
-    replicationGroup.NodeGroups![0]!.NodeGroupMembers![0]!.CacheClusterId;
+    replicationGroup.NodeGroups[0].NodeGroupMembers[0].CacheClusterId;
   const cacheSecurityGroups = CacheClusters.find(
     cache => cache.CacheClusterId === exampleCacheCluster
-  )!.SecurityGroups!;
-  const cacheSecurityGroupsId: Set<string> = new Set<string>();
-  cacheSecurityGroups.map(group => {
-    if (group.SecurityGroupId !== undefined)
-      cacheSecurityGroupsId.add(group.SecurityGroupId);
-    return true;
-  });
-  groupIds.forEach(Id => cacheSecurityGroupsId.delete(Id));
-  if (cacheSecurityGroupsId.size !== cacheSecurityGroups.length) {
+  );
+  if (
+    cacheSecurityGroups === undefined ||
+    cacheSecurityGroups.SecurityGroups === undefined
+  )
+    return;
+  const cacheSecurityGroupsIds: string[] = [
+    ...cacheSecurityGroups.SecurityGroups.flatMap(
+      group => group.SecurityGroupId ?? ' '
+    ).filter(id => id !== ' ' && groupIds.has(id)),
+  ];
+
+  if (
+    cacheSecurityGroupsIds.length !== cacheSecurityGroups.SecurityGroups.length
+  ) {
     await modifyElasticacheReplicationGroup({
       identifier: replicationGroup.ReplicationGroupId,
-      securityGroupIds: [...cacheSecurityGroupsId],
-      cachePreviousSecurityGroups: cacheSecurityGroups,
+      securityGroupIds: cacheSecurityGroupsIds,
+      cachePreviousSecurityGroups: cacheSecurityGroups.SecurityGroups,
     });
   }
 }

@@ -20,25 +20,36 @@ export function parseElasticacheResponse(
     : parseElasticacheReplicationGroupCMDResponse(response);
 }
 
-export function parseNodeGroupMemberResponseFunction(
+export function parseNodeGroupMemberResponse(
   nodeGroupMember: NodeGroupMember,
   replicationGroupId: string
 ): AwsElasticacheGenericObject {
   const Parsed: AwsElasticacheGenericObject =
-    parseNodeGroupMemberResponse(nodeGroupMember);
+    transformNodeGroupMemberResponse(nodeGroupMember);
   Parsed.replicationGroupId = replicationGroupId;
   return Parsed;
 }
-export function parseNodeGroupResponseFunction(
+export function parseNodeGroupResponse(
   nodeGroup: NodeGroup,
   replicationGroupId: string
 ): AwsElasticacheGenericObject {
-  const Parsed: AwsElasticacheGenericObject = parseNodeGroupResponse(nodeGroup);
+  const Parsed: AwsElasticacheGenericObject =
+    transformNodeGroupResponse(nodeGroup);
   Parsed.replicationGroupId = replicationGroupId;
   return Parsed;
 }
 
-export const parseCacheNodeResponse: (
+export function parseCacheNodeResponse(
+  cacheNode: CacheNode,
+  replicationGroupId: string
+): AwsElasticacheGenericObject {
+  const Parsed: AwsElasticacheGenericObject =
+    transformCacheNodeResponse(cacheNode);
+  Parsed.replicationGroupId = replicationGroupId;
+  return Parsed;
+}
+
+const transformCacheNodeResponse: (
   response?: CacheNode
 ) => AwsElasticacheGenericObject = z
   .object({
@@ -106,7 +117,7 @@ export const parseElasticacheSubnetGroup: (
     vpcId: response.VpcId,
   })).parse;
 
-const parseNodeGroupMemberResponse: (
+const transformNodeGroupMemberResponse: (
   response?: NodeGroupMember
 ) => AwsElasticacheGenericObject = z
   .object({
@@ -126,7 +137,7 @@ const parseNodeGroupMemberResponse: (
     replicationGroupId: '',
   })).parse;
 
-export const parseNodeGroupResponse: (
+const transformNodeGroupResponse: (
   response?: NodeGroup
 ) => AwsElasticacheGenericObject = z
   .object({
@@ -144,5 +155,3 @@ export const parseNodeGroupResponse: (
     nodeGroups: [],
     replicationGroupId: '',
   })).parse;
-
-// export function transformReplicationGroupsCmeToChoises(replicationGroup: ReplicationGroup[]):
