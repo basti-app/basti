@@ -59,7 +59,7 @@ export async function hydrateAwsTarget(
         await getCacheCluster({
           identifier: targetInput.elasticacheNodeId,
         }),
-      TargetTypes.ELASTICACHE_CLUSTER,
+      TargetTypes.ELASTICACHE_NODE,
       targetInput.elasticacheNodeId
     ),
   };
