@@ -77,7 +77,6 @@ function toElasticacheReplicationGroupChoises(
       replicationGroup,
       cacheClusters
     ),
-    new inquirer.Separator(' '),
   ];
 }
 
@@ -160,6 +159,5 @@ function toClusterModeDisabledReplicationGroups(
         },
       };
     }),
-    new inquirer.Separator(' '),
   ];
 }
