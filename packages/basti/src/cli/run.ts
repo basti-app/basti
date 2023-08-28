@@ -74,7 +74,7 @@ void yargs(hideBin(process.argv))
         .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_PROFILE)
         .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_REGION)
         .check(
-          conflictingOptions('rds-cluster', 'rds-instance', 'custom-target-vpc')
+          conflictingOptions('rds-cluster', 'rds-instance', 'elasticache-cluster', 'custom-target-vpc')
         )
         .example([
           ['$0 init', 'Use interactive mode'],
@@ -112,11 +112,11 @@ void yargs(hideBin(process.argv))
         })
         .option('elasticache-cluster', {
           type: 'string',
-          description: 'ID of the elasticache cluster to connect to',
+          description: 'ID of the Elasticache cluster to connect to',
         })
         .option('elasticache-node', {
           type: 'string',
-          description: 'ID of the elasticache node to connect to',
+          description: 'ID of the Elasticache node to connect to',
         })
         .option('custom-target-vpc', {
           type: 'string',
