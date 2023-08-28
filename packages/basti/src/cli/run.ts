@@ -74,7 +74,12 @@ void yargs(hideBin(process.argv))
         .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_PROFILE)
         .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_REGION)
         .check(
-          conflictingOptions('rds-cluster', 'rds-instance', 'elasticache-cluster', 'custom-target-vpc')
+          conflictingOptions(
+            'rds-cluster',
+            'rds-instance',
+            'elasticache-cluster',
+            'custom-target-vpc'
+          )
         )
         .example([
           ['$0 init', 'Use interactive mode'],
