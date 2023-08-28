@@ -1,0 +1,4 @@
+/node_modules
+/dist
+/deps
+/.build-deps-tmp

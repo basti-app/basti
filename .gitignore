@@ -1,7 +1,5 @@
 node_modules
 dist
-.history
 .DS_Store
-.build-deps-tmp
-.basti.yaml
 .idea
+/.history

@@ -1,0 +1,73 @@
+{
+  "name": "basti",
+  "version": "1.4.1",
+  "description": "Basti is a CLI tool for accessing DB instances and other AWS resources in private networks almost at no cost",
+  "author": "BohdanPetryshyn",
+  "homepage": "https://github.com/BohdanPetryshyn/basti",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BohdanPetryshyn/basti.git",
+    "directory": "packages/basti"
+  },
+  "bugs": {
+    "url": "https://github.com/BohdanPetryshyn/basti/issues"
+  },
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "basti": "bin/run.js"
+  },
+  "scripts": {
+    "start": "node bin/run.js",
+    "test": "npm run check",
+    "build": "npm run build-src && npm run build-deps",
+    "build-src": "tsc",
+    "build-src-watch": "tsc --watch",
+    "build-deps": "ts-node-esm scripts/build-deps.ts",
+    "check": "npm run check-types && npm run check-style",
+    "check-prepublish": "npm run check-types && npm run check-style && npm run check-deps",
+    "check-types": "tsc --noEmit",
+    "check-style": "eslint src",
+    "check-deps": "ts-node-esm scripts/check-deps.ts",
+    "prepare-deps": "npm run check-deps || (npm run build-deps && npm run publish-deps)",
+    "publish-deps": "ts-node-esm scripts/publish-deps.ts",
+    "sync-readme": "bash scripts/sync-readme.sh",
+    "release": "npm run prepare-deps && npm run check-prepublish && npm run build-src && npm publish"
+  },
+  "devDependencies": {
+    "@types/inquirer": "8.2.1",
+    "@types/yargs": "17.0.10",
+    "ts-node": "10.9.1"
+  },
+  "dependencies": {
+    "@aws-sdk/client-ec2": "3.231.0",
+    "@aws-sdk/client-elasticache":"3.398.0",
+    "@aws-sdk/client-iam": "3.231.0",
+    "@aws-sdk/client-rds": "3.231.0",
+    "@aws-sdk/client-ssm": "3.231.0",
+    "chalk": "5.0.1",
+    "cosmiconfig": "8.1.3",
+    "inquirer": "9.0.0",
+    "ora": "6.1.2",
+    "yargs": "17.7.2",
+    "zod": "3.18.0",
+    "zod-validation-error": "1.3.0"
+  },
+  "optionalDependencies": {
+    "basti-session-manager-binary-darwin-arm64": "1.2.295.0",
+    "basti-session-manager-binary-darwin-x64": "1.2.295.0",
+    "basti-session-manager-binary-linux-arm64": "1.2.295.0",
+    "basti-session-manager-binary-linux-ia32": "1.2.295.0",
+    "basti-session-manager-binary-linux-x64": "1.2.295.0"
+  },
+  "imports": {
+    "#src/*.js": "./src/*.js"
+  },
+  "files": [
+    "bin/run.js",
+    "dist",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ]
+}
