@@ -122,7 +122,7 @@ function toClusterModeEnabledChoicesFromNodeGroup(
           })!;
           cacheCluster.replicationGroupId = replicationGroupId;
           return {
-            name: '   '.concat(member.CacheClusterId!),
+            name: '  '.concat(member.CacheClusterId!),
             value: { elasticacheCluster: cacheCluster },
           };
         }),

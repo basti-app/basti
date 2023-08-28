@@ -38,6 +38,10 @@ export async function modifyElasticacheReplicationGroup({
   );
 }
 
+// Because of a bug in the elasticache API when a cluster is created with no specified security groups ,
+//it appears it has none when in reality it's assigned the default vpc's security group.
+// this is a workaround for the case in which the basti security groups is the only one in the cluster's.
+// The elasticache team has been alerted about the bug.
 async function getDefaultVpcIdFromSecurityGroup(
   SecurityGroupId: string | undefined
 ): Promise<string | undefined> {

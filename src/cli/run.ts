@@ -112,11 +112,11 @@ void yargs(hideBin(process.argv))
         })
         .option('elasticache-cluster', {
           type: 'string',
-          description: 'ID of the elasticache cluster to be initialized',
+          description: 'ID of the elasticache cluster to connect to',
         })
         .option('elasticache-node', {
           type: 'string',
-          description: 'ID of the elasticache node to be initialized',
+          description: 'ID of the elasticache node to connect to',
         })
         .option('custom-target-vpc', {
           type: 'string',
