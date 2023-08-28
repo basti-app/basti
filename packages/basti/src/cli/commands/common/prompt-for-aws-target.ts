@@ -34,6 +34,7 @@ export async function promptForAwsTarget(
 
   const { target } = await cli.prompt({
     type: 'list',
+    pageSize: 10,
     name: 'target',
     message: 'Select target to connect to',
     choices: [
