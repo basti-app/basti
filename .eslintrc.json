@@ -3,6 +3,7 @@
     "es2021": true,
     "node": true
   },
+  "plugins": ["prettier", "import", "unicorn"],
   "extends": [
     "standard-with-typescript",
     "plugin:import/recommended",
@@ -18,8 +19,12 @@
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
-  "plugins": ["prettier", "import", "unicorn"],
   "rules": {
+    "prettier/prettier": [
+      "error",{
+        "endOfLine": "lf"
+      }
+    ],
     "no-ex-assign": "off",
 
     "@typescript-eslint/strict-boolean-expressions": [

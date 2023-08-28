@@ -1,0 +1,5 @@
+/node_modules
+/dist
+/test/cdk-apps
+/.prettierrc.js
+/jest.config.js

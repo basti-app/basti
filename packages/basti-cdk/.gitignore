@@ -1,0 +1,6 @@
+/tsconfig.json
+/tsconfig.tsbuildinfo
+/.jsii
+/coverage/
+/.release-creds.sh
+/.npmignore

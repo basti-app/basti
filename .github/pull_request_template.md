@@ -2,17 +2,13 @@
 
 [Describe the changes or additions proposed in this pull request.]
 
-## Related Issue
+## Related Issues/PRs
 
-[Closes #X]  <!-- Replace "X" with the issue number this PR addresses -->
+[If there are any related issues or pull requests, please link to them here.]
 
 ## Checklist
 
+- [ ] I cleaned up my code.
 - [ ] All the tests and checks passed (`npm run test`).
 - [ ] I have added necessary documentation and/or updated existing documentation. <!-- check if not applicable -->
 - [ ] I have added or modified tests to cover the changes. <!-- check if not applicable -->
-
-## Additional Notes
-
-[Provide any additional information or context about the pull request that might be helpful for reviewers.]
-

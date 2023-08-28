@@ -1,0 +1,6 @@
+/node_modules
+/dist
+/.prettierrc.cjs
+/deps
+/bin
+/.build-deps-tmp
