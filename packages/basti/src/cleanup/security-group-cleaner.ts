@@ -5,7 +5,14 @@ import { getDbInstances } from '../aws/rds/get-db-instances.js';
 import { modifyDBCluster } from '../aws/rds/modify-db-cluster.js';
 import { modifyDbInstance } from '../aws/rds/modify-db-instance.js';
 import { retry } from '../common/retry.js';
+import { getRawReplicationGroups } from '../aws/elasticache/get-elasticache-replication-groups.js';
+import { getRawCacheClusters } from '../aws/elasticache/get-elasticache-cache-clusters.js';
+import { modifyElasticacheReplicationGroup } from '../aws/elasticache/modify-elasticache-replication-group.js';
 
+import type {
+  CacheCluster,
+  ReplicationGroup,
+} from '@aws-sdk/client-elasticache';
 import type {
   ResourcesCleanupPreparer,
   ResourceCleaner,
@@ -16,6 +23,7 @@ export const accessSecurityGroupReferencesCleaner: ResourcesCleanupPreparer =
     const groupIdSet = new Set(groupIds);
     await cleanupDbInstanceReferences(groupIdSet);
     await cleanupDbClusterReferences(groupIdSet);
+    await cleanupElasticacheSecurityGroups(groupIdSet);
   };
 
 export const securityGroupCleaner: ResourceCleaner = async groupId => {
@@ -78,4 +86,53 @@ function arrayContains(arr: string[], set: Set<string>): boolean {
 
 function filterOut(arr: string[], set: Set<string>): string[] {
   return arr.filter(el => !set.has(el));
+}
+export async function cleanupElasticacheSecurityGroups(
+  groupIds: Set<string>
+): Promise<void> {
+  const cacheClusters = await getRawCacheClusters();
+  const replicationGroups = await getRawReplicationGroups();
+
+  for (const replicationGroup of replicationGroups) {
+    await cleanReplicationGroup(replicationGroup, cacheClusters, groupIds);
+  }
+}
+
+async function cleanReplicationGroup(
+  replicationGroup: ReplicationGroup,
+  cacheClusters: CacheCluster[],
+  groupIds: Set<string>
+): Promise<void> {
+  if (
+    replicationGroup.NodeGroups === undefined ||
+    replicationGroup.NodeGroups[0] === undefined ||
+    replicationGroup.NodeGroups[0].NodeGroupMembers === undefined ||
+    replicationGroup.NodeGroups[0].NodeGroupMembers[0] === undefined
+  )
+    return;
+  const exampleCacheCluster =
+    replicationGroup.NodeGroups[0].NodeGroupMembers[0].CacheClusterId;
+  const cacheSecurityGroups = cacheClusters.find(
+    cache => cache.CacheClusterId === exampleCacheCluster
+  );
+  if (
+    cacheSecurityGroups === undefined ||
+    cacheSecurityGroups.SecurityGroups === undefined
+  )
+    return;
+  const cacheSecurityGroupsIds: string[] = [
+    ...cacheSecurityGroups.SecurityGroups.flatMap(
+      group => group.SecurityGroupId ?? ' '
+    ).filter(id => id !== ' ' && !groupIds.has(id)),
+  ];
+
+  if (
+    cacheSecurityGroupsIds.length !== cacheSecurityGroups.SecurityGroups.length
+  ) {
+    await modifyElasticacheReplicationGroup({
+      identifier: replicationGroup.ReplicationGroupId,
+      securityGroupIds: cacheSecurityGroupsIds,
+      cachePreviousSecurityGroups: cacheSecurityGroups.SecurityGroups,
+    });
+  }
 }

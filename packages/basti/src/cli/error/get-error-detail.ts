@@ -38,6 +38,8 @@ const RESOURCE_TYPE_NAME: Record<ResourceType, string> = {
   [ManagedResourceTypes.BASTION_INSTANCE_PROFILE]: 'Bastion instance profile',
   [TargetTypes.RDS_INSTANCE]: 'RDS instance',
   [TargetTypes.RDS_CLUSTER]: 'RDS cluster',
+  [TargetTypes.ELASTICACHE_CLUSTER]: 'Elasticache cluster',
+  [TargetTypes.ELASTICACHE_NODE]: 'Elasticache node',
   [TargetTypes.CUSTOM]: 'Custom target',
 };
 

@@ -65,7 +65,9 @@ async function hydrateInput(
 }
 
 async function promptForTarget(): Promise<ConnectTargetInput> {
-  return (await promptForAwsTarget()) ?? (await promptForCustomTarget());
+  return (
+    (await promptForAwsTarget('connect')) ?? (await promptForCustomTarget())
+  );
 }
 
 async function promptForCustomTarget(): Promise<CustomConnectTargetInput> {

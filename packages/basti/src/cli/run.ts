@@ -45,6 +45,10 @@ void yargs(hideBin(process.argv))
           type: 'string',
           description: 'ID of the RDS cluster to be initialized',
         })
+        .option('elasticache-cluster', {
+          type: 'string',
+          description: 'ID of the Elasticache cluster to be initialized',
+        })
         .option('custom-target-vpc', {
           type: 'string',
           description: 'VPC of the custom target to be initialized',
@@ -70,7 +74,12 @@ void yargs(hideBin(process.argv))
         .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_PROFILE)
         .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_REGION)
         .check(
-          conflictingOptions('rds-cluster', 'rds-instance', 'custom-target-vpc')
+          conflictingOptions(
+            'rds-cluster',
+            'rds-instance',
+            'elasticache-cluster',
+            'custom-target-vpc'
+          )
         )
         .example([
           ['$0 init', 'Use interactive mode'],
@@ -106,6 +115,14 @@ void yargs(hideBin(process.argv))
           type: 'string',
           description: 'ID of the RDS cluster to connect to',
         })
+        .option('elasticache-cluster', {
+          type: 'string',
+          description: 'ID of the Elasticache cluster to connect to',
+        })
+        .option('elasticache-node', {
+          type: 'string',
+          description: 'ID of the Elasticache node to connect to',
+        })
         .option('custom-target-vpc', {
           type: 'string',
           description: 'VPC of the custom connection target',
@@ -126,11 +143,14 @@ void yargs(hideBin(process.argv))
         .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_PROFILE)
         .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_REGION)
         .check(
-          conflictingOptions('connection', 'rds-instance', 'rds-cluster', [
-            'custom-target-vpc',
-            'custom-target-host',
-            'custom-target-port',
-          ])
+          conflictingOptions(
+            'connection',
+            'rds-instance',
+            'rds-cluster',
+            'elasticache-cluster',
+            'elasticache-node',
+            ['custom-target-vpc', 'custom-target-host', 'custom-target-port']
+          )
         )
         .check(conflictingOptions('connection', 'local-port'))
         .check(

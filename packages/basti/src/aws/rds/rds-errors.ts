@@ -4,6 +4,7 @@ import {
   AwsAccessDeniedError,
   AwsNotFoundError,
   AwsError,
+  AwsTooManySecurityGroupsAttachedError,
 } from '../common/aws-errors.js';
 
 export async function rdsErrorHandler<T>(
@@ -38,12 +39,6 @@ export async function rdsErrorHandler<T>(
       throw new AwsInvalidRdsStateError();
     }
     throw error;
-  }
-}
-
-export class AwsTooManySecurityGroupsAttachedError extends AwsError {
-  constructor() {
-    super(`Too many security groups attached`);
   }
 }
 

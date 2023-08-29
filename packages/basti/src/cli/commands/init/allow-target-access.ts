@@ -1,4 +1,4 @@
-import { AwsTooManySecurityGroupsAttachedError } from '#src/aws/rds/rds-errors.js';
+import { AwsTooManySecurityGroupsAttachedError } from '#src/aws/common/aws-errors.js';
 import type { AwsTag } from '#src/aws/tags/types.js';
 import type { Bastion } from '#src/bastion/bastion.js';
 import { cli } from '#src/common/cli.js';

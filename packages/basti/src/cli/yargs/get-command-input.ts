@@ -12,6 +12,14 @@ export interface RdsClusterOptions {
   rdsCluster: string;
 }
 
+export interface ElasticacheClusterOptions {
+  elasticacheCluster: string;
+}
+
+export interface ElasticacheNodeOptions {
+  elasticacheNode: string;
+}
+
 export interface CustomTargetVpcOptions {
   customTargetVpc: string;
 }
@@ -24,6 +32,7 @@ export interface CustomTargetOptions {
 
 export type InitOptions = Partial<RdsInstanceOptions> &
   Partial<RdsClusterOptions> &
+  Partial<ElasticacheClusterOptions> &
   Partial<CustomTargetVpcOptions> & {
     bastionSubnet?: string;
     bastionInstanceType?: string;
@@ -31,6 +40,8 @@ export type InitOptions = Partial<RdsInstanceOptions> &
 
 export type ConnectOptions = Partial<RdsInstanceOptions> &
   Partial<RdsClusterOptions> &
+  Partial<ElasticacheClusterOptions> &
+  Partial<ElasticacheNodeOptions> &
   Partial<CustomTargetOptions> & {
     localPort?: number;
   };
@@ -50,6 +61,10 @@ export function getInitCommandInputFromOptions(
       : isRdsClusterOptions(options)
       ? {
           rdsClusterId: options.rdsCluster,
+        }
+      : isElasticacheClusterOptions(options)
+      ? {
+          elasticacheClusterId: options.elasticacheCluster,
         }
       : isCustomTargetOptions(options)
       ? {
@@ -73,6 +88,14 @@ export function getConnectCommandInputFromOptions(
       : isRdsClusterOptions(options)
       ? {
           rdsClusterId: options.rdsCluster,
+        }
+      : isElasticacheClusterOptions(options)
+      ? {
+          elasticacheClusterId: options.elasticacheCluster,
+        }
+      : isElasticacheNodeOptions(options)
+      ? {
+          elasticacheNodeId: options.elasticacheNode,
         }
       : isCustomTargetOptions(options)
       ? {
@@ -103,6 +126,17 @@ function isRdsClusterOptions(
   options: ConnectOptions | InitOptions
 ): options is RdsClusterOptions {
   return 'rdsCluster' in options;
+}
+
+function isElasticacheClusterOptions(
+  options: ConnectOptions | InitOptions
+): options is ElasticacheClusterOptions {
+  return 'elasticacheCluster' in options;
+}
+function isElasticacheNodeOptions(
+  options: ConnectOptions | InitOptions
+): options is ElasticacheNodeOptions {
+  return 'elasticacheNode' in options;
 }
 
 function isCustomTargetOptions(

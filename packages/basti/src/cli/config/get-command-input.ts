@@ -3,6 +3,8 @@ import { OperationError } from '../error/operation-error.js';
 import {
   isRdsClusterTargetConfig,
   isRdsInstanceTargetConfig,
+  isElasticacheClusterTargetConfig,
+  isElasticacheNodeTargetConfig,
 } from './config-parser.js';
 
 import type { ConnectCommandInput } from '../commands/connect/connect.js';
@@ -60,6 +62,16 @@ export function getConnectCommandInputFromConfig(
       : isRdsClusterTargetConfig(connectionTarget)
       ? {
           rdsClusterId: connectionTarget.rdsCluster,
+          awsClientConfig,
+        }
+      : isElasticacheClusterTargetConfig(connectionTarget)
+      ? {
+          elasticacheClusterId: connectionTarget.elasticacheCluster,
+          awsClientConfig,
+        }
+      : isElasticacheNodeTargetConfig(connectionTarget)
+      ? {
+          elasticacheNodeId: connectionTarget.elasticacheNode,
           awsClientConfig,
         }
       : {
