@@ -34,9 +34,12 @@ export async function promptForAwsTarget(
 
   const { target } = await cli.prompt({
     type: 'list',
-    pageSize: 10,
+    pageSize: 20,
     name: 'target',
-    message: 'Select target to connect to',
+    message:
+      commandType === 'init'
+        ? 'Select target to initialize'
+        : 'Select target to connect to',
     choices: [
       ...toInstanceChoices(instances),
       ...toClusterChoices(clusters),
