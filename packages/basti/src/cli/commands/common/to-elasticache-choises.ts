@@ -6,6 +6,7 @@ import {
 } from '#src/aws/elasticache/parse-elasticache-response.js';
 import type { AwsElasticacheGenericObject } from '#src/aws/elasticache/elasticache-types.js';
 import type { ElasticacheClusterTargetInput } from '#src/target/target-input.js';
+import { fmt } from '#src/common/fmt.js';
 
 import type { NodeGroup } from '@aws-sdk/client-elasticache';
 import type { DistinctChoice } from 'inquirer';
@@ -150,7 +151,11 @@ function toClusterModeDisabledReplicationGroups(
     },
     ...NodeGroup.NodeGroupMembers.map(member => {
       return {
-        name: '  '.concat(member.CacheClusterId!, ' - ', member.CurrentRole!),
+        name: '  '.concat(
+          member.CacheClusterId!,
+          ' - ',
+          fmt.capitalize(member.CurrentRole ?? 'Node')
+        ),
         value: {
           elasticacheCluster: parseNodeGroupMemberResponse(
             member,
