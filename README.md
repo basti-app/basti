@@ -135,7 +135,7 @@ The list of resources will be displayed and you will be prompted to confirm the 
 
 ## Custom connection targets
 
-Basti provides first class support for RDS instances, Aurora clusters, and Elasticache clusters. However, you can use Basti to connect to any other target in your AWS VPC (e.g. Elasticache instance, EC2 instance, etc.).
+Basti provides first class support for RDS instances, Aurora clusters, and Elasticache clusters. However, you can use Basti to connect to any other target in your AWS VPC (e.g. DocumentDB instance, EC2 instance, etc.).
 
 To connect to a custom target, select the `Custom` option when prompted for a target to initialize or connect to. You will be prompted for the target's VPC, IP address and port.
 
