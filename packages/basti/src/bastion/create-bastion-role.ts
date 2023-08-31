@@ -63,11 +63,6 @@ function getSessionManagerAccessPolicy(): string {
         ],
         Resource: '*',
       },
-      {
-        Effect: 'Allow',
-        Action: ['s3:GetEncryptionConfiguration'],
-        Resource: '*',
-      },
     ],
   });
 }
