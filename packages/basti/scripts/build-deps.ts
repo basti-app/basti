@@ -66,18 +66,43 @@ function createSessionManagerDependencyBuilder(): DepBuilder {
     const repoDir = path.join(TMP_DIR, 'session-manager-plugin');
     if (!isBuilt) {
       console.log(`Cloning Session Manager ${version}...`);
-      cp.execSync(
-        `git clone --depth 1 --branch ${version} https://github.com/aws/session-manager-plugin.git ${repoDir}`,
+      cp.execFileSync(
+        'git',
+        [
+          'clone',
+          '--depth',
+          '1',
+          '--branch',
+          version,
+          'https://github.com/aws/session-manager-plugin.git',
+          repoDir,
+        ],
         {
           stdio: 'inherit',
         }
       );
       console.log('Building Session Manager...');
-      cp.execSync(`docker build -t session-manager-plugin-image ${repoDir}`, {
-        stdio: 'inherit',
-      });
-      cp.execSync(
-        `docker run -it --rm --name session-manager-plugin-build -v ${repoDir}:/session-manager-plugin session-manager-plugin-image make release`,
+      cp.execFileSync(
+        'docker',
+        ['build', '-t', 'session-manager-plugin-image', repoDir],
+        {
+          stdio: 'inherit',
+        }
+      );
+      cp.execFileSync(
+        'docker',
+        [
+          'run',
+          '-it',
+          '--rm',
+          '--name',
+          'session-manager-plugin-build',
+          '-v',
+          `${repoDir}:/session-manager-plugin`,
+          'session-manager-plugin-image',
+          'make',
+          'release',
+        ],
         {
           stdio: 'inherit',
         }

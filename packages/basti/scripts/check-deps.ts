@@ -27,9 +27,13 @@ function getVersionInfo(
   version: string
 ): Record<string, unknown> | undefined {
   try {
-    const versionInfoBuf = cp.execSync(`npm view --json ${dep}@${version}`, {
-      stdio: 'pipe',
-    });
+    const versionInfoBuf = cp.execFileSync(
+      'npm',
+      ['view', '--json', `${dep}@${version}`],
+      {
+        stdio: 'pipe',
+      }
+    );
 
     const versionInfoStr = versionInfoBuf?.toString();
 
