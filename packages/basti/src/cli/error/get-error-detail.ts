@@ -40,6 +40,8 @@ const RESOURCE_TYPE_NAME: Record<ResourceType, string> = {
   [TargetTypes.RDS_CLUSTER]: 'RDS cluster',
   [TargetTypes.ELASTICACHE_CLUSTER]: 'Elasticache cluster',
   [TargetTypes.ELASTICACHE_NODE]: 'Elasticache node',
+  [TargetTypes.ELASTICACHE_MEMCACHED_CLUSTER]: 'Elasticache memcached cluster',
+  [TargetTypes.ELASTICACHE_MEMCACHED_NODE]: 'Elasticache memcached node',
   [TargetTypes.CUSTOM]: 'Custom target',
 };
 

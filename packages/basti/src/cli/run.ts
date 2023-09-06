@@ -45,9 +45,14 @@ void yargs(hideBin(process.argv))
           type: 'string',
           description: 'ID of the RDS cluster to be initialized',
         })
-        .option('elasticache-cluster', {
+        .option('elasticache-redis-cluster', {
           type: 'string',
           description: 'ID of the Elasticache cluster to be initialized',
+        })
+        .option('elasticache-memcached-cluster', {
+          type: 'string',
+          description:
+            'ID of the Elasticache memcached cluster to be initialized',
         })
         .option('custom-target-vpc', {
           type: 'string',
@@ -115,13 +120,21 @@ void yargs(hideBin(process.argv))
           type: 'string',
           description: 'ID of the RDS cluster to connect to',
         })
-        .option('elasticache-cluster', {
+        .option('elasticache-redis-cluster', {
           type: 'string',
           description: 'ID of the Elasticache cluster to connect to',
         })
-        .option('elasticache-node', {
+        .option('elasticache-redis-node', {
           type: 'string',
           description: 'ID of the Elasticache node to connect to',
+        })
+        .option('elasticache-memcached-cluster', {
+          type: 'string',
+          description: 'ID of the Elasticache memcached cluster to connect to',
+        })
+        .option('elasticache-memcached-node', {
+          type: 'string',
+          description: 'ID of the Elasticache memcached cluster to connect to',
         })
         .option('custom-target-vpc', {
           type: 'string',
@@ -147,8 +160,10 @@ void yargs(hideBin(process.argv))
             'connection',
             'rds-instance',
             'rds-cluster',
-            'elasticache-cluster',
-            'elasticache-node',
+            'elasticache-redis-cluster',
+            'elasticache-redis-node',
+            'elasticache-memcached-cluster',
+            'elasticache-memcached-node',
             ['custom-target-vpc', 'custom-target-host', 'custom-target-port']
           )
         )

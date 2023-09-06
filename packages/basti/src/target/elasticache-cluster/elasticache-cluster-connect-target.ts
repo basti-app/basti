@@ -9,27 +9,27 @@ import { ConnectTargetBase } from '../connect-target.js';
 import type { CacheCluster } from '@aws-sdk/client-elasticache';
 import type { ConnectTargetBaseConstructorInput } from '../connect-target.js';
 
-export class ElasticacheClusterConnectTarget extends ConnectTargetBase {
-  private readonly elasticacheCluster: AwsElasticacheGenericObject;
+export class ElasticacheRedisClusterConnectTarget extends ConnectTargetBase {
+  private readonly elasticacheRedisCluster: AwsElasticacheGenericObject;
   private readonly elasticacheSubnetGroupName: Promise<string | undefined>;
   private readonly detaliedInformationCluster: Promise<CacheCluster>;
   constructor(
     input: ConnectTargetBaseConstructorInput & {
-      elasticacheCluster: AwsElasticacheGenericObject;
+      elasticacheRedisCluster: AwsElasticacheGenericObject;
     }
   ) {
     super(input);
-    this.elasticacheCluster = input.elasticacheCluster;
+    this.elasticacheRedisCluster = input.elasticacheRedisCluster;
     this.detaliedInformationCluster = this.getDescribedCacheCluster();
     this.elasticacheSubnetGroupName = this.getSubnetGroupName();
   }
 
   async getHost(): Promise<string> {
-    return this.elasticacheCluster.host;
+    return this.elasticacheRedisCluster.host;
   }
 
   async getPort(): Promise<number> {
-    return this.elasticacheCluster.port;
+    return this.elasticacheRedisCluster.port;
   }
 
   protected async getSecurityGroupIds(): Promise<string[]> {
@@ -66,12 +66,12 @@ export class ElasticacheClusterConnectTarget extends ConnectTargetBase {
   }
 
   protected getTargetPort(): number {
-    return this.elasticacheCluster.port;
+    return this.elasticacheRedisCluster.port;
   }
 
   protected async getDescribedCacheCluster(): Promise<CacheCluster> {
     const cluster = await getDescribedreplicationGroup(
-      this.elasticacheCluster.replicationGroupId
+      this.elasticacheRedisCluster.replicationGroupId
     );
     if (
       cluster.NodeGroups === undefined ||

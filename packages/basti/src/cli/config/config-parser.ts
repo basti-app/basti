@@ -24,22 +24,40 @@ export type RdsClusterTargetConfig = z.infer<
   typeof RdsClusterTargetConfigParser
 >;
 
-const ElasticacheClusterTargetConfigParser = z
+const ElasticacheRedisClusterTargetConfigParser = z
   .object({
-    elasticacheCluster: z.string(),
+    elasticacheRedisCluster: z.string(),
   })
   .merge(TargetConfigBaseParser);
-export type ElasticacheClusterTargetConfig = z.infer<
-  typeof ElasticacheClusterTargetConfigParser
+export type ElasticacheRedisClusterTargetConfig = z.infer<
+  typeof ElasticacheRedisClusterTargetConfigParser
 >;
 
-const ElasticacheNodeTargetConfigParser = z
+const ElasticacheRedisNodeTargetConfigParser = z
   .object({
-    elasticacheNode: z.string(),
+    elasticacheRedisNode: z.string(),
   })
   .merge(TargetConfigBaseParser);
-export type ElasticacheNodeTargetConfig = z.infer<
-  typeof ElasticacheNodeTargetConfigParser
+export type ElasticacheRedisNodeTargetConfig = z.infer<
+  typeof ElasticacheRedisNodeTargetConfigParser
+>;
+
+const ElasticacheMemcachedClusterTargetConfigParser = z
+  .object({
+    elasticacheMemcachedCluster: z.string(),
+  })
+  .merge(TargetConfigBaseParser);
+export type ElasticacheMemcachedClusterTargetConfig = z.infer<
+  typeof ElasticacheMemcachedClusterTargetConfigParser
+>;
+
+const ElasticacheMemcachedNodeTargetConfigParser = z
+  .object({
+    elasticacheMemcachedNode: z.string(),
+  })
+  .merge(TargetConfigBaseParser);
+export type ElasticacheMemcachedNodeTargetConfig = z.infer<
+  typeof ElasticacheMemcachedNodeTargetConfigParser
 >;
 
 const CustomTargetConfigParser = z
@@ -54,8 +72,10 @@ export type CustomTargetConfig = z.infer<typeof CustomTargetConfigParser>;
 const ConnectionTargetConfigParser = z.union([
   RdsInstanceTargetConfigParser,
   RdsClusterTargetConfigParser,
-  ElasticacheClusterTargetConfigParser,
-  ElasticacheNodeTargetConfigParser,
+  ElasticacheRedisClusterTargetConfigParser,
+  ElasticacheRedisNodeTargetConfigParser,
+  ElasticacheMemcachedClusterTargetConfigParser,
+  ElasticacheMemcachedNodeTargetConfigParser,
   CustomTargetConfigParser,
 ]);
 export type ConnectionTargetConfig = z.infer<
@@ -86,16 +106,27 @@ export function isRdsClusterTargetConfig(
   return 'rdsCluster' in target;
 }
 
-export function isElasticacheClusterTargetConfig(
+export function isElasticacheRedisClusterTargetConfig(
   target: ConnectionTargetConfig
-): target is ElasticacheClusterTargetConfig {
-  return 'elasticacheCluster' in target;
+): target is ElasticacheRedisClusterTargetConfig {
+  return 'elasticacheRedisCluster' in target;
 }
 
-export function isElasticacheNodeTargetConfig(
+export function isElasticacheRedisNodeTargetConfig(
   target: ConnectionTargetConfig
-): target is ElasticacheNodeTargetConfig {
-  return 'elasticacheNode' in target;
+): target is ElasticacheRedisNodeTargetConfig {
+  return 'elasticacheRedisNode' in target;
+}
+export function isElasticacheMemcachedClusterTargetConfig(
+  target: ConnectionTargetConfig
+): target is ElasticacheMemcachedClusterTargetConfig {
+  return 'elasticacheMemcachedCluster' in target;
+}
+
+export function isElasticacheMemcachedNodeTargetConfig(
+  target: ConnectionTargetConfig
+): target is ElasticacheMemcachedNodeTargetConfig {
+  return 'elasticacheMemcachedNode' in target;
 }
 
 export function isCustomTargetConfig(

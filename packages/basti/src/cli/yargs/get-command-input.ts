@@ -12,12 +12,19 @@ export interface RdsClusterOptions {
   rdsCluster: string;
 }
 
-export interface ElasticacheClusterOptions {
-  elasticacheCluster: string;
+export interface ElasticacheRedisClusterOptions {
+  elasticacheRedisCluster: string;
 }
 
-export interface ElasticacheNodeOptions {
-  elasticacheNode: string;
+export interface ElasticacheRedisNodeOptions {
+  elasticacheRedisNode: string;
+}
+export interface ElasticacheMemcachedClusterOptions {
+  elasticacheMemcachedCluster: string;
+}
+
+export interface ElasticacheMemcachedNodeOptions {
+  elasticacheMemcachedNode: string;
 }
 
 export interface CustomTargetVpcOptions {
@@ -32,7 +39,8 @@ export interface CustomTargetOptions {
 
 export type InitOptions = Partial<RdsInstanceOptions> &
   Partial<RdsClusterOptions> &
-  Partial<ElasticacheClusterOptions> &
+  Partial<ElasticacheRedisClusterOptions> &
+  Partial<ElasticacheMemcachedClusterOptions> &
   Partial<CustomTargetVpcOptions> & {
     bastionSubnet?: string;
     bastionInstanceType?: string;
@@ -40,8 +48,10 @@ export type InitOptions = Partial<RdsInstanceOptions> &
 
 export type ConnectOptions = Partial<RdsInstanceOptions> &
   Partial<RdsClusterOptions> &
-  Partial<ElasticacheClusterOptions> &
-  Partial<ElasticacheNodeOptions> &
+  Partial<ElasticacheRedisClusterOptions> &
+  Partial<ElasticacheRedisNodeOptions> &
+  Partial<ElasticacheMemcachedClusterOptions> &
+  Partial<ElasticacheMemcachedNodeOptions> &
   Partial<CustomTargetOptions> & {
     localPort?: number;
   };
@@ -62,9 +72,13 @@ export function getInitCommandInputFromOptions(
       ? {
           rdsClusterId: options.rdsCluster,
         }
-      : isElasticacheClusterOptions(options)
+      : isElasticacheRedisClusterOptions(options)
       ? {
-          elasticacheClusterId: options.elasticacheCluster,
+          elasticacheRedisClusterId: options.elasticacheRedisCluster,
+        }
+      : isElasticacheMemcachedClusterOptions(options)
+      ? {
+          elasticacheMemcachedClusterId: options.elasticacheMemcachedCluster,
         }
       : isCustomTargetOptions(options)
       ? {
@@ -89,13 +103,21 @@ export function getConnectCommandInputFromOptions(
       ? {
           rdsClusterId: options.rdsCluster,
         }
-      : isElasticacheClusterOptions(options)
+      : isElasticacheRedisClusterOptions(options)
       ? {
-          elasticacheClusterId: options.elasticacheCluster,
+          elasticacheRedisClusterId: options.elasticacheRedisCluster,
         }
-      : isElasticacheNodeOptions(options)
+      : isElasticacheRedisNodeOptions(options)
       ? {
-          elasticacheNodeId: options.elasticacheNode,
+          elasticacheRedisNodeId: options.elasticacheRedisNode,
+        }
+      : isElasticacheMemcachedClusterOptions(options)
+      ? {
+          elasticacheMemcachedClusterId: options.elasticacheMemcachedCluster,
+        }
+      : isElasticacheMemcachedNodeOptions(options)
+      ? {
+          elasticacheMemcachedNodeId: options.elasticacheMemcachedNode,
         }
       : isCustomTargetOptions(options)
       ? {
@@ -128,15 +150,26 @@ function isRdsClusterOptions(
   return 'rdsCluster' in options;
 }
 
-function isElasticacheClusterOptions(
+function isElasticacheRedisClusterOptions(
   options: ConnectOptions | InitOptions
-): options is ElasticacheClusterOptions {
-  return 'elasticacheCluster' in options;
+): options is ElasticacheRedisClusterOptions {
+  return 'elasticacheRedisCluster' in options;
 }
-function isElasticacheNodeOptions(
+function isElasticacheRedisNodeOptions(
   options: ConnectOptions | InitOptions
-): options is ElasticacheNodeOptions {
-  return 'elasticacheNode' in options;
+): options is ElasticacheRedisNodeOptions {
+  return 'elasticacheRedisNode' in options;
+}
+
+function isElasticacheMemcachedClusterOptions(
+  options: ConnectOptions | InitOptions
+): options is ElasticacheMemcachedClusterOptions {
+  return 'elasticacheMemcachedCluster' in options;
+}
+function isElasticacheMemcachedNodeOptions(
+  options: ConnectOptions | InitOptions
+): options is ElasticacheMemcachedNodeOptions {
+  return 'elasticacheMemcachedNode' in options;
 }
 
 function isCustomTargetOptions(

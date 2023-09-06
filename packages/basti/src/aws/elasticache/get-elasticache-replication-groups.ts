@@ -2,7 +2,7 @@ import { DescribeReplicationGroupsCommand } from '@aws-sdk/client-elasticache';
 
 import { AwsNotFoundError } from '../common/aws-errors.js';
 
-import { parseElasticacheResponse } from './parse-elasticache-response.js';
+import { parseElasticacheResponse } from './parse-elasticache-redis-response.js';
 import { elasticacheClient } from './elasticache-client.js';
 
 import type { ReplicationGroup } from '@aws-sdk/client-elasticache';
@@ -62,6 +62,9 @@ export async function getReplicationGroup({
 }: getReplicationGroupsInput): Promise<
   AwsElasticacheGenericObject | undefined
 > {
+  if (identifier === undefined) {
+    return undefined;
+  }
   try {
     const { ReplicationGroups } = await elasticacheClient.send(
       new DescribeReplicationGroupsCommand({ ReplicationGroupId: identifier })

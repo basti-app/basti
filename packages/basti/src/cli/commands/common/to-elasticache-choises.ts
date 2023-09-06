@@ -1,15 +1,40 @@
 import inquirer from 'inquirer';
 
 import {
+  parseElasticacheMemcachedCacheNode,
+  parseMemcachedCacheClusterResponse,
+} from '#src/aws/elasticache/parse-elasticache-memcached-response.js';
+import {
   parseNodeGroupMemberResponse,
   parseNodeGroupResponse,
-} from '#src/aws/elasticache/parse-elasticache-response.js';
-import type { AwsElasticacheGenericObject } from '#src/aws/elasticache/elasticache-types.js';
-import type { ElasticacheClusterTargetInput } from '#src/target/target-input.js';
+} from '#src/aws/elasticache/parse-elasticache-redis-response.js';
+import type {
+  AwsElasticacheGenericObject,
+  AwsElasticacheMemcachedCluster,
+} from '#src/aws/elasticache/elasticache-types.js';
+import type { ElasticacheRedisClusterTargetInput } from '#src/target/target-input.js';
 import { fmt } from '#src/common/fmt.js';
 
-import type { NodeGroup } from '@aws-sdk/client-elasticache';
+import type { CacheCluster, NodeGroup } from '@aws-sdk/client-elasticache';
 import type { DistinctChoice } from 'inquirer';
+
+export function toElasticacheChoices(
+  redisClusters: AwsElasticacheGenericObject[][],
+  cacheClusters: AwsElasticacheGenericObject[],
+  memcachedClusters: AwsElasticacheMemcachedCluster[],
+  memcachedRawClusters: CacheCluster[],
+  commandType: string
+): DistinctChoice[] {
+  return [
+    new inquirer.Separator('Elasticache Targets:'),
+    ...toElasticacheClusterChoices(redisClusters, cacheClusters, commandType),
+    ...toElasticacheMemcachedClusterChoices(
+      memcachedClusters,
+      memcachedRawClusters,
+      commandType
+    ),
+  ];
+}
 
 export function toElasticacheClusterChoices(
   clusters: AwsElasticacheGenericObject[][],
@@ -26,7 +51,7 @@ export function toElasticacheClusterChoices(
   return commandType === 'init'
     ? toInitElasticacheClusterChoices(clusters)
     : [
-        new inquirer.Separator('Redis clusters:'),
+        new inquirer.Separator(' Redis clusters:'),
         ...toConnectElasticacheClusterChoices(
           clusters[0],
           cacheClusters,
@@ -42,9 +67,9 @@ export function toElasticacheClusterChoices(
 
 function toInitElasticacheClusterChoices(
   clusters: AwsElasticacheGenericObject[][]
-): Array<DistinctChoice<ElasticacheClusterTargetInput>> {
+): Array<DistinctChoice<ElasticacheRedisClusterTargetInput>> {
   return [
-    new inquirer.Separator('Redis clusters:'),
+    new inquirer.Separator(' Redis clusters:'),
     ...clusters[0]!.map(cluster => toElasticacheClusterChoice(cluster)),
     ...clusters[1]!.map(cluster => toElasticacheClusterChoice(cluster)),
   ];
@@ -54,7 +79,7 @@ function toConnectElasticacheClusterChoices(
   clusters: AwsElasticacheGenericObject[] | undefined,
   cacheClusters: AwsElasticacheGenericObject[],
   clustermMode: string
-): Array<DistinctChoice<ElasticacheClusterTargetInput>> {
+): Array<DistinctChoice<ElasticacheRedisClusterTargetInput>> {
   if (clusters === undefined) return [];
   return clustermMode === 'clusterModeEnabled'
     ? clusters.flatMap(clusterModeEnabled =>
@@ -68,11 +93,11 @@ function toConnectElasticacheClusterChoices(
 function toElasticacheReplicationGroupChoises(
   replicationGroup: AwsElasticacheGenericObject,
   cacheClusters: AwsElasticacheGenericObject[]
-): Array<DistinctChoice<ElasticacheClusterTargetInput>> {
+): Array<DistinctChoice<ElasticacheRedisClusterTargetInput>> {
   return [
     {
-      name: replicationGroup.identifier + ' - Configuration endpoint',
-      value: { elasticacheCluster: replicationGroup },
+      name: '  ' + replicationGroup.identifier + ' - Configuration endpoint',
+      value: { elasticacheRedisCluster: replicationGroup },
     },
     ...toClusterModeEnabledChoicesFromNodeGroups(
       replicationGroup,
@@ -82,12 +107,12 @@ function toElasticacheReplicationGroupChoises(
 }
 
 function toElasticacheClusterChoice(
-  elasticacheCluster: AwsElasticacheGenericObject
-): DistinctChoice<ElasticacheClusterTargetInput> {
+  elasticacheRedisCluster: AwsElasticacheGenericObject
+): DistinctChoice<ElasticacheRedisClusterTargetInput> {
   return {
-    name: elasticacheCluster.identifier,
+    name: '  ' + elasticacheRedisCluster.identifier,
     value: {
-      elasticacheCluster,
+      elasticacheRedisCluster,
     },
   };
 }
@@ -114,7 +139,7 @@ function toClusterModeEnabledChoicesFromNodeGroup(
     ? []
     : [
         new inquirer.Separator(
-          `  Shard ${elasticacheNodeGroup.NodeGroupId ?? ' '}`
+          `   Shard ${elasticacheNodeGroup.NodeGroupId ?? ' '}`
         ),
         ...elasticacheNodeGroup.NodeGroupMembers.map(member => {
           const cacheCluster = elasticacheCacheCluster.find(cache => {
@@ -122,17 +147,17 @@ function toClusterModeEnabledChoicesFromNodeGroup(
           })!;
           cacheCluster.replicationGroupId = replicationGroupId;
           return {
-            name: '  '.concat(member.CacheClusterId!),
-            value: { elasticacheCluster: cacheCluster },
+            name: '    '.concat(member.CacheClusterId!),
+            value: { elasticacheRedisCluster: cacheCluster },
           };
         }),
       ];
 }
 
 function toClusterModeDisabledReplicationGroups(
-  elasticacheCluster: AwsElasticacheGenericObject
-): Array<DistinctChoice<ElasticacheClusterTargetInput>> {
-  const NodeGroup = elasticacheCluster.nodeGroups[0]!;
+  elasticacheRedisCluster: AwsElasticacheGenericObject
+): Array<DistinctChoice<ElasticacheRedisClusterTargetInput>> {
+  const NodeGroup = elasticacheRedisCluster.nodeGroups[0]!;
   if (
     NodeGroup.NodeGroupMembers === undefined ||
     NodeGroup.NodeGroupMembers.length === 0
@@ -140,29 +165,120 @@ function toClusterModeDisabledReplicationGroups(
     return [];
   return [
     {
-      name: elasticacheCluster.replicationGroupId.concat(' - Primary endpoint'),
+      name:
+        '  ' +
+        elasticacheRedisCluster.replicationGroupId.concat(
+          ' - Primary endpoint'
+        ),
 
       value: {
-        elasticacheCluster: parseNodeGroupResponse(
+        elasticacheRedisCluster: parseNodeGroupResponse(
           NodeGroup,
-          elasticacheCluster.replicationGroupId
+          elasticacheRedisCluster.replicationGroupId
         ),
       },
     },
     ...NodeGroup.NodeGroupMembers.map(member => {
       return {
-        name: '  '.concat(
+        name: '   '.concat(
           member.CacheClusterId!,
           ' - ',
           fmt.capitalize(member.CurrentRole ?? 'Node')
         ),
         value: {
-          elasticacheCluster: parseNodeGroupMemberResponse(
+          elasticacheRedisCluster: parseNodeGroupMemberResponse(
             member,
-            elasticacheCluster.replicationGroupId
+            elasticacheRedisCluster.replicationGroupId
           ),
         },
       };
     }),
+  ];
+}
+export function toElasticacheMemcachedClusterChoices(
+  clusters: AwsElasticacheMemcachedCluster[],
+  rawClusters: CacheCluster[],
+  commandType: string
+): inquirer.DistinctChoice[] {
+  if (clusters === undefined || clusters.length === 0) return [];
+
+  return commandType === 'init'
+    ? toInitElasticacheMemcachedChoices(clusters)
+    : [
+        new inquirer.Separator(' Memcached clusters:'),
+        ...toConnectElasticacheMemcachedClusterChoices(rawClusters),
+      ];
+}
+
+function toInitElasticacheMemcachedChoices(
+  clusters: AwsElasticacheMemcachedCluster[]
+): Array<DistinctChoice<ElasticacheRedisClusterTargetInput>> {
+  return [
+    new inquirer.Separator(' Memcached clusters:'),
+    ...clusters.map(cluster =>
+      toElasticacheMemcachedClusterChoice(cluster, 'init')
+    ),
+  ];
+}
+
+function toElasticacheMemcachedClusterChoice(
+  elasticacheMemcachedCluster: AwsElasticacheMemcachedCluster,
+  commandType: string
+): DistinctChoice<ElasticacheRedisClusterTargetInput> {
+  return commandType === 'init'
+    ? {
+        name: '  ' + elasticacheMemcachedCluster.identifier,
+        value: {
+          elasticacheMemcachedCluster,
+        },
+      }
+    : {
+        name:
+          '  ' +
+          elasticacheMemcachedCluster.identifier.concat(
+            ' - Configuration endpoint'
+          ),
+        value: {
+          elasticacheMemcachedCluster,
+        },
+      };
+}
+
+function toElasticacheMemcachedNodeChoice(
+  elasticacheMemcachedCluster: AwsElasticacheMemcachedCluster
+): DistinctChoice<ElasticacheRedisClusterTargetInput> {
+  return {
+    name:
+      '   ' +
+      elasticacheMemcachedCluster.clusterId +
+      '-' +
+      elasticacheMemcachedCluster.identifier,
+    value: {
+      elasticacheMemcachedCluster,
+    },
+  };
+}
+
+function toConnectElasticacheMemcachedClusterChoices(
+  cacheClusters: CacheCluster[]
+): Array<DistinctChoice<ElasticacheRedisClusterTargetInput>> {
+  if (cacheClusters === undefined) return [];
+  return cacheClusters.flatMap(memCluster => toMemcachedCluster(memCluster));
+}
+
+function toMemcachedCluster(memCluster: CacheCluster): DistinctChoice[] {
+  return [
+    toElasticacheMemcachedClusterChoice(
+      parseMemcachedCacheClusterResponse(memCluster),
+      'connect'
+    ),
+    ...memCluster.CacheNodes!.map(cacheNode =>
+      toElasticacheMemcachedNodeChoice(
+        parseElasticacheMemcachedCacheNode(
+          memCluster,
+          memCluster.CacheClusterId!.concat('-', cacheNode.CacheNodeId!)
+        )
+      )
+    ),
   ];
 }

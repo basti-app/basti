@@ -2,7 +2,7 @@ import { DescribeCacheClustersCommand } from '@aws-sdk/client-elasticache';
 
 import { AwsNotFoundError } from '../common/aws-errors.js';
 
-import { parseCacheNodeResponse } from './parse-elasticache-response.js';
+import { parseCacheNodeResponse } from './parse-elasticache-redis-response.js';
 import { elasticacheClient } from './elasticache-client.js';
 
 import type { CacheCluster } from '@aws-sdk/client-elasticache';
@@ -67,6 +67,9 @@ export async function getDescribedCacheCluster(
 export async function getCacheCluster({
   identifier,
 }: getCacheClusterInput): Promise<AwsElasticacheGenericObject | undefined> {
+  if (identifier === undefined) {
+    throw new AwsNotFoundError();
+  }
   try {
     const cacheCluster = await getDescribedCacheCluster(identifier);
     if (

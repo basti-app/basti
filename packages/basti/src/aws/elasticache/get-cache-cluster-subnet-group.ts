@@ -2,7 +2,7 @@ import { DescribeCacheSubnetGroupsCommand } from '@aws-sdk/client-elasticache';
 
 import { AwsNotFoundError } from '../common/aws-errors.js';
 
-import { parseElasticacheSubnetGroup } from './parse-elasticache-response.js';
+import { parseElasticacheSubnetGroup } from './parse-elasticache-redis-response.js';
 import { elasticacheClient } from './elasticache-client.js';
 
 import type { AwsElasticacheSubnetGroup } from './elasticache-types.js';

@@ -1,3 +1,6 @@
+import { parseMemcachedCacheClusterResponse } from '#src/aws/elasticache/parse-elasticache-memcached-response.js';
+import { getRawMemcachedClusters } from '#src/aws/elasticache/get-elasticache-memcached-clusters.js';
+
 import { AwsDependencyViolationError } from '../aws/common/aws-errors.js';
 import { deleteSecurityGroup } from '../aws/ec2/delete-security-group.js';
 import { getDbClusters } from '../aws/rds/get-db-clusters.js';
@@ -8,6 +11,7 @@ import { retry } from '../common/retry.js';
 import { getRawReplicationGroups } from '../aws/elasticache/get-elasticache-replication-groups.js';
 import { getRawCacheClusters } from '../aws/elasticache/get-elasticache-cache-clusters.js';
 import { modifyElasticacheReplicationGroup } from '../aws/elasticache/modify-elasticache-replication-group.js';
+import { modifyElasticacheMemcachedCluster } from '../aws/elasticache/modify-elasticache-clusters.js';
 
 import type {
   CacheCluster,
@@ -92,9 +96,12 @@ export async function cleanupElasticacheSecurityGroups(
 ): Promise<void> {
   const cacheClusters = await getRawCacheClusters();
   const replicationGroups = await getRawReplicationGroups();
-
+  const memcachedClusters = await getRawMemcachedClusters();
   for (const replicationGroup of replicationGroups) {
     await cleanReplicationGroup(replicationGroup, cacheClusters, groupIds);
+  }
+  for (const memcachedCluster of memcachedClusters) {
+    await cleanElasticacheMemcachedCluster(memcachedCluster, groupIds);
   }
 }
 
@@ -133,6 +140,31 @@ async function cleanReplicationGroup(
       identifier: replicationGroup.ReplicationGroupId,
       securityGroupIds: cacheSecurityGroupsIds,
       cachePreviousSecurityGroups: cacheSecurityGroups.SecurityGroups,
+    });
+  }
+}
+
+async function cleanElasticacheMemcachedCluster(
+  memcachedClusters: CacheCluster,
+  groupIds: Set<string>
+): Promise<void> {
+  if (
+    memcachedClusters === undefined ||
+    memcachedClusters.SecurityGroups === undefined
+  )
+    return;
+  const parsed = parseMemcachedCacheClusterResponse(memcachedClusters);
+  const cacheSecurityGroupsIds: string[] = parsed.securityGroups.filter(
+    sg => !groupIds.has(sg)
+  );
+
+  if (
+    cacheSecurityGroupsIds.length !== memcachedClusters.SecurityGroups.length
+  ) {
+    await modifyElasticacheMemcachedCluster({
+      identifier: memcachedClusters.CacheClusterId,
+      securityGroupIds: cacheSecurityGroupsIds,
+      cachePreviousSecurityGroups: memcachedClusters.SecurityGroups,
     });
   }
 }
