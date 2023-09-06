@@ -10,8 +10,10 @@ import { modifyDbInstance } from '../aws/rds/modify-db-instance.js';
 import { retry } from '../common/retry.js';
 import { getRawReplicationGroups } from '../aws/elasticache/get-elasticache-replication-groups.js';
 import { getRawCacheClusters } from '../aws/elasticache/get-elasticache-cache-clusters.js';
-import { modifyElasticacheReplicationGroup } from '../aws/elasticache/modify-elasticache-replication-group.js';
-import { modifyElasticacheMemcachedCluster } from '../aws/elasticache/modify-elasticache-clusters.js';
+import {
+  modifyElasticacheMemcachedCluster,
+  modifyElasticacheReplicationGroup,
+} from '../aws/elasticache/modify-elasticache-clusters.js';
 
 import type {
   CacheCluster,

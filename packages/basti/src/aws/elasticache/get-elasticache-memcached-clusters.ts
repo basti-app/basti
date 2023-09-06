@@ -9,9 +9,7 @@ import {
 import { elasticacheClient } from './elasticache-client.js';
 
 import type { CacheCluster } from '@aws-sdk/client-elasticache';
-import type {
-  AwsElasticacheMemcachedCluster,
-} from './elasticache-types.js';
+import type { AwsElasticacheMemcachedCluster } from './elasticache-types.js';
 
 export interface getCacheClusterInput {
   identifier: string;

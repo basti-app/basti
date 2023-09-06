@@ -1,5 +1,5 @@
 import { getCacheClusterSubnetGroup } from '#src/aws/elasticache/get-cache-cluster-subnet-group.js';
-import { modifyElasticacheReplicationGroup } from '#src/aws/elasticache/modify-elasticache-replication-group.js';
+import { modifyElasticacheReplicationGroup } from '#src/aws/elasticache/modify-elasticache-clusters.js';
 import type { AwsElasticacheGenericObject } from '#src/aws/elasticache/elasticache-types.js';
 import { AwsError } from '#src/aws/common/aws-errors.js';
 import { getDescribedreplicationGroup } from '#src/aws/elasticache/get-elasticache-replication-groups.js';
