@@ -7,15 +7,15 @@
   <a href="https://www.npmjs.com/package/basti">
     <img alt="NPM" src="https://img.shields.io/npm/dw/basti">
   </a>
-  <a href="https://github.com/BohdanPetryshyn/basti/blob/main/LICENSE">
-    <img alt="GitHub" src="https://img.shields.io/github/license/BohdanPetryshyn/basti">
+  <a href="https://github.com/basti-app/basti/blob/main/LICENSE">
+    <img alt="GitHub" src="https://img.shields.io/github/license/basti-app/basti">
   </a>
 </div>
 
 <br/>
 
 <div align="center">
-  <a href="https://github.com/BohdanPetryshyn/basti">Basti</a> <em>(from <a href="https://en.wikipedia.org/wiki/Bastion_host"><strong>Basti</strong>on Host</a>)</em> is a CLI tool for securely accessing your DB instances and other AWS resources in private networks at almost no cost. 
+  <a href="https://github.com/basti-app/basti">Basti</a> <em>(from <a href="https://en.wikipedia.org/wiki/Bastion_host"><strong>Basti</strong>on Host</a>)</em> is a CLI tool for securely accessing your DB instances and other AWS resources in private networks at almost no cost. 
   <br/>
   <br/>
   💵 <em>No idle costs.</em>  🔑 <em>No SSH keys.</em> 🔒 <em>Fully IAM-driven.</em>
@@ -67,7 +67,7 @@
 
 ## Why Basti?
 
-With [Basti](https://github.com/BohdanPetryshyn/basti), you can securely connect to your RDS/Aurora/Elasticache/EC2 instances in private VPC subnets from a local machine or CI/CD pipeline almost for free!
+With [Basti](https://github.com/basti-app/basti), you can securely connect to your RDS/Aurora/Elasticache/EC2 instances in private VPC subnets from a local machine or CI/CD pipeline almost for free!
 
 ## How it works
 
@@ -258,7 +258,7 @@ targets:
 
 ## Basti infrastructure as code (IaC)
 
-Introducing, [Basti CDK](https://github.com/BohdanPetryshyn/basti/tree/main/packages/basti-cdk), an [AWS CDK](https://aws.amazon.com/cdk/) construct library that allows you to integrate Basti with your existing CDK-managed infrastructure.
+Introducing, [Basti CDK](https://github.com/basti-app/basti/tree/main/packages/basti-cdk), an [AWS CDK](https://aws.amazon.com/cdk/) construct library that allows you to integrate Basti with your existing CDK-managed infrastructure.
 
 Feel free to open an issue if you want to see Basti in Terraform or other IaC tools. Contributions are welcome 🤗
 
@@ -411,4 +411,4 @@ npm run test
 
 ## License
 
-Usage is provided under the MIT License. See [LICENSE](https://github.com/BohdanPetryshyn/basti/blob/main/LICENSE) for the full details.
+Usage is provided under the MIT License. See [LICENSE](https://github.com/basti-app/basti/blob/main/LICENSE) for the full details.

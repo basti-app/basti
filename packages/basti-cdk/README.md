@@ -7,15 +7,15 @@
   <a href="https://pypi.org/project/basti-cdk">
     <img alt="PyPI" src="https://img.shields.io/pypi/v/basti-cdk?color=blue">
   </a>
-  <a href="https://github.com/BohdanPetryshyn/basti/blob/main/packages/basti-cdk/LICENSE">
-    <img alt="GitHub" src="https://img.shields.io/github/license/BohdanPetryshyn/basti">
+  <a href="https://github.com/basti-app/basti/blob/main/packages/basti-cdk/LICENSE">
+    <img alt="GitHub" src="https://img.shields.io/github/license/basti-app/basti">
   </a>
 </div>
 
 <br/>
 
 <div align="center">
-  <a href="https://github.com/BohdanPetryshyn/basti/tree/main/packages/basti-cdk">Basti CDK</a> is a construct library that allows you to create cost-efficient <a href="https://en.wikipedia.org/wiki/Bastion_host">bastion instances</a> and easily connect to your infrastructure with <a href="https://github.com/BohdanPetryshyn/basti">Basti CLI</a>.
+  <a href="https://github.com/basti-app/basti/tree/main/packages/basti-cdk">Basti CDK</a> is a construct library that allows you to create cost-efficient <a href="https://en.wikipedia.org/wiki/Bastion_host">bastion instances</a> and easily connect to your infrastructure with <a href="https://github.com/basti-app/basti">Basti CLI</a>.
   <br/>
   <br/>
   💵 <em>No idle costs.</em>  🔑 <em>No SSH keys.</em> 🔒 <em>Fully IAM-driven.</em>
@@ -24,7 +24,7 @@
 <br/>
 
 <div align="center">
-  <img alt="Diagram" src="https://github.com/BohdanPetryshyn/basti/assets/45905756/1fa0762e-d6a1-4449-9e83-da87b53c3604">
+  <img alt="Diagram" src="https://github.com/basti-app/basti/assets/45905756/1fa0762e-d6a1-4449-9e83-da87b53c3604">
 </div>
 
 <br/>
@@ -52,13 +52,13 @@
 
 ## Why Basti?
 
-With [Basti](https://github.com/BohdanPetryshyn/basti), you can securely connect to your RDS/Aurora/Elasticache/EC2 instances in private VPC subnets from a local machine or CI/CD pipeline almost for free!
+With [Basti](https://github.com/basti-app/basti), you can securely connect to your RDS/Aurora/Elasticache/EC2 instances in private VPC subnets from a local machine or CI/CD pipeline almost for free!
 
 ## How it works
 
 - 🏰 Using Basti CDK, you set up a bastion instance in the connection target's VPC.
 
-- 🧑‍💻 You use [Basti CLI](https://github.com/BohdanPetryshyn/basti) to conveniently connect to your target through the bastion instance.
+- 🧑‍💻 You use [Basti CLI](https://github.com/basti-app/basti) to conveniently connect to your target through the bastion instance.
 
 - 💵 Basti takes care of keeping the bastion instance stopped when it's not used to make the solution cost as low as **≈ 0.01 USD** per hour of connection plus **≈ 0.80 USD** per month of maintaining the instance in a stopped state.
 
@@ -86,7 +86,7 @@ See the full API reference [on Construct Hub](https://constructs.dev/packages/ba
 
 ## Examples
 
-See [the test CDK apps](https://github.com/BohdanPetryshyn/basti/tree/main/packages/basti-cdk/test/cdk-apps) for working examples of each feature the library provides.
+See [the test CDK apps](https://github.com/basti-app/basti/tree/main/packages/basti-cdk/test/cdk-apps) for working examples of each feature the library provides.
 
 ## Basic usage
 
@@ -161,7 +161,7 @@ bastiAccessSecurityGroup.allowBastiInstanceConnection(
 
 ### Connect to target
 
-When the stack is deployed, you can use [Basti CLI](https://github.com/BohdanPetryshyn/basti) to connect to your target.
+When the stack is deployed, you can use [Basti CLI](https://github.com/basti-app/basti) to connect to your target.
 
 ```sh
 basti connect
@@ -207,4 +207,4 @@ bastiInstance.grantBastiCliConnect(grantee);
 
 ## License
 
-Usage is provided under the MIT License. See [LICENSE](https://github.com/BohdanPetryshyn/basti/blob/main/packages/basti-cdk/LICENSE) for the full details.
+Usage is provided under the MIT License. See [LICENSE](https://github.com/basti-app/basti/blob/main/packages/basti-cdk/LICENSE) for the full details.
