@@ -62,9 +62,6 @@ export async function getReplicationGroup({
 }: getReplicationGroupsInput): Promise<
   AwsElasticacheRedisGenericObject | undefined
 > {
-  if (identifier === undefined) {
-    return undefined;
-  }
   try {
     const { ReplicationGroups } = await elasticacheClient.send(
       new DescribeReplicationGroupsCommand({ ReplicationGroupId: identifier })

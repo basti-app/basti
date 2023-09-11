@@ -97,12 +97,12 @@ async function getTargets(): Promise<{
   );
   const elasticacheRedisClusters = await getTargetResources(
     async () => await getReplicationGroupsByClusterMode(),
-    'Elasticache redis clusters',
+    'Elasticache Redis clusters',
     subCli
   );
   const elasticacheRedisNodes = await getTargetResources(
     async () => await getCacheClusters(),
-    'Elasticache redis nodes',
+    'Elasticache Redis nodes',
     subCli
   );
 
@@ -113,7 +113,7 @@ async function getTargets(): Promise<{
   );
   const elasticacheMemcachedCacheData = await getTargetResources(
     async () => await getRawMemcachedClusters(),
-    'Elasticache Memcached Supplementary data',
+    'Elasticache Memcached supplementary data',
     subCli
   );
   return {
