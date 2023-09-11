@@ -25,19 +25,46 @@ export type RdsClusterTargetConfig = z.infer<
 >;
 
 const ElasticacheRedisClusterTargetConfigParser = z
-  .object({
-    elasticacheRedisCluster: z.string(),
-  })
-  .merge(TargetConfigBaseParser);
+  .union([
+    z
+      .object({
+        elasticacheRedisCluster: z.string(),
+      })
+      .merge(TargetConfigBaseParser),
+    z
+      .object({
+        elasticacheCluster: z.string(),
+      })
+      .merge(TargetConfigBaseParser),
+  ])
+  .transform(config => {
+    return 'elasticacheRedisCluster' in config
+      ? config
+      : { ...config, elasticacheRedisCluster: config.elasticacheCluster };
+  });
+
 export type ElasticacheRedisClusterTargetConfig = z.infer<
   typeof ElasticacheRedisClusterTargetConfigParser
 >;
 
 const ElasticacheRedisNodeTargetConfigParser = z
-  .object({
-    elasticacheRedisNode: z.string(),
-  })
-  .merge(TargetConfigBaseParser);
+  .union([
+    z
+      .object({
+        elasticacheRedisNode: z.string(),
+      })
+      .merge(TargetConfigBaseParser),
+    z
+      .object({
+        elasticacheNode: z.string(),
+      })
+      .merge(TargetConfigBaseParser),
+  ])
+  .transform(config => {
+    return 'elasticacheRedisNode' in config
+      ? config
+      : { ...config, elasticacheRedisNode: config.elasticacheNode };
+  });
 export type ElasticacheRedisNodeTargetConfig = z.infer<
   typeof ElasticacheRedisNodeTargetConfigParser
 >;
@@ -109,13 +136,13 @@ export function isRdsClusterTargetConfig(
 export function isElasticacheRedisClusterTargetConfig(
   target: ConnectionTargetConfig
 ): target is ElasticacheRedisClusterTargetConfig {
-  return 'elasticacheRedisCluster' in target;
+  return 'elasticacheRedisCluster' in target || 'elasticacheCluster' in target;
 }
 
 export function isElasticacheRedisNodeTargetConfig(
   target: ConnectionTargetConfig
 ): target is ElasticacheRedisNodeTargetConfig {
-  return 'elasticacheRedisNode' in target;
+  return 'elasticacheRedisNode' in target || 'elasticacheNode' in target;
 }
 export function isElasticacheMemcachedClusterTargetConfig(
   target: ConnectionTargetConfig

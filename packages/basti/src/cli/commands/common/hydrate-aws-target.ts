@@ -54,7 +54,7 @@ export async function hydrateAwsTarget(
           await getReplicationGroup({
             identifier: targetInput.elasticacheRedisClusterId,
           }),
-        TargetTypes.ELASTICACHE_CLUSTER,
+        TargetTypes.ELASTICACHE_REDIS_CLUSTER,
         targetInput.elasticacheRedisClusterId
       ),
     };
@@ -66,7 +66,7 @@ export async function hydrateAwsTarget(
           await getCacheCluster({
             identifier: targetInput.elasticacheRedisNodeId,
           }),
-        TargetTypes.ELASTICACHE_NODE,
+        TargetTypes.ELASTICACHE_REDIS_NODE,
         targetInput.elasticacheRedisNodeId
       ),
     };

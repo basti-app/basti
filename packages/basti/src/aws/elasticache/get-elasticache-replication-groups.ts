@@ -6,14 +6,14 @@ import { parseElasticacheResponse } from './parse-elasticache-redis-response.js'
 import { elasticacheClient } from './elasticache-client.js';
 
 import type { ReplicationGroup } from '@aws-sdk/client-elasticache';
-import type { AwsElasticacheGenericObject } from './elasticache-types.js';
+import type { AwsElasticacheRedisGenericObject } from './elasticache-types.js';
 
 export interface getReplicationGroupsInput {
   identifier: string;
 }
 
 export async function getReplicationGroups(): Promise<
-  AwsElasticacheGenericObject[]
+  AwsElasticacheRedisGenericObject[]
 > {
   const { ReplicationGroups } = await elasticacheClient.send(
     new DescribeReplicationGroupsCommand({})
@@ -39,7 +39,7 @@ export async function getRawReplicationGroups(): Promise<ReplicationGroup[]> {
 }
 
 export async function getReplicationGroupsByClusterMode(): Promise<
-  AwsElasticacheGenericObject[][]
+  AwsElasticacheRedisGenericObject[][]
 > {
   const { ReplicationGroups } = await elasticacheClient.send(
     new DescribeReplicationGroupsCommand({})
@@ -60,7 +60,7 @@ export async function getReplicationGroupsByClusterMode(): Promise<
 export async function getReplicationGroup({
   identifier,
 }: getReplicationGroupsInput): Promise<
-  AwsElasticacheGenericObject | undefined
+  AwsElasticacheRedisGenericObject | undefined
 > {
   if (identifier === undefined) {
     return undefined;

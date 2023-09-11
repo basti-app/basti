@@ -1,7 +1,5 @@
 import { DescribeCacheClustersCommand } from '@aws-sdk/client-elasticache';
 
-import { AwsNotFoundError } from '../common/aws-errors.js';
-
 import {
   parseMemcachedCacheClusteWithSpecificNoderResponse,
   parseMemcachedCacheClusterResponse,
@@ -18,16 +16,6 @@ export interface getCacheClusterInput {
 export async function getMemcachedClusters(): Promise<
   AwsElasticacheMemcachedCluster[]
 > {
-  const { CacheClusters } = await elasticacheClient.send(
-    new DescribeCacheClustersCommand({
-      ShowCacheNodeInfo: true,
-      ShowCacheClustersNotInReplicationGroups: true,
-    })
-  );
-
-  if (!CacheClusters) {
-    throw new Error(`Invalid response from AWS.`);
-  }
   const memcachedClusters = await getRawMemcachedClusters();
   return memcachedClusters.map(cacheCluster => {
     return parseMemcachedCacheClusterResponse(cacheCluster);
@@ -54,9 +42,6 @@ export async function getRawMemcachedClusters(): Promise<CacheCluster[]> {
 export async function getMemcachedCluster(
   identifier: string
 ): Promise<AwsElasticacheMemcachedCluster> {
-  if (identifier === undefined) {
-    throw new AwsNotFoundError();
-  }
   const { CacheClusters } = await elasticacheClient.send(
     new DescribeCacheClustersCommand({
       ShowCacheNodeInfo: true,

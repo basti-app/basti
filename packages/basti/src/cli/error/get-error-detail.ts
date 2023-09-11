@@ -38,10 +38,10 @@ const RESOURCE_TYPE_NAME: Record<ResourceType, string> = {
   [ManagedResourceTypes.BASTION_INSTANCE_PROFILE]: 'Bastion instance profile',
   [TargetTypes.RDS_INSTANCE]: 'RDS instance',
   [TargetTypes.RDS_CLUSTER]: 'RDS cluster',
-  [TargetTypes.ELASTICACHE_CLUSTER]: 'Elasticache cluster',
-  [TargetTypes.ELASTICACHE_NODE]: 'Elasticache node',
-  [TargetTypes.ELASTICACHE_MEMCACHED_CLUSTER]: 'Elasticache memcached cluster',
-  [TargetTypes.ELASTICACHE_MEMCACHED_NODE]: 'Elasticache memcached node',
+  [TargetTypes.ELASTICACHE_REDIS_CLUSTER]: 'Elasticache Redis cluster',
+  [TargetTypes.ELASTICACHE_REDIS_NODE]: 'Elasticache Redis node',
+  [TargetTypes.ELASTICACHE_MEMCACHED_CLUSTER]: 'Elasticache Memcached cluster',
+  [TargetTypes.ELASTICACHE_MEMCACHED_NODE]: 'Elasticache Memcached node',
   [TargetTypes.CUSTOM]: 'Custom target',
 };
 

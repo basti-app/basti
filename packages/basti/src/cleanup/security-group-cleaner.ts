@@ -86,27 +86,6 @@ async function cleanupDbClusterReferences(
   }
 }
 
-function arrayContains(arr: string[], set: Set<string>): boolean {
-  return arr.some(el => set.has(el));
-}
-
-function filterOut(arr: string[], set: Set<string>): string[] {
-  return arr.filter(el => !set.has(el));
-}
-export async function cleanupElasticacheSecurityGroups(
-  groupIds: Set<string>
-): Promise<void> {
-  const cacheClusters = await getRawCacheClusters();
-  const replicationGroups = await getRawReplicationGroups();
-  const memcachedClusters = await getRawMemcachedClusters();
-  for (const replicationGroup of replicationGroups) {
-    await cleanReplicationGroup(replicationGroup, cacheClusters, groupIds);
-  }
-  for (const memcachedCluster of memcachedClusters) {
-    await cleanElasticacheMemcachedCluster(memcachedCluster, groupIds);
-  }
-}
-
 async function cleanReplicationGroup(
   replicationGroup: ReplicationGroup,
   cacheClusters: CacheCluster[],
@@ -147,26 +126,48 @@ async function cleanReplicationGroup(
 }
 
 async function cleanElasticacheMemcachedCluster(
-  memcachedClusters: CacheCluster,
+  memcachedCluster: CacheCluster,
   groupIds: Set<string>
 ): Promise<void> {
   if (
-    memcachedClusters === undefined ||
-    memcachedClusters.SecurityGroups === undefined
+    memcachedCluster === undefined ||
+    memcachedCluster.SecurityGroups === undefined
   )
     return;
-  const parsed = parseMemcachedCacheClusterResponse(memcachedClusters);
-  const cacheSecurityGroupsIds: string[] = parsed.securityGroups.filter(
-    sg => !groupIds.has(sg)
+  const parsed = parseMemcachedCacheClusterResponse(memcachedCluster);
+  const cacheSecurityGroupsIds: string[] = filterOut(
+    parsed.securityGroups,
+    groupIds
   );
-
   if (
-    cacheSecurityGroupsIds.length !== memcachedClusters.SecurityGroups.length
+    cacheSecurityGroupsIds.length !== memcachedCluster.SecurityGroups.length
   ) {
     await modifyElasticacheMemcachedCluster({
-      identifier: memcachedClusters.CacheClusterId,
+      identifier: memcachedCluster.CacheClusterId,
       securityGroupIds: cacheSecurityGroupsIds,
-      cachePreviousSecurityGroups: memcachedClusters.SecurityGroups,
+      cachePreviousSecurityGroups: memcachedCluster.SecurityGroups,
     });
   }
+}
+
+export async function cleanupElasticacheSecurityGroups(
+  groupIds: Set<string>
+): Promise<void> {
+  const cacheClusters = await getRawCacheClusters();
+  const replicationGroups = await getRawReplicationGroups();
+  const memcachedClusters = await getRawMemcachedClusters();
+  for (const replicationGroup of replicationGroups) {
+    await cleanReplicationGroup(replicationGroup, cacheClusters, groupIds);
+  }
+  for (const memcachedCluster of memcachedClusters) {
+    await cleanElasticacheMemcachedCluster(memcachedCluster, groupIds);
+  }
+}
+
+function arrayContains(arr: string[], set: Set<string>): boolean {
+  return arr.some(el => set.has(el));
+}
+
+function filterOut(arr: string[], set: Set<string>): string[] {
+  return arr.filter(el => !set.has(el));
 }

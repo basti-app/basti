@@ -1,6 +1,6 @@
 import { getCacheClusterSubnetGroup } from '#src/aws/elasticache/get-cache-cluster-subnet-group.js';
 import { modifyElasticacheReplicationGroup } from '#src/aws/elasticache/modify-elasticache-clusters.js';
-import type { AwsElasticacheGenericObject } from '#src/aws/elasticache/elasticache-types.js';
+import type { AwsElasticacheRedisGenericObject } from '#src/aws/elasticache/elasticache-types.js';
 import { AwsError } from '#src/aws/common/aws-errors.js';
 import { getDescribedreplicationGroup } from '#src/aws/elasticache/get-elasticache-replication-groups.js';
 import { getDescribedCacheCluster } from '#src/aws/elasticache/get-elasticache-cache-clusters.js';
@@ -9,15 +9,15 @@ import { InitTargetBase } from '../init-target.js';
 
 import type { CacheCluster } from '@aws-sdk/client-elasticache';
 
-export class ElasticacheClusterInitTarget extends InitTargetBase {
-  private readonly elasticacheRedisCluster: AwsElasticacheGenericObject;
+export class ElasticacheRedisClusterInitTarget extends InitTargetBase {
+  private readonly elasticacheRedisCluster: AwsElasticacheRedisGenericObject;
   private readonly securityGroups: Promise<string[]>;
   private readonly elasticacheSubnetGroupName: Promise<string | undefined>;
   private readonly detaliedInformationCluster: Promise<CacheCluster>;
   constructor({
     elasticacheRedisCluster,
   }: {
-    elasticacheRedisCluster: AwsElasticacheGenericObject;
+    elasticacheRedisCluster: AwsElasticacheRedisGenericObject;
   }) {
     super();
     this.elasticacheRedisCluster = elasticacheRedisCluster;

@@ -38,11 +38,13 @@ export const parseMemcachedCacheClusterResponse: (
       })
     ),
     CacheSubnetGroupName: z.string(),
-    SecurityGroups: z.array(
-      z.object({
-        SecurityGroupId: z.string(),
-      })
-    ),
+    SecurityGroups: z
+      .array(
+        z.object({
+          SecurityGroupId: z.string(),
+        })
+      )
+      .default([]),
   })
   .transform(response => ({
     identifier: response.CacheClusterId,
@@ -50,7 +52,7 @@ export const parseMemcachedCacheClusterResponse: (
     port: response.CacheNodes[0]!.Endpoint.Port,
     type: 'memcached',
     cacneNodes: [],
-    securityGroups: response.SecurityGroups.map(sg => sg.SecurityGroupId),
+    securityGroups: response.SecurityGroups.map(sg => sg.SecurityGroupId) ?? [],
     subnetGroupName: response.CacheSubnetGroupName,
     clusterId: response.CacheClusterId,
   })).parse;
@@ -67,11 +69,13 @@ export const parseMemcachedCacheClusteWithSpecificNoderResponse: (
     Engine: z.string(),
     CacheNodes: z.any(),
     CacheSubnetGroupName: z.string(),
-    SecurityGroups: z.array(
-      z.object({
-        SecurityGroupId: z.string(),
-      })
-    ),
+    SecurityGroups: z
+      .array(
+        z.object({
+          SecurityGroupId: z.string(),
+        })
+      )
+      .default([]),
     nodeIdentifier: z.string(),
   })
   .transform(response => ({
@@ -80,7 +84,7 @@ export const parseMemcachedCacheClusteWithSpecificNoderResponse: (
     port: response.ConfigurationEndpoint.Port,
     type: 'memcached',
     cacneNodes: response.CacheNodes,
-    securityGroups: response.SecurityGroups.map(sg => sg.SecurityGroupId),
+    securityGroups: response.SecurityGroups.map(sg => sg.SecurityGroupId) ?? [],
     subnetGroupName: response.CacheSubnetGroupName,
     clusterId: response.CacheClusterId,
   })).parse;

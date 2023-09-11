@@ -1,4 +1,4 @@
-import type { AwsElasticacheGenericObject } from '#src/aws/elasticache/elasticache-types.js';
+import type { AwsElasticacheRedisGenericObject } from '#src/aws/elasticache/elasticache-types.js';
 import { getCacheClusterSubnetGroup } from '#src/aws/elasticache/get-cache-cluster-subnet-group.js';
 import { getDescribedCacheCluster } from '#src/aws/elasticache/get-elasticache-cache-clusters.js';
 import { getDescribedreplicationGroup } from '#src/aws/elasticache/get-elasticache-replication-groups.js';
@@ -10,12 +10,12 @@ import type { CacheCluster } from '@aws-sdk/client-elasticache';
 import type { ConnectTargetBaseConstructorInput } from '../connect-target.js';
 
 export class ElasticacheRedisClusterConnectTarget extends ConnectTargetBase {
-  private readonly elasticacheRedisCluster: AwsElasticacheGenericObject;
+  private readonly elasticacheRedisCluster: AwsElasticacheRedisGenericObject;
   private readonly elasticacheSubnetGroupName: Promise<string | undefined>;
   private readonly detaliedInformationCluster: Promise<CacheCluster>;
   constructor(
     input: ConnectTargetBaseConstructorInput & {
-      elasticacheRedisCluster: AwsElasticacheGenericObject;
+      elasticacheRedisCluster: AwsElasticacheRedisGenericObject;
     }
   ) {
     super(input);

@@ -9,7 +9,7 @@ import {
   parseNodeGroupResponse,
 } from '#src/aws/elasticache/parse-elasticache-redis-response.js';
 import type {
-  AwsElasticacheGenericObject,
+  AwsElasticacheRedisGenericObject,
   AwsElasticacheMemcachedCluster,
 } from '#src/aws/elasticache/elasticache-types.js';
 import type { ElasticacheRedisClusterTargetInput } from '#src/target/target-input.js';
@@ -19,15 +19,25 @@ import type { CacheCluster, NodeGroup } from '@aws-sdk/client-elasticache';
 import type { DistinctChoice } from 'inquirer';
 
 export function toElasticacheChoices(
-  redisClusters: AwsElasticacheGenericObject[][],
-  cacheClusters: AwsElasticacheGenericObject[],
+  redisClusters: AwsElasticacheRedisGenericObject[][],
+  redisCacheClusters: AwsElasticacheRedisGenericObject[],
   memcachedClusters: AwsElasticacheMemcachedCluster[],
   memcachedRawClusters: CacheCluster[],
   commandType: string
 ): DistinctChoice[] {
+  if (
+    (redisClusters[0] === undefined || redisClusters[0].length === 0) &&
+    (redisClusters[1] === undefined || redisClusters[1].length === 0) &&
+    memcachedClusters.length === 0
+  )
+    return [];
   return [
-    new inquirer.Separator('Elasticache Targets:'),
-    ...toElasticacheClusterChoices(redisClusters, cacheClusters, commandType),
+    new inquirer.Separator('Elasticache targets:'),
+    ...toElasticacheClusterChoices(
+      redisClusters,
+      redisCacheClusters,
+      commandType
+    ),
     ...toElasticacheMemcachedClusterChoices(
       memcachedClusters,
       memcachedRawClusters,
@@ -37,8 +47,8 @@ export function toElasticacheChoices(
 }
 
 export function toElasticacheClusterChoices(
-  clusters: AwsElasticacheGenericObject[][],
-  cacheClusters: AwsElasticacheGenericObject[],
+  clusters: AwsElasticacheRedisGenericObject[][],
+  cacheClusters: AwsElasticacheRedisGenericObject[],
   commandType: string
 ): DistinctChoice[] {
   if (
@@ -66,7 +76,7 @@ export function toElasticacheClusterChoices(
 }
 
 function toInitElasticacheClusterChoices(
-  clusters: AwsElasticacheGenericObject[][]
+  clusters: AwsElasticacheRedisGenericObject[][]
 ): Array<DistinctChoice<ElasticacheRedisClusterTargetInput>> {
   return [
     new inquirer.Separator(' Redis clusters:'),
@@ -76,8 +86,8 @@ function toInitElasticacheClusterChoices(
 }
 
 function toConnectElasticacheClusterChoices(
-  clusters: AwsElasticacheGenericObject[] | undefined,
-  cacheClusters: AwsElasticacheGenericObject[],
+  clusters: AwsElasticacheRedisGenericObject[] | undefined,
+  cacheClusters: AwsElasticacheRedisGenericObject[],
   clustermMode: string
 ): Array<DistinctChoice<ElasticacheRedisClusterTargetInput>> {
   if (clusters === undefined) return [];
@@ -91,8 +101,8 @@ function toConnectElasticacheClusterChoices(
 }
 
 function toElasticacheReplicationGroupChoises(
-  replicationGroup: AwsElasticacheGenericObject,
-  cacheClusters: AwsElasticacheGenericObject[]
+  replicationGroup: AwsElasticacheRedisGenericObject,
+  cacheClusters: AwsElasticacheRedisGenericObject[]
 ): Array<DistinctChoice<ElasticacheRedisClusterTargetInput>> {
   return [
     {
@@ -107,7 +117,7 @@ function toElasticacheReplicationGroupChoises(
 }
 
 function toElasticacheClusterChoice(
-  elasticacheRedisCluster: AwsElasticacheGenericObject
+  elasticacheRedisCluster: AwsElasticacheRedisGenericObject
 ): DistinctChoice<ElasticacheRedisClusterTargetInput> {
   return {
     name: '  ' + elasticacheRedisCluster.identifier,
@@ -118,8 +128,8 @@ function toElasticacheClusterChoice(
 }
 
 function toClusterModeEnabledChoicesFromNodeGroups(
-  elasticacheReplicationGroup: AwsElasticacheGenericObject,
-  elasticacheCacheCluster: AwsElasticacheGenericObject[]
+  elasticacheReplicationGroup: AwsElasticacheRedisGenericObject,
+  elasticacheCacheCluster: AwsElasticacheRedisGenericObject[]
 ): DistinctChoice[] {
   return elasticacheReplicationGroup.nodeGroups.flatMap(nodeGroup =>
     toClusterModeEnabledChoicesFromNodeGroup(
@@ -132,7 +142,7 @@ function toClusterModeEnabledChoicesFromNodeGroups(
 
 function toClusterModeEnabledChoicesFromNodeGroup(
   elasticacheNodeGroup: NodeGroup,
-  elasticacheCacheCluster: AwsElasticacheGenericObject[],
+  elasticacheCacheCluster: AwsElasticacheRedisGenericObject[],
   replicationGroupId: string
 ): DistinctChoice[] {
   return elasticacheNodeGroup.NodeGroupMembers === undefined
@@ -155,7 +165,7 @@ function toClusterModeEnabledChoicesFromNodeGroup(
 }
 
 function toClusterModeDisabledReplicationGroups(
-  elasticacheRedisCluster: AwsElasticacheGenericObject
+  elasticacheRedisCluster: AwsElasticacheRedisGenericObject
 ): Array<DistinctChoice<ElasticacheRedisClusterTargetInput>> {
   const NodeGroup = elasticacheRedisCluster.nodeGroups[0]!;
   if (

@@ -78,13 +78,13 @@ export function getConnectCommandInputFromConfig(
         }
       : isElasticacheMemcachedClusterTargetConfig(connectionTarget)
       ? {
-          elasticacheRedisClusterId:
+          elasticacheMemcachedClusterId:
             connectionTarget.elasticacheMemcachedCluster,
           awsClientConfig,
         }
       : isElasticacheMemcachedNodeTargetConfig(connectionTarget)
       ? {
-          elasticacheRedisNodeId: connectionTarget.elasticacheMemcachedNode,
+          elasticacheMemcachedNodeId: connectionTarget.elasticacheMemcachedNode,
           awsClientConfig,
         }
       : {

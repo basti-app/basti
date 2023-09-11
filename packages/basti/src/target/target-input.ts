@@ -2,7 +2,7 @@ import type { AwsClientConfiguration } from '#src/aws/common/aws-client.js';
 
 import type { AwsDbCluster, AwsDbInstance } from '../aws/rds/rds-types.js';
 import type {
-  AwsElasticacheGenericObject,
+  AwsElasticacheRedisGenericObject,
   AwsElasticacheMemcachedCluster,
 } from '../aws/elasticache/elasticache-types.js';
 export type InitTargetInput =
@@ -30,7 +30,7 @@ export interface DbInstanceTargetInput {
   dbInstance: AwsDbInstance;
 }
 export interface ElasticacheRedisClusterTargetInput {
-  elasticacheRedisCluster: AwsElasticacheGenericObject;
+  elasticacheRedisCluster: AwsElasticacheRedisGenericObject;
 }
 
 export interface ElasticacheMemcachedClusterTargetInput {

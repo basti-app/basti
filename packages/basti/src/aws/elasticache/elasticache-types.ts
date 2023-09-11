@@ -1,6 +1,6 @@
 import type { NodeGroup, CacheNode } from '@aws-sdk/client-elasticache';
 
-export interface AwsElasticacheGenericObject {
+export interface AwsElasticacheRedisGenericObject {
   identifier: string;
   clusterMode: string;
   replicationGroupId: string;

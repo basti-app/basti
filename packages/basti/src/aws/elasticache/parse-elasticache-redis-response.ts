@@ -8,13 +8,13 @@ import type {
   CacheSubnetGroup,
 } from '@aws-sdk/client-elasticache';
 import type {
-  AwsElasticacheGenericObject,
+  AwsElasticacheRedisGenericObject,
   AwsElasticacheSubnetGroup,
 } from './elasticache-types.js';
 
 export function parseElasticacheResponse(
   response: ReplicationGroup
-): AwsElasticacheGenericObject {
+): AwsElasticacheRedisGenericObject {
   return response.ClusterEnabled !== undefined && response.ClusterEnabled
     ? parseElasticacheReplicationGroupCMEResponse(response)
     : parseElasticacheReplicationGroupCMDResponse(response);
@@ -23,8 +23,8 @@ export function parseElasticacheResponse(
 export function parseNodeGroupMemberResponse(
   nodeGroupMember: NodeGroupMember,
   replicationGroupId: string
-): AwsElasticacheGenericObject {
-  const Parsed: AwsElasticacheGenericObject =
+): AwsElasticacheRedisGenericObject {
+  const Parsed: AwsElasticacheRedisGenericObject =
     transformNodeGroupMemberResponse(nodeGroupMember);
   Parsed.replicationGroupId = replicationGroupId;
   return Parsed;
@@ -32,8 +32,8 @@ export function parseNodeGroupMemberResponse(
 export function parseNodeGroupResponse(
   nodeGroup: NodeGroup,
   replicationGroupId: string
-): AwsElasticacheGenericObject {
-  const Parsed: AwsElasticacheGenericObject =
+): AwsElasticacheRedisGenericObject {
+  const Parsed: AwsElasticacheRedisGenericObject =
     transformNodeGroupResponse(nodeGroup);
   Parsed.replicationGroupId = replicationGroupId;
   return Parsed;
@@ -42,8 +42,8 @@ export function parseNodeGroupResponse(
 export function parseCacheNodeResponse(
   cacheNode: CacheNode,
   replicationGroupId: string
-): AwsElasticacheGenericObject {
-  const Parsed: AwsElasticacheGenericObject =
+): AwsElasticacheRedisGenericObject {
+  const Parsed: AwsElasticacheRedisGenericObject =
     transformCacheNodeResponse(cacheNode);
   Parsed.replicationGroupId = replicationGroupId;
   return Parsed;
@@ -51,7 +51,7 @@ export function parseCacheNodeResponse(
 
 const transformCacheNodeResponse: (
   response?: CacheNode
-) => AwsElasticacheGenericObject = z
+) => AwsElasticacheRedisGenericObject = z
   .object({
     CacheNodeId: z.string(),
     Endpoint: z.object({
@@ -70,7 +70,7 @@ const transformCacheNodeResponse: (
 
 export const parseElasticacheReplicationGroupCMDResponse: (
   response?: ReplicationGroup
-) => AwsElasticacheGenericObject = z
+) => AwsElasticacheRedisGenericObject = z
   .object({
     NodeGroups: z.any(),
     ReplicationGroupId: z.string(),
@@ -86,7 +86,7 @@ export const parseElasticacheReplicationGroupCMDResponse: (
 
 export const parseElasticacheReplicationGroupCMEResponse: (
   response?: ReplicationGroup
-) => AwsElasticacheGenericObject = z
+) => AwsElasticacheRedisGenericObject = z
   .object({
     ReplicationGroupId: z.string(),
     ConfigurationEndpoint: z.object({
@@ -119,7 +119,7 @@ export const parseElasticacheSubnetGroup: (
 
 const transformNodeGroupMemberResponse: (
   response?: NodeGroupMember
-) => AwsElasticacheGenericObject = z
+) => AwsElasticacheRedisGenericObject = z
   .object({
     CacheClusterId: z.string(),
     ReadEndpoint: z.object({
@@ -139,7 +139,7 @@ const transformNodeGroupMemberResponse: (
 
 const transformNodeGroupResponse: (
   response?: NodeGroup
-) => AwsElasticacheGenericObject = z
+) => AwsElasticacheRedisGenericObject = z
   .object({
     NodeGroupId: z.string(),
     PrimaryEndpoint: z.object({

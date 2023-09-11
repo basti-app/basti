@@ -235,11 +235,22 @@ connections:
     localPort: 5432
 
   # Default AWS profile and region are used if not specified in the target
-  cache-dev:
+  redis-cache-dev:
     target:
-      elasticacheCluster: my-dev-cache
+      elasticacheRedisCluster: my-dev-cache
     localPort: 6379
-
+  redis-node-dev:
+    target:
+      elasticacheRedisNode: my-dev-node
+    localPort: 6379  
+  memcached-cache-dev:
+    target:
+      elasticacheMemcachedCluster: my-memcached-cluster
+    localPort: 11211
+  redis-node-dev:
+    target:
+      elasticacheMemcachedNode: my-memcached-node
+    localPort: 11211  
   custom-target:
     target: custom-target
     localPort: 4647
