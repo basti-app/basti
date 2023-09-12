@@ -1,6 +1,6 @@
 {
   "name": "basti-cdk",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Cost-efficient bastion host with a CLI tool for convenient access to your AWS resources",
   "author": {
     "name": "BohdanPetryshyn",
@@ -12,14 +12,14 @@
       "email": "veringabob@gmail.com"
     }
   ],
-  "homepage": "https://github.com/BohdanPetryshyn/basti/tree/main/packages/basti-cdk",
+  "homepage": "https://github.com/basti-app/basti/tree/main/packages/basti-cdk",
   "repository": {
     "type": "git",
-    "url": "https://github.com/BohdanPetryshyn/basti.git",
+    "url": "https://github.com/basti-app/basti.git",
     "directory": "packages/basti-cdk"
   },
   "bugs": {
-    "url": "https://github.com/BohdanPetryshyn/basti/issues"
+    "url": "https://github.com/basti-app/basti/issues"
   },
   "license": "MIT",
   "main": "dist/js/index.js",

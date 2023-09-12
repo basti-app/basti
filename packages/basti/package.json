@@ -1,16 +1,16 @@
 {
   "name": "basti",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Basti is a CLI tool for accessing DB instances and other AWS resources in private networks almost at no cost",
   "author": "BohdanPetryshyn",
-  "homepage": "https://github.com/BohdanPetryshyn/basti",
+  "homepage": "https://github.com/basti-app/basti",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BohdanPetryshyn/basti.git",
+    "url": "git+https://github.com/basti-app/basti.git",
     "directory": "packages/basti"
   },
   "bugs": {
-    "url": "https://github.com/BohdanPetryshyn/basti/issues"
+    "url": "https://github.com/basti-app/basti/issues"
   },
   "license": "MIT",
   "type": "module",
