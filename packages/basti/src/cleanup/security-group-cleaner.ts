@@ -100,7 +100,6 @@ export async function cleanupElasticacheSecurityGroups(
   }
 }
 
-
 async function cleanReplicationGroup(
   replicationGroup: ReplicationGroup,
   cacheClusters: CacheCluster[],
@@ -164,7 +163,6 @@ async function cleanElasticacheMemcachedCluster(
     });
   }
 }
-
 
 function arrayContains(arr: string[], set: Set<string>): boolean {
   return arr.some(el => set.has(el));
