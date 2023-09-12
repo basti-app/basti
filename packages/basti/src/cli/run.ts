@@ -45,9 +45,15 @@ void yargs(hideBin(process.argv))
           type: 'string',
           description: 'ID of the RDS cluster to be initialized',
         })
-        .option('elasticache-cluster', {
+        .option('elasticache-redis-cluster', {
           type: 'string',
+          alias: 'elasticache-cluster',
           description: 'ID of the Elasticache cluster to be initialized',
+        })
+        .option('elasticache-memcached-cluster', {
+          type: 'string',
+          description:
+            'ID of the Elasticache memcached cluster to be initialized',
         })
         .option('custom-target-vpc', {
           type: 'string',
@@ -77,7 +83,8 @@ void yargs(hideBin(process.argv))
           conflictingOptions(
             'rds-cluster',
             'rds-instance',
-            'elasticache-cluster',
+            'elasticache-redis-cluster',
+            'elasticache-memcached-cluster',
             'custom-target-vpc'
           )
         )
@@ -115,13 +122,23 @@ void yargs(hideBin(process.argv))
           type: 'string',
           description: 'ID of the RDS cluster to connect to',
         })
-        .option('elasticache-cluster', {
+        .option('elasticache-redis-cluster', {
           type: 'string',
-          description: 'ID of the Elasticache cluster to connect to',
+          alias: 'elasticache-cluster',
+          description: 'ID of the Elasticache Redis cluster to connect to',
         })
-        .option('elasticache-node', {
+        .option('elasticache-redis-node', {
           type: 'string',
-          description: 'ID of the Elasticache node to connect to',
+          alias: 'elasticache-node',
+          description: 'ID of the Elasticache Redis node to connect to',
+        })
+        .option('elasticache-memcached-cluster', {
+          type: 'string',
+          description: 'ID of the Elasticache Memcached cluster to connect to',
+        })
+        .option('elasticache-memcached-node', {
+          type: 'string',
+          description: 'ID of the Elasticache Memcached node to connect to',
         })
         .option('custom-target-vpc', {
           type: 'string',
@@ -147,8 +164,10 @@ void yargs(hideBin(process.argv))
             'connection',
             'rds-instance',
             'rds-cluster',
-            'elasticache-cluster',
-            'elasticache-node',
+            'elasticache-redis-cluster',
+            'elasticache-redis-node',
+            'elasticache-memcached-cluster',
+            'elasticache-memcached-node',
             ['custom-target-vpc', 'custom-target-host', 'custom-target-port']
           )
         )

@@ -2,18 +2,18 @@ import { DescribeCacheClustersCommand } from '@aws-sdk/client-elasticache';
 
 import { AwsNotFoundError } from '../common/aws-errors.js';
 
-import { parseCacheNodeResponse } from './parse-elasticache-response.js';
+import { parseCacheNodeResponse } from './parse-elasticache-redis-response.js';
 import { elasticacheClient } from './elasticache-client.js';
 
 import type { CacheCluster } from '@aws-sdk/client-elasticache';
-import type { AwsElasticacheGenericObject } from './elasticache-types.js';
+import type { AwsElasticacheRedisGenericObject } from './elasticache-types.js';
 
 export interface getCacheClusterInput {
   identifier: string;
 }
 
 export async function getCacheClusters(): Promise<
-  AwsElasticacheGenericObject[]
+  AwsElasticacheRedisGenericObject[]
 > {
   const { CacheClusters } = await elasticacheClient.send(
     new DescribeCacheClustersCommand({ ShowCacheNodeInfo: true })
@@ -66,7 +66,9 @@ export async function getDescribedCacheCluster(
 
 export async function getCacheCluster({
   identifier,
-}: getCacheClusterInput): Promise<AwsElasticacheGenericObject | undefined> {
+}: getCacheClusterInput): Promise<
+  AwsElasticacheRedisGenericObject | undefined
+> {
   try {
     const cacheCluster = await getDescribedCacheCluster(identifier);
     if (

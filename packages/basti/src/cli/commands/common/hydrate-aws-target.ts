@@ -3,6 +3,10 @@ import { getDbInstance } from '#src/aws/rds/get-db-instances.js';
 import { TargetTypes } from '#src/common/resource-type.js';
 import { getReplicationGroup } from '#src/aws/elasticache/get-elasticache-replication-groups.js';
 import { getCacheCluster } from '#src/aws/elasticache/get-elasticache-cache-clusters.js';
+import {
+  getMemcachedCluster,
+  getMemcachedNode,
+} from '#src/aws/elasticache/get-elasticache-memcached-clusters.js';
 
 import { orThrow } from './get-or-throw.js';
 
@@ -11,8 +15,10 @@ import type { AwsTargetInput } from './prompt-for-aws-target.js';
 export type DehydratedAwsTargetInput =
   | { rdsInstanceId: string }
   | { rdsClusterId: string }
-  | { elasticacheClusterId: string }
-  | { elasticacheNodeId: string };
+  | { elasticacheRedisClusterId: string }
+  | { elasticacheRedisNodeId: string }
+  | { elasticacheMemcachedNodeId: string }
+  | { elasticacheMemcachedClusterId: string };
 
 export async function hydrateAwsTarget(
   targetInput: DehydratedAwsTargetInput
@@ -41,26 +47,46 @@ export async function hydrateAwsTarget(
       ),
     };
   }
-  if ('elasticacheClusterId' in targetInput) {
+  if ('elasticacheRedisClusterId' in targetInput) {
     return {
-      elasticacheCluster: await orThrow(
+      elasticacheRedisCluster: await orThrow(
         async () =>
           await getReplicationGroup({
-            identifier: targetInput.elasticacheClusterId,
+            identifier: targetInput.elasticacheRedisClusterId,
           }),
-        TargetTypes.ELASTICACHE_CLUSTER,
-        targetInput.elasticacheClusterId
+        TargetTypes.ELASTICACHE_REDIS_CLUSTER,
+        targetInput.elasticacheRedisClusterId
+      ),
+    };
+  }
+  if ('elasticacheRedisNodeId' in targetInput) {
+    return {
+      elasticacheRedisCluster: await orThrow(
+        async () =>
+          await getCacheCluster({
+            identifier: targetInput.elasticacheRedisNodeId,
+          }),
+        TargetTypes.ELASTICACHE_REDIS_NODE,
+        targetInput.elasticacheRedisNodeId
+      ),
+    };
+  }
+  if ('elasticacheMemcachedNodeId' in targetInput) {
+    return {
+      elasticacheMemcachedCluster: await orThrow(
+        async () =>
+          await getMemcachedNode(targetInput.elasticacheMemcachedNodeId),
+        TargetTypes.ELASTICACHE_MEMCACHED_NODE,
+        targetInput.elasticacheMemcachedNodeId
       ),
     };
   }
   return {
-    elasticacheCluster: await orThrow(
+    elasticacheMemcachedCluster: await orThrow(
       async () =>
-        await getCacheCluster({
-          identifier: targetInput.elasticacheNodeId,
-        }),
-      TargetTypes.ELASTICACHE_NODE,
-      targetInput.elasticacheNodeId
+        await getMemcachedCluster(targetInput.elasticacheMemcachedClusterId),
+      TargetTypes.ELASTICACHE_MEMCACHED_CLUSTER,
+      targetInput.elasticacheMemcachedClusterId
     ),
   };
 }

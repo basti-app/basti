@@ -2,7 +2,10 @@ import inquirer from 'inquirer';
 
 import { getReplicationGroupsByClusterMode } from '#src/aws/elasticache/get-elasticache-replication-groups.js';
 import { getCacheClusters } from '#src/aws/elasticache/get-elasticache-cache-clusters.js';
-import type { AwsElasticacheGenericObject } from '#src/aws/elasticache/elasticache-types.js';
+import type {
+  AwsElasticacheRedisGenericObject,
+  AwsElasticacheMemcachedCluster,
+} from '#src/aws/elasticache/elasticache-types.js';
 import { getDbClusters } from '#src/aws/rds/get-db-clusters.js';
 import { getDbInstances } from '#src/aws/rds/get-db-instances.js';
 import type { AwsDbCluster, AwsDbInstance } from '#src/aws/rds/rds-types.js';
@@ -12,25 +15,38 @@ import { fmt } from '#src/common/fmt.js';
 import type {
   DbClusterTargetInput,
   DbInstanceTargetInput,
-  ElasticacheClusterTargetInput,
+  ElasticacheRedisClusterTargetInput,
+  ElasticacheMemcachedClusterTargetInput,
 } from '#src/target/target-input.js';
+import {
+  getMemcachedClusters,
+  getRawMemcachedClusters,
+} from '#src/aws/elasticache/get-elasticache-memcached-clusters.js';
 
 import { getErrorDetail } from '../../error/get-error-detail.js';
 
-import { toElasticacheClusterChoices } from './to-elasticache-choises.js';
+import { toElasticacheChoices } from './to-elasticache-choises.js';
 
+import type { CacheCluster } from '@aws-sdk/client-elasticache';
 import type { DistinctChoice } from 'inquirer';
 
 export type AwsTargetInput =
   | DbInstanceTargetInput
   | DbClusterTargetInput
-  | ElasticacheClusterTargetInput;
+  | ElasticacheRedisClusterTargetInput
+  | ElasticacheMemcachedClusterTargetInput;
 
 export async function promptForAwsTarget(
   commandType: string
 ): Promise<AwsTargetInput | undefined> {
-  const { instances, clusters, elasticacheClusters, elasticacheNodes } =
-    await getTargets();
+  const {
+    instances,
+    clusters,
+    elasticacheRedisClusters,
+    elasticacheRedisNodes,
+    elasticacheMemcachedClusters,
+    elasticacheMemcachedCacheData,
+  } = await getTargets();
 
   const { target } = await cli.prompt({
     type: 'list',
@@ -41,11 +57,12 @@ export async function promptForAwsTarget(
         ? 'Select target to initialize'
         : 'Select target to connect to',
     choices: [
-      ...toInstanceChoices(instances),
-      ...toClusterChoices(clusters),
-      ...toElasticacheClusterChoices(
-        elasticacheClusters,
-        elasticacheNodes,
+      ...toRdsChoises(instances, clusters),
+      ...toElasticacheChoices(
+        elasticacheRedisClusters,
+        elasticacheRedisNodes,
+        elasticacheMemcachedClusters,
+        elasticacheMemcachedCacheData,
         commandType
       ),
       ...getCustomChoices(),
@@ -58,8 +75,10 @@ export async function promptForAwsTarget(
 async function getTargets(): Promise<{
   instances: AwsDbInstance[];
   clusters: AwsDbCluster[];
-  elasticacheClusters: AwsElasticacheGenericObject[][];
-  elasticacheNodes: AwsElasticacheGenericObject[];
+  elasticacheRedisClusters: AwsElasticacheRedisGenericObject[][];
+  elasticacheRedisNodes: AwsElasticacheRedisGenericObject[];
+  elasticacheMemcachedClusters: AwsElasticacheMemcachedCluster[];
+  elasticacheMemcachedCacheData: CacheCluster[];
 }> {
   const subCli = cli.createSubInstance({ indent: 2 });
 
@@ -76,31 +95,55 @@ async function getTargets(): Promise<{
     'DB clusters',
     subCli
   );
-  const elasticacheClusters = await getTargetResources(
+  const elasticacheRedisClusters = await getTargetResources(
     async () => await getReplicationGroupsByClusterMode(),
-    'Redis clusters',
+    'Elasticache Redis clusters',
+    subCli
+  );
+  const elasticacheRedisNodes = await getTargetResources(
+    async () => await getCacheClusters(),
+    'Elasticache Redis nodes',
     subCli
   );
 
-  const elasticacheNodes = await getTargetResources(
-    async () => await getCacheClusters(),
-    'Redis nodes',
+  const elasticacheMemcachedClusters = await getTargetResources(
+    async () => await getMemcachedClusters(),
+    'Elasticache Memcached clusters',
+    subCli
+  );
+  const elasticacheMemcachedCacheData = await getTargetResources(
+    async () => await getRawMemcachedClusters(),
+    'Elasticache Memcached supplementary data',
     subCli
   );
   return {
     instances,
     clusters,
-    elasticacheClusters,
-    elasticacheNodes,
+    elasticacheRedisClusters,
+    elasticacheRedisNodes,
+    elasticacheMemcachedClusters,
+    elasticacheMemcachedCacheData,
   };
 }
 
+function toRdsChoises(
+  instances: AwsDbInstance[],
+  clusters: AwsDbCluster[]
+): DistinctChoice[] {
+  return [
+    ...(instances.length > 0 || clusters.length > 0
+      ? [new inquirer.Separator('RDS targets:')]
+      : []),
+    ...toInstanceChoices(instances),
+    ...toClusterChoices(clusters),
+  ];
+}
 function toInstanceChoices(instances: AwsDbInstance[]): DistinctChoice[] {
   if (instances.length === 0) {
     return [];
   }
   return [
-    new inquirer.Separator('Database instances:'),
+    new inquirer.Separator(' Database instances:'),
     ...instances.map(instance => toInstanceChoice(instance)),
   ];
 }
@@ -110,7 +153,7 @@ function toClusterChoices(clusters: AwsDbCluster[]): DistinctChoice[] {
     return [];
   }
   return [
-    new inquirer.Separator('Database clusters:'),
+    new inquirer.Separator(' Database clusters:'),
     ...clusters.map(cluster => toClusterChoice(cluster)),
   ];
 }
@@ -147,7 +190,7 @@ function toInstanceChoice(
   dbInstance: AwsDbInstance
 ): DistinctChoice<DbInstanceTargetInput> {
   return {
-    name: dbInstance.identifier,
+    name: '  ' + dbInstance.identifier,
     value: {
       dbInstance,
     },
@@ -156,7 +199,7 @@ function toInstanceChoice(
 
 function toClusterChoice(dbCluster: AwsDbCluster): DistinctChoice {
   return {
-    name: dbCluster.identifier,
+    name: '  ' + dbCluster.identifier,
     value: {
       dbCluster,
     },

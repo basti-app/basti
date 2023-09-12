@@ -1,17 +1,22 @@
 import type { AwsClientConfiguration } from '#src/aws/common/aws-client.js';
 
 import type { AwsDbCluster, AwsDbInstance } from '../aws/rds/rds-types.js';
-import type { AwsElasticacheGenericObject } from '../aws/elasticache/elasticache-types.js';
+import type {
+  AwsElasticacheRedisGenericObject,
+  AwsElasticacheMemcachedCluster,
+} from '../aws/elasticache/elasticache-types.js';
 export type InitTargetInput =
   | DbClusterTargetInput
   | DbInstanceTargetInput
-  | ElasticacheClusterTargetInput
+  | ElasticacheRedisClusterTargetInput
+  | ElasticacheMemcachedClusterTargetInput
   | CustomInitTargetInput;
 
 export type ConnectTargetInput = (
   | DbClusterTargetInput
   | DbInstanceTargetInput
-  | ElasticacheClusterTargetInput
+  | ElasticacheRedisClusterTargetInput
+  | ElasticacheMemcachedClusterTargetInput
   | CustomConnectTargetInput
 ) & {
   awsClientConfig?: AwsClientConfiguration;
@@ -24,10 +29,13 @@ export interface DbClusterTargetInput {
 export interface DbInstanceTargetInput {
   dbInstance: AwsDbInstance;
 }
-export interface ElasticacheClusterTargetInput {
-  elasticacheCluster: AwsElasticacheGenericObject;
+export interface ElasticacheRedisClusterTargetInput {
+  elasticacheRedisCluster: AwsElasticacheRedisGenericObject;
 }
 
+export interface ElasticacheMemcachedClusterTargetInput {
+  elasticacheMemcachedCluster: AwsElasticacheMemcachedCluster;
+}
 export interface CustomInitTargetInput {
   custom: {
     vpcId: string;

@@ -1,5 +1,8 @@
 import { DescribeSecurityGroupsCommand } from '@aws-sdk/client-ec2';
-import { ModifyReplicationGroupCommand } from '@aws-sdk/client-elasticache';
+import {
+  ModifyReplicationGroupCommand,
+  ModifyCacheClusterCommand,
+} from '@aws-sdk/client-elasticache';
 
 import { ec2Client } from '../ec2/ec2-client.js';
 import { AwsError } from '../common/aws-errors.js';
@@ -9,7 +12,7 @@ import { elasticacheClient } from './elasticache-client.js';
 import type { SecurityGroupMembership } from '@aws-sdk/client-elasticache';
 import type { DescribeSecurityGroupsCommandInput } from '@aws-sdk/client-ec2';
 
-export interface ModifyReplicationGroupsInput {
+export interface ModifyElasticacheInput {
   identifier: string | undefined;
   securityGroupIds: string[];
   cachePreviousSecurityGroups: SecurityGroupMembership[];
@@ -19,7 +22,7 @@ export async function modifyElasticacheReplicationGroup({
   identifier,
   securityGroupIds,
   cachePreviousSecurityGroups,
-}: ModifyReplicationGroupsInput): Promise<void> {
+}: ModifyElasticacheInput): Promise<void> {
   if (securityGroupIds.length === 0) {
     const defaultSecurityGroup = getDefaultVpcIdFromSecurityGroup(
       cachePreviousSecurityGroups[0]?.SecurityGroupId
@@ -67,4 +70,27 @@ async function getDefaultVpcIdFromSecurityGroup(
     );
     return defaultSecurityGroup.SecurityGroups![0]!.GroupId;
   }
+}
+
+export async function modifyElasticacheMemcachedCluster({
+  identifier,
+  securityGroupIds,
+  cachePreviousSecurityGroups,
+}: ModifyElasticacheInput): Promise<void> {
+  if (securityGroupIds.length === 0) {
+    const defaultSecurityGroup = getDefaultVpcIdFromSecurityGroup(
+      cachePreviousSecurityGroups[0]?.SecurityGroupId
+    );
+    const resolved = await defaultSecurityGroup;
+    if (resolved !== undefined) {
+      securityGroupIds.push(resolved);
+    }
+  }
+  await elasticacheClient.send(
+    new ModifyCacheClusterCommand({
+      CacheClusterId: identifier,
+      SecurityGroupIds: securityGroupIds,
+      ApplyImmediately: true,
+    })
+  );
 }

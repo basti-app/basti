@@ -3,8 +3,10 @@ import { OperationError } from '../error/operation-error.js';
 import {
   isRdsClusterTargetConfig,
   isRdsInstanceTargetConfig,
-  isElasticacheClusterTargetConfig,
-  isElasticacheNodeTargetConfig,
+  isElasticacheRedisClusterTargetConfig,
+  isElasticacheRedisNodeTargetConfig,
+  isElasticacheMemcachedClusterTargetConfig,
+  isElasticacheMemcachedNodeTargetConfig,
 } from './config-parser.js';
 
 import type { ConnectCommandInput } from '../commands/connect/connect.js';
@@ -64,14 +66,25 @@ export function getConnectCommandInputFromConfig(
           rdsClusterId: connectionTarget.rdsCluster,
           awsClientConfig,
         }
-      : isElasticacheClusterTargetConfig(connectionTarget)
+      : isElasticacheRedisClusterTargetConfig(connectionTarget)
       ? {
-          elasticacheClusterId: connectionTarget.elasticacheCluster,
+          elasticacheRedisClusterId: connectionTarget.elasticacheRedisCluster,
           awsClientConfig,
         }
-      : isElasticacheNodeTargetConfig(connectionTarget)
+      : isElasticacheRedisNodeTargetConfig(connectionTarget)
       ? {
-          elasticacheNodeId: connectionTarget.elasticacheNode,
+          elasticacheRedisNodeId: connectionTarget.elasticacheRedisNode,
+          awsClientConfig,
+        }
+      : isElasticacheMemcachedClusterTargetConfig(connectionTarget)
+      ? {
+          elasticacheMemcachedClusterId:
+            connectionTarget.elasticacheMemcachedCluster,
+          awsClientConfig,
+        }
+      : isElasticacheMemcachedNodeTargetConfig(connectionTarget)
+      ? {
+          elasticacheMemcachedNodeId: connectionTarget.elasticacheMemcachedNode,
           awsClientConfig,
         }
       : {
