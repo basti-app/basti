@@ -131,7 +131,9 @@ function toRdsChoises(
   clusters: AwsDbCluster[]
 ): DistinctChoice[] {
   return [
-    new inquirer.Separator('RDS targets:'),
+    ...(instances.length > 0 || clusters.length > 0
+      ? [new inquirer.Separator('RDS targets:')]
+      : []),
     ...toInstanceChoices(instances),
     ...toClusterChoices(clusters),
   ];
