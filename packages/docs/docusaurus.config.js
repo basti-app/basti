@@ -6,7 +6,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Basti',
+  title: 'Basti [Work in Progress]',
   tagline: 'Basti docs will live here',
   favicon: 'img/favicon.ico',
 
