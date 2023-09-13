@@ -5,6 +5,10 @@ export class Fmt {
     return chalk.reset(message);
   }
 
+  important(message: string): string {
+    return chalk.bgGreen.bold(` ${message} `);
+  }
+
   value(message: string): string {
     return chalk.cyan(message);
   }
