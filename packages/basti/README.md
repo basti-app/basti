@@ -42,18 +42,17 @@
 - [How it works](#how-it-works)
 - [Installation](#installation)
 - [Basic usage](#basic-usage)
-  - [Initialize target](#initialize-target)
-  - [Connect to target](#connect-to-target)
-  - [Use target on _localhost_](#use-target-on-localhost)
+  - [Initialize connection target](#initialize-connection-target)
+  - [Connect to the target](#connect-to-the-target)
+  - [Use the target on _localhost_](#use-the-target-on-localhost)
   - [Cleanup (optional)](#cleanup-optional)
 - [Custom connection targets](#custom-connection-targets)
 - [Advanced initialization options](#advanced-initialization-options)
   - [Resource tags](#resource-tags)
   - [Bastion instance type](#bastion-instance-type)
-- [Basti in CI/CD pipelines](#basti-in-cicd-pipelines)
-  - [Automatic mode](#automatic-mode)
-- [Basti configuration file](#basti-configuration-file)
-- [Basti infrastructure as code (IaC)](#basti-infrastructure-as-code-iac)
+- [Automatic mode](#automatic-mode)
+- [Configuration file](#configuration-file)
+- [Infrastructure as code (IaC)](#infrastructure-as-code-iac)
 - [Basti in teams and organizations](#basti-in-teams-and-organizations)
   - [Minimal IAM permissions](#minimal-iam-permissions)
   - [Usage audit](#usage-audit)
@@ -73,7 +72,7 @@
 
 ## Why Basti?
 
-With [Basti](https://github.com/basti-app/basti), you can securely connect to your RDS/Aurora/Elasticache/EC2 instances in private VPC subnets from a local machine or CI/CD pipeline almost for free!
+With [Basti](https://github.com/basti-app/basti), you can securely connect to RDS, Aurora, Elasticache, or any other AWS resources in private VPC subnets from a local machine or a CI/CD pipeline almost for free!
 
 ## How it works
 
@@ -99,9 +98,9 @@ Basti uses AWS SDK and relies on credentials to be configured in your system. Yo
 
 > 💡 You can expect Basti to work if you can use AWS CLI in your terminal.
 
-### Initialize target
+### Initialize connection target
 
-First, initialize your target for use with Basti. The following command will set up all the infrastructure required to start a connection. _You only need to do this once_.
+First, initialize your connection target. It could be an RDS instance, an Elasticache cluster or any other target residing in a VPC. The following command will set up all the infrastructure required to start a connection. _You only need to do this once_.
 
 ```sh
 basti init
@@ -109,7 +108,7 @@ basti init
 
 You will be prompted for a target to initialize and a **public** VPC subnet to create the bastion EC2 instance in.
 
-### Connect to target
+### Connect to the target
 
 Now, you can start the connection. This command will establish a secure port forwarding session and make the target available on your _localhost_.
 
@@ -119,7 +118,7 @@ basti connect
 
 You will be prompted for the target to connect to as well as the local port to forward the connection to.
 
-### Use target on _localhost_
+### Use the target on _localhost_
 
 Finally, you can use the target same way as it was running on your _localhost_ and port you specified in the previous step.
 
@@ -176,9 +175,7 @@ Tags with the same name will be overwritten in the order they are specified. Tag
 
 You can specify the EC2 instance type to be used for the bastion instance using the `--bastion-instance-type` option or by entering it in the advanced options section of the interactive mode. The default instance type is `t2.micro`, but it's subject to change in the future.
 
-## Basti in CI/CD pipelines
-
-### Automatic mode
+## Automatic mode
 
 Using interactive mode is convenient when you're getting used to Basti. However, in Continuous Integration and Continuous Delivery (CI/CD) pipelines, you will probably want to disable interactivity and pass all the options as command line arguments:
 
@@ -195,12 +192,9 @@ basti connect --rds-instance your-instance-id --local-port your-port &
 wait-on tcp:localhost:your-port
 ```
 
-## Basti configuration file
+## Configuration file
 
-<!-- When working with multiple targets, it's convenient to store the target's configuration
-as well as other Basti settings  -->
-
-When dealing with multiple connection targets, it becomes convenient to store their configurations
+When working with multiple connection targets, it becomes convenient to store their configurations
 and other Basti settings in a dedicated configuration file. To facilitate this, Basti automatically 
 searches for the configuration file in the current directory and its parent directories. 
 The supported file names are `.basti.yaml`, `.basti.yml`, and `.basti.json`.
@@ -258,7 +252,7 @@ targets:
 
 </details>
 
-## Basti infrastructure as code (IaC)
+## Infrastructure as code (IaC)
 
 Introducing, [Basti CDK](https://github.com/basti-app/basti/tree/main/packages/basti-cdk), an [AWS CDK](https://aws.amazon.com/cdk/) construct library that allows you to integrate Basti with your existing CDK-managed infrastructure.
 
