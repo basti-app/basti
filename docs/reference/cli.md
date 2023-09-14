@@ -104,6 +104,8 @@ _String_
 
 The name of the AWS region to be used to interact with AWS. If not specified, the region from the default profile will be used.
 
+---
+
 ### basti connect<span id="basti-connect-command"></span>
 
 **Usage:**
@@ -206,6 +208,8 @@ The name of the AWS CLI profile to be used to interact with AWS. If not specifie
 _String_
 
 The name of the AWS region to be used to interact with AWS. If not specified, the region from the default profile will be used.
+
+---
 
 ### basti cleanup<span id="basti-cleanup-command"></span>
 
