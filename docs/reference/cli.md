@@ -1,6 +1,8 @@
 <!-- omit from toc -->
 # CLI reference
 
+Basti CLI is a command line tool that allows you to connect to your private AWS resources using AWS Session Manager port forwarding. The CLI provides an end-to-end experience for setting up and using Basti. Alternatively, you can use [Basti CDK](https://github.com/basti-app/basti/tree/main/packages/basti-cdk) to set up and manage your Basti infrastructure with AWS CDK. You will still use the CLI to connect to your resources.
+
 <!-- omit from toc -->
 ## Table of contents
 - [Commands](#commands)
