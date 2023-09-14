@@ -36,9 +36,9 @@
 - [⚙️ How it works](#️-how-it-works)
 - [💻 Installation](#-installation)
 - [🏄 Basic usage](#-basic-usage)
-  - [Initialize connection target](#initialize-connection-target)
-  - [Connect to the target](#connect-to-the-target)
-  - [Use the target on _localhost_](#use-the-target-on-localhost)
+  - [☝️ Initialize connection target](#️-initialize-connection-target)
+  - [✌️ Connect to the target](#️-connect-to-the-target)
+  - [🎉 Use the target on _localhost_](#-use-the-target-on-localhost)
   - [Cleanup (optional)](#cleanup-optional)
 - [🧶 Reference documentation](#-reference-documentation)
 - [💠 Custom connection targets](#-custom-connection-targets)
@@ -101,7 +101,7 @@ Basti uses AWS SDK and relies on credentials to be configured in your system. Yo
 
 > 💡 You can expect Basti to work if you can use AWS CLI in your terminal.
 
-### Initialize connection target
+### ☝️ Initialize connection target
 
 First, initialize your connection target. It could be an RDS instance, an Elasticache cluster or any other target residing in a VPC. The following command will set up all the infrastructure required to start a connection. _You only need to do this once_.
 
@@ -111,7 +111,7 @@ basti init
 
 You will be prompted for a target to initialize and a **public** VPC subnet to create the bastion EC2 instance in.
 
-### Connect to the target
+### ✌️ Connect to the target
 
 Now, you can start the connection. This command will establish a secure port forwarding session and make the target available on your _localhost_.
 
@@ -121,7 +121,7 @@ basti connect
 
 You will be prompted for the target to connect to as well as the local port to forward the connection to.
 
-### Use the target on _localhost_
+### 🎉 Use the target on _localhost_
 
 Finally, you can use the target same way as it was running on your _localhost_ and port you specified in the previous step.
 
