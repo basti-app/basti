@@ -79,6 +79,8 @@ _Map (Key: Connection name, Value: [Connection object](#connection))_
 
 A map of connections. The keys in this map can be used as connection names in the [basti connect](./cli.md#basti-connect-command) command.
 
+---
+
 ### Connection
 
 _Object_ 
@@ -99,11 +101,16 @@ _Integer_
 
 The local port to forward the target port to. The connection target will be available on `localhost:<port>`.
 
+
+---
+
 ### Targets
 
 _Map (Key: Target name, Value: [Target object](#target))_
 
 A map of targets. The keys in this map can be used as target names in [connections](#connection).
+
+---
 
 ### Target<span id="target-type"></span>
 
