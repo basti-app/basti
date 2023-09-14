@@ -12,7 +12,7 @@ The goal of the Basti configuration file is to make CLI usage faster, less error
   - [Connections](#connections)
   - [Connection](#connection)
   - [Targets](#targets)
-  - [Target ](#target-)
+  - [Target](#target-1)
 
 ## Location
 
@@ -77,13 +77,13 @@ targets:
 
 _Map (Key: Connection name, Value: [Connection object](#connection))_
 
-A map of connections. The keys in this map can be used as connection names in the [basti connect](./cli-reference.md#basti-connect-connection) command.
+A map of connections. The keys in this map can be used as connection names in the [basti connect](./cli.md#basti-connect-command) command.
 
 ### Connection
 
 _Object_ 
 
-Describes a connection that can be used with the [basti connect](./cli-reference.md#basti-connect-connection) command.
+Describes a connection that can be used with the [basti connect](./cli.md#basti-connect-command) command.
 
 <!-- omit from toc -->
 #### `target`
@@ -105,7 +105,7 @@ _Map (Key: Target name, Value: [Target object](#target))_
 
 A map of targets. The keys in this map can be used as target names in [connections](#connection).
 
-### Target <span id="target-type"></span>
+### Target<span id="target-type"></span>
 
 _Object_
 
