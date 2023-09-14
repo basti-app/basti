@@ -75,6 +75,14 @@
 
 With [Basti](https://github.com/basti-app/basti), you can securely connect to RDS, Aurora, Elasticache, or any other AWS resources in private VPC subnets from a local machine or a CI/CD pipeline almost for free!
 
+[AWS Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html) is a fantastic tool! But Basti makes it even better:
+
+- 🦾 With Session Manager, you need to oversee an EC2 bastion instance for connecting to managed resources such as RDS or Elasticache. Basti handles bastion instance setup, shutdown, and updates for you!
+
+- 💅 Basti provides a convenient way to store and reuse connection configuration across your team. 
+
+- 📶 Basti improves stability of the Session Manager sessions by automatically restarting failed or expired sessions.
+
 ## ⚙️ How it works
 
 - 🏰 Basti sets up a so called _bastion EC2 instance_ in the connection target's VPC.
