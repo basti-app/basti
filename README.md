@@ -55,6 +55,36 @@
   - [Network](#network)
   - [Access control](#access-control)
   - [Software](#software)
+- [API reference](#api-reference)
+  - [CLI commands and options](#cli-commands-and-options)
+    - [`basti init`](#basti-init)
+      - [`--rds-instance <instance-id>`](#--rds-instance-instance-id)
+      - [`--rds-cluster <cluster-id>`](#--rds-cluster-cluster-id)
+      - [`--elasticache-redis-cluster <cluster-id>`](#--elasticache-redis-cluster-cluster-id)
+      - [`--elasticache-memcached-cluster <cluster-id>`](#--elasticache-memcached-cluster-cluster-id)
+      - [`--custom-target-vpc <vpc-id>`](#--custom-target-vpc-vpc-id)
+      - [`--bastion-instance-type <instance-type>`](#--bastion-instance-type-instance-type)
+      - [`--tag <tag-name>=<tag-value>`](#--tag-tag-nametag-value)
+      - [`--tags-file <path>`](#--tags-file-path)
+      - [`--aws-profile <profile-name>`](#--aws-profile-profile-name)
+      - [`--aws-region <region-name>`](#--aws-region-region-name)
+    - [`basti connect [connection]`](#basti-connect-connection)
+      - [`--rds-instance <instance-id>`](#--rds-instance-instance-id-1)
+      - [`--rds-cluster <cluster-id>`](#--rds-cluster-cluster-id-1)
+      - [`--elasticache-redis-cluster <cluster-id>`](#--elasticache-redis-cluster-cluster-id-1)
+      - [`--elasticache-redis-node <node-id>`](#--elasticache-redis-node-node-id)
+      - [`--elasticache-memcached-cluster <cluster-id>`](#--elasticache-memcached-cluster-cluster-id-1)
+      - [`--elasticache-memcached-node <node-id>`](#--elasticache-memcached-node-node-id)
+      - [`--custom-target-vpc <vpc-id>`](#--custom-target-vpc-vpc-id-1)
+      - [`--custom-target-host <host>`](#--custom-target-host-host)
+      - [`--custom-target-port <port>`](#--custom-target-port-port)
+      - [`--local-port <port>`](#--local-port-port)
+      - [`--aws-profile <profile-name>`](#--aws-profile-profile-name-1)
+      - [`--aws-region <region-name>`](#--aws-region-region-name-1)
+    - [`basti cleanup`](#basti-cleanup)
+      - [`--confirm` / `-c` / `-y`](#--confirm---c---y)
+      - [`--aws-profile <profile-name>`](#--aws-profile-profile-name-2)
+      - [`--aws-region <region-name>`](#--aws-region-region-name-2)
 - [Development](#development)
   - [Build](#build)
   - [Run](#run)
@@ -338,6 +368,185 @@ Basti automatically adjusts the target's Security Group to allow inbound traffic
 Basti uses the latest Amazon Linux 2 - Kernel 5.10 AMI available at the initialization time (`basti init` command) for the bastion instance.
 
 The bastion instance is being stopped when it's not used for some short period of time. These shutdowns are also used to _update the bastion instance's software packages and OS kernel_. By default, the updates happen once a day but not more often than the bastion instance is used.
+
+## API reference
+
+### CLI commands and options
+
+#### `basti init`
+
+Initializes the connection target. This command creates the bastion instance and all the other resources required to start a connection. You only need to run this command once for each target. The command always tries to reuse the existing resources. For example, if the bastion instance already exists in the target's VPC, a new one won't be created.
+
+If used without arguments, the interactive mode will prompt you for all the required options. To run the command in the automatic mode, pass all the required options as command line arguments.
+
+##### `--rds-instance <instance-id>`
+
+_String_
+
+The ID of the RDS instance to connect to.
+
+##### `--rds-cluster <cluster-id>`
+
+_String_
+
+The ID of the RDS cluster to connect to.
+
+##### `--elasticache-redis-cluster <cluster-id>`
+
+_String_
+
+The ID of the Elasticache Redis cluster to connect to. When the cluster is initialized, you can connect to any of its nodes as well as to the cluster itself.
+
+##### `--elasticache-memcached-cluster <cluster-id>`
+
+_String_
+
+The ID of the Elasticache Memcached cluster to connect to. When the cluster is initialized, you can connect to any of its nodes as well as to the cluster itself.
+
+##### `--custom-target-vpc <vpc-id>`
+
+_String_
+
+The ID of the VPC the custom connection target resides in. After Basti is initialized for the given VPC, you can connect to any target in the VPC using the `--custom-target-host` and `--custom-target-port` options.
+
+##### `--bastion-instance-type <instance-type>`
+
+_String_, _Default: "t2.micro"_
+
+The EC2 instance type to be used for the bastion instance.
+
+##### `--tag <tag-name>=<tag-value>`
+
+_String_, _Can be used multiple times_
+
+A tag to be applied to the bastion instance and other resources created by Basti. This option can be used multiple times to specify multiple tags. Tags with the same name will be overwritten in the order they are specified. Tags specified with the `--tag` option will always overwrite tags specified in the tags file.
+
+##### `--tags-file <path>`
+
+_String_, _Can be used multiple times_
+
+A path to a JSON file with tags. This option can be used multiple times to specify multiple files. Tags with the same name will be overwritten in the order they are specified. Tags specified with the `--tag` option will always overwrite tags specified in the tags file.
+
+Example of a tags file:
+
+```json
+{
+  "Project": "my-project",
+  "Environment": "production"
+}
+```
+
+##### `--aws-profile <profile-name>`
+
+_String_
+
+The name of the AWS CLI profile to be used to interact with AWS. If not specified, the default profile will be used.
+
+##### `--aws-region <region-name>`
+
+_String_
+
+The name of the AWS region to be used to interact with AWS. If not specified, the region from the default profile will be used.
+
+#### `basti connect [connection]`
+
+Starts a port forwarding session to the connection target. The connection target must be initialized with the `basti init` command before it can be used with this command.
+
+If used without arguments, the interactive mode will prompt you for all the required options. Alternatively, you can pass all the required options as command line arguments or specify a connection defined in the [Basti configuration file](#basti-configuration-file).
+
+##### `--rds-instance <instance-id>`
+
+_String_
+
+The ID of the RDS instance to connect to.
+
+##### `--rds-cluster <cluster-id>`
+
+_String_
+
+The ID of the RDS cluster to connect to.
+
+##### `--elasticache-redis-cluster <cluster-id>`
+
+_String_
+
+The ID of the Elasticache Redis cluster to connect to. For a Cluster Mode Disabled (CMD) cluster, the primary endpoint is used. For a Cluster Mode Enabled (CME) cluster, the configuration endpoint is used.
+
+##### `--elasticache-redis-node <node-id>`
+
+_String_
+
+The ID of the Elasticache Redis node to connect to. You can specify both primary and replica nodes.
+
+##### `--elasticache-memcached-cluster <cluster-id>`
+
+_String_
+
+The ID of the Elasticache Memcached cluster to connect to. The primary endpoint is used.
+
+##### `--elasticache-memcached-node <node-id>`
+
+_String_
+
+The ID of the Elasticache Memcached node to connect to. You can specify both primary and replica nodes.
+
+##### `--custom-target-vpc <vpc-id>`
+
+_String_
+
+The ID of the custom connection target's VPC.
+
+##### `--custom-target-host <host>`
+
+_String_
+
+The IP address or the DNS name of the custom connection target.
+
+##### `--custom-target-port <port>`
+
+_Integer_
+
+The port of the custom connection target.
+
+##### `--local-port <port>`
+
+_Integer_
+
+The local port to forward the connection to. The connection target will be available on `localhost:<port>`.
+
+##### `--aws-profile <profile-name>`
+
+_String_
+
+The name of the AWS CLI profile to be used to interact with AWS. If not specified, the default profile will be used.
+
+##### `--aws-region <region-name>`
+
+_String_
+
+The name of the AWS region to be used to interact with AWS. If not specified, the region from the default profile will be used.
+
+#### `basti cleanup`
+
+Removes all the resources created by Basti in your AWS account. The list of resources will be displayed and you will be prompted to confirm the cleanup. 
+
+##### `--confirm` / `-c` / `-y`
+
+_Boolean_
+
+Automatically confirm the cleanup without interactive prompting.
+
+##### `--aws-profile <profile-name>`
+
+_String_
+
+The name of the AWS CLI profile to be used to interact with AWS. If not specified, the default profile will be used.
+
+##### `--aws-region <region-name>`
+
+_String_
+
+The name of the AWS region to be used to interact with AWS. If not specified, the region from the default profile will be used.
 
 ## Development
 
