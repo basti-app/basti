@@ -11,7 +11,7 @@
     <img alt="NPM Package" src="https://img.shields.io/npm/v/basti?color=blue">
   </a>
   <a href="https://www.npmjs.com/package/basti">
-    <img alt="NPM" src="https://img.shields.io/npm/dw/basti">
+    <img alt="NPM" src="https://img.shields.io/npm/dt/basti">
   </a>
   <a href="https://github.com/basti-app/basti/blob/main/LICENSE">
     <img alt="GitHub" src="https://img.shields.io/github/license/basti-app/basti">
@@ -38,31 +38,31 @@
 <!-- The following toc is generated with the Markdown All in One VSCode extension (https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one) -->
 <!-- omit from toc -->
 ## Table of contents
-- [Why Basti?](#why-basti)
-- [How it works](#how-it-works)
-- [Installation](#installation)
-- [Basic usage](#basic-usage)
+- [💡 Why Basti?](#-why-basti)
+- [⚙️ How it works](#️-how-it-works)
+- [💻 Installation](#-installation)
+- [🏄 Basic usage](#-basic-usage)
   - [Initialize connection target](#initialize-connection-target)
   - [Connect to the target](#connect-to-the-target)
   - [Use the target on _localhost_](#use-the-target-on-localhost)
   - [Cleanup (optional)](#cleanup-optional)
-- [Reference documentation](#reference-documentation)
-- [Custom connection targets](#custom-connection-targets)
-- [Advanced initialization options](#advanced-initialization-options)
+- [🧶 Reference documentation](#-reference-documentation)
+- [💠 Custom connection targets](#-custom-connection-targets)
+- [🎛️ Advanced initialization options](#️-advanced-initialization-options)
   - [Resource tags](#resource-tags)
   - [Bastion instance type](#bastion-instance-type)
-- [Automatic mode](#automatic-mode)
-- [Configuration file](#configuration-file)
-- [Infrastructure as code (IaC)](#infrastructure-as-code-iac)
-- [Basti in teams and organizations](#basti-in-teams-and-organizations)
+- [🦾 Automatic mode](#-automatic-mode)
+- [📝 Configuration file](#-configuration-file)
+- [💫 Infrastructure as code (IaC)](#-infrastructure-as-code-iac)
+- [🏢 Basti in teams and organizations](#-basti-in-teams-and-organizations)
   - [Minimal IAM permissions](#minimal-iam-permissions)
   - [Usage audit](#usage-audit)
   - [Shared configuration](#shared-configuration)
-- [Security](#security)
+- [🔐 Security](#-security)
   - [Network](#network)
   - [Access control](#access-control)
   - [Software](#software)
-- [Development](#development)
+- [❤️ Development](#️-development)
   - [Build](#build)
   - [Run](#run)
   - [Test](#test)
@@ -71,11 +71,11 @@
 <br/>
 
 
-## Why Basti?
+## 💡 Why Basti?
 
 With [Basti](https://github.com/basti-app/basti), you can securely connect to RDS, Aurora, Elasticache, or any other AWS resources in private VPC subnets from a local machine or a CI/CD pipeline almost for free!
 
-## How it works
+## ⚙️ How it works
 
 - 🏰 Basti sets up a so called _bastion EC2 instance_ in the connection target's VPC.
 
@@ -85,7 +85,7 @@ With [Basti](https://github.com/basti-app/basti), you can securely connect to RD
 
 - 🔒 [Security](#security) completely relies on AWS Session Manager and IAM policies. The bastion instance is not accessible from the Internet and no SSH keys are used.
 
-## Installation
+## 💻 Installation
 
 ```sh
 npm install --global basti
@@ -93,7 +93,7 @@ npm install --global basti
 
 Other, NodeJS-independent, installation options are coming soon!
 
-## Basic usage
+## 🏄 Basic usage
 
 Basti uses AWS SDK and relies on credentials to be configured in your system. You can use any of [the methods](https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/setting-credentials-node.html) supported by AWS SDK to configure credentials.
 
@@ -139,11 +139,11 @@ basti cleanup
 
 The list of resources will be displayed and you will be prompted to confirm the cleanup.
 
-## Reference documentation
+## 🧶 Reference documentation
 
 Please, refer to the [reference documentation](https://github.com/basti-app/basti/tree/main/docs/reference) for the full description of Basti CLI options and the configuration file.
 
-## Custom connection targets
+## 💠 Custom connection targets
 
 Basti provides first class support for RDS instances, Aurora clusters, and Elasticache clusters. However, you can use Basti to connect to any other target in your AWS VPC (e.g. DocumentDB instance, EC2 instance, etc.).
 
@@ -151,7 +151,7 @@ To connect to a custom target, select the `Custom` option when prompted for a ta
 
 > 🤝 Feel free to open an issue or a pull request if you want to extend the list of natively supported targets
 
-## Advanced initialization options
+## 🎛️ Advanced initialization options
 
 The `basti init` command has a number of advanced options that can be used to customize the bastion instance and other resources created by Basti. 
 
@@ -182,7 +182,7 @@ Tags with the same name will be overwritten in the order they are specified. Tag
 
 You can specify the EC2 instance type to be used for the bastion instance using the `--bastion-instance-type` option or by entering it in the advanced options section of the interactive mode. The default instance type is `t2.micro`, but it's subject to change in the future.
 
-## Automatic mode
+## 🦾 Automatic mode
 
 Using interactive mode is convenient when you're getting used to Basti. However, in Continuous Integration and Continuous Delivery (CI/CD) pipelines, you will probably want to disable interactivity and pass all the options as command line arguments:
 
@@ -199,7 +199,7 @@ basti connect --rds-instance your-instance-id --local-port your-port &
 wait-on tcp:localhost:your-port
 ```
 
-## Configuration file
+## 📝 Configuration file
 
 When working with multiple connection targets, it becomes convenient to store their configurations
 and other Basti settings in a dedicated configuration file. To facilitate this, Basti automatically 
@@ -261,13 +261,13 @@ targets:
 
 > 💡 Please, refer to the [reference documentation](https://github.com/basti-app/basti/blob/main/docs/reference/configuration-file.md) for the full list of configuration options. 
 
-## Infrastructure as code (IaC)
+## 💫 Infrastructure as code (IaC)
 
 Introducing, [Basti CDK](https://github.com/basti-app/basti/tree/main/packages/basti-cdk), an [AWS CDK](https://aws.amazon.com/cdk/) construct library that allows you to integrate Basti with your existing CDK-managed infrastructure.
 
 Feel free to open an issue if you want to see Basti in Terraform or other IaC tools. Contributions are welcome 🤗
 
-## Basti in teams and organizations
+## 🏢 Basti in teams and organizations
 
 Basti was designed with organizational usage patterns in mind. The bastion instance and other infrastructure created by Basti is reused across all the users in your organization.
 
@@ -334,7 +334,7 @@ A simple connections history can also be found in the AWS Session Manager histor
 ### Shared configuration
 The [Basti configuration file](#basti-configuration-file) file can be shared across your organization, making it easy for all developers to connect to the project's cloud infrastructure. A recommended practice is to store the configuration file in the root of your project's repository. This ensures that the configuration is readily accessible to all team members, enabling quick and seamless connections to the required cloud resources.
 
-## Security
+## 🔐 Security
 
 Security is a top priority for Basti. The following sections describe the security measures taken by Basti.
 
@@ -354,7 +354,7 @@ Basti uses the latest Amazon Linux 2 - Kernel 5.10 AMI available at the initiali
 
 The bastion instance is being stopped when it's not used for some short period of time. These shutdowns are also used to _update the bastion instance's software packages and OS kernel_. By default, the updates happen once a day but not more often than the bastion instance is used.
 
-## Development
+## ❤️ Development
 
 First of all, thank you for your interest in contributing to Basti! 🎉
 
