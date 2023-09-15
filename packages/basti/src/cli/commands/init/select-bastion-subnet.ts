@@ -32,7 +32,10 @@ async function promptForBastionSubnetId(vpcId: string): Promise<string> {
   const { subnet } = await cli.prompt({
     type: 'list',
     name: 'subnet',
-    message: 'Select public subnet for the bastion',
+    message:
+      fmt.reset('Select ') +
+      fmt.important('public') +
+      fmt.reset(' subnet for the bastion'),
     choices: subnets.map(subnet => ({
       name: fmt.resourceName(subnet),
       value: subnet.id,

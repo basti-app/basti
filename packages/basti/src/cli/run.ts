@@ -48,12 +48,12 @@ void yargs(hideBin(process.argv))
         .option('elasticache-redis-cluster', {
           type: 'string',
           alias: 'elasticache-cluster',
-          description: 'ID of the Elasticache cluster to be initialized',
+          description: 'ID of the Elasticache Redis cluster to be initialized',
         })
         .option('elasticache-memcached-cluster', {
           type: 'string',
           description:
-            'ID of the Elasticache memcached cluster to be initialized',
+            'ID of the Elasticache Memcached cluster to be initialized',
         })
         .option('custom-target-vpc', {
           type: 'string',
