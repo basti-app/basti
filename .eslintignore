@@ -1,3 +1,5 @@
 /node_modules
 /dist
 /.history
+/.prettierrc.js
+/jest.config.js

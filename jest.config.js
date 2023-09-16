@@ -1,4 +1,8 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
-  ...require('../../jest.config.js'),
+  preset: 'ts-jest',
+
+  roots: ['<rootDir>/src'],
+
+  clearMocks: true,
 };

@@ -19,7 +19,8 @@
   },
   "scripts": {
     "start": "node bin/run.js",
-    "test": "npm run check",
+    "test": "npm run check && npm run test-unit",
+    "test-unit": "jest",
     "build": "npm run build-src && npm run build-deps",
     "build-src": "tsc",
     "build-src-watch": "tsc --watch",

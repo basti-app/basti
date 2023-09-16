@@ -1,6 +1,7 @@
 /node_modules
 /dist
 /.prettierrc.cjs
+/jest.config.cjs
 /deps
 /bin
 /.build-deps-tmp
