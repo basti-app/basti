@@ -64,6 +64,14 @@ export async function createEc2Instance({
     async () =>
       await ec2Client.send(
         new RunInstancesCommand({
+          BlockDeviceMappings: [
+            {
+              Ebs: {
+                Encrypted: true
+              }
+            }
+          ],
+
           ImageId: imageId,
           InstanceType: instanceType,
 
