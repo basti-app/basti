@@ -67,9 +67,9 @@ export async function createEc2Instance({
           BlockDeviceMappings: [
             {
               Ebs: {
-                Encrypted: true
-              }
-            }
+                Encrypted: true,
+              },
+            },
           ],
 
           ImageId: imageId,
