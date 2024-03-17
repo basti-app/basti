@@ -21,7 +21,7 @@
 <br/>
 
 <div align="center">
-  <a href="https://github.com/basti-app/basti">Basti</a> <em>(from <a href="https://en.wikipedia.org/wiki/Bastion_host"><strong>Basti</strong>on Host</a>)</em> is a CLI tool for securely accessing your DB instances and other AWS resources in private networks at almost no cost.
+  <a href="https://github.com/basti-app/basti">Basti</a> <em>(from <a href="https://en.wikipedia.org/wiki/Bastion_host"><strong>Basti</strong>on Host</a>)</em> is a CLI tool for securely accessing your DB instances and other AWS resources in private networks at almost no cost. 
   <br/>
   <br/>
   💵 <em>No idle costs.</em>  🔑 <em>No SSH keys.</em> 🔒 <em>Fully IAM-driven.</em>
@@ -37,9 +37,7 @@
 
 <!-- The following toc is generated with the Markdown All in One VSCode extension (https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one) -->
 <!-- omit from toc -->
-
 ## Table of contents
-
 - [💡 Why Basti?](#-why-basti)
 - [⚙️ How it works](#️-how-it-works)
 - [💻 Installation](#-installation)
@@ -72,6 +70,7 @@
 
 <br/>
 
+
 ## 💡 Why Basti?
 
 With [Basti](https://github.com/basti-app/basti), you can securely connect to RDS, Aurora, Elasticache, or any other AWS resources in private VPC subnets from a local machine or a CI/CD pipeline almost for free!
@@ -80,7 +79,7 @@ With [Basti](https://github.com/basti-app/basti), you can securely connect to RD
 
 - 🦾 With Session Manager, you need to oversee an EC2 bastion instance for connecting to managed resources such as RDS or Elasticache. Basti handles bastion instance setup, shutdown, and updates for you!
 
-- 💅 Basti provides a convenient way to store and reuse connection configuration across your team.
+- 💅 Basti provides a convenient way to store and reuse connection configuration across your team. 
 
 - 📶 Basti improves stability of the Session Manager sessions by automatically restarting failed or expired sessions.
 
@@ -162,9 +161,9 @@ To connect to a custom target, select the `Custom` option when prompted for a ta
 
 ## 🎛️ Advanced initialization options
 
-The `basti init` command has a number of advanced options that can be used to customize the bastion instance and other resources created by Basti.
+The `basti init` command has a number of advanced options that can be used to customize the bastion instance and other resources created by Basti. 
 
-> 💡 Please, refer to the [reference documentation](https://github.com/basti-app/basti/blob/main/docs/reference/cli.md#basti-init-command) for the full list of options.
+> 💡 Please, refer to the [reference documentation](https://github.com/basti-app/basti/blob/main/docs/reference/cli.md#basti-init-command) for the full list of options. 
 
 ### Resource tags
 
@@ -211,8 +210,8 @@ wait-on tcp:localhost:your-port
 ## 📝 Configuration file
 
 When working with multiple connection targets, it becomes convenient to store their configurations
-and other Basti settings in a dedicated configuration file. To facilitate this, Basti automatically
-searches for the configuration file in the current directory and its parent directories.
+and other Basti settings in a dedicated configuration file. To facilitate this, Basti automatically 
+searches for the configuration file in the current directory and its parent directories. 
 The supported file names are `.basti.yaml`, `.basti.yml`, and `.basti.json`.
 
 You can quickly start a connection defined in the configuration file by passing its
@@ -268,7 +267,7 @@ targets:
 
 </details>
 
-> 💡 Please, refer to the [reference documentation](https://github.com/basti-app/basti/blob/main/docs/reference/configuration-file.md) for the full list of configuration options.
+> 💡 Please, refer to the [reference documentation](https://github.com/basti-app/basti/blob/main/docs/reference/configuration-file.md) for the full list of configuration options. 
 
 ## 💫 Infrastructure as code (IaC)
 
@@ -323,9 +322,9 @@ Minimal policy:
         "arn:aws:ec2:<your-region>:<your-account-id>:instance/<your-basti-instance-id>"
       ],
       "Condition": {
-        "BoolIfExists": {
-          "ssm:SessionDocumentAccessCheck": "true"
-        }
+          "BoolIfExists": {
+              "ssm:SessionDocumentAccessCheck": "true"
+          }
       }
     }
   ]
@@ -341,7 +340,6 @@ Since Basti uses IAM for access control, the connection history, along with the 
 A simple connections history can also be found in the AWS Session Manager history. See [AWS Session Manager documentation](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-view-history.html) for more details.
 
 ### Shared configuration
-
 The [Basti configuration file](#basti-configuration-file) file can be shared across your organization, making it easy for all developers to connect to the project's cloud infrastructure. A recommended practice is to store the configuration file in the root of your project's repository. This ensures that the configuration is readily accessible to all team members, enabling quick and seamless connections to the required cloud resources.
 
 ## 🔐 Security
@@ -361,8 +359,6 @@ Basti automatically adjusts the target's Security Group to allow inbound traffic
 ### Software
 
 Basti uses the latest Amazon Linux 2 - Kernel 5.10 AMI available at the initialization time (`basti init` command) for the bastion instance.
-
-The bastion instance ebs volume is encrypted by default.
 
 The bastion instance is being stopped when it's not used for some short period of time. These shutdowns are also used to _update the bastion instance's software packages and OS kernel_. By default, the updates happen once a day but not more often than the bastion instance is used.
 
@@ -385,14 +381,12 @@ npm run build
 Full Basti build consists of two parts:
 
 1. Compiling Basti TypeScript code. The code has to be compiled after each change.
-
    ```sh
    npm run build-src
 
    # Or, if you want to automatically recompile on each change:
    npm run build-src-watch
    ```
-
 2. Building non-NodeJS dependencies (AWS session-manger-plugin).
    This step is only required after the first checkout or in a rare
    case when the dependencies are updated.
