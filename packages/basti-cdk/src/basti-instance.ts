@@ -153,6 +153,16 @@ export class BastiInstance extends Construct implements IBastiInstance {
     Tags.of(this.securityGroup).add('Name', securityGroupName);
 
     this.instance = new aws_ec2.Instance(this, 'Ec2InstanceBastion', {
+      blockDevices: [
+        {
+          deviceName: '/dev/xvda',
+          volume: {
+            ebsDevice: {
+              encrypted: true,
+            },
+          },
+        },
+      ],
       instanceName: `${BASTION_INSTANCE_NAME_PREFIX}-${this.bastiId}`,
       machineImage: props.machineImage ?? defaultMachineImage,
       instanceType: props.instanceType ?? defaultInstanceType,
