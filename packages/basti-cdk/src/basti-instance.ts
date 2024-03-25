@@ -155,7 +155,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
     this.instance = new aws_ec2.Instance(this, 'Ec2InstanceBastion', {
       blockDevices: [
         {
-          deviceName: `${BASTION_INSTANCE_NAME_PREFIX}-${this.bastiId}-volume`,
+          deviceName: '/dev/xvda',
           volume: {
             ebsDevice: {
               encrypted: true,

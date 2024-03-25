@@ -66,6 +66,7 @@ export async function createEc2Instance({
         new RunInstancesCommand({
           BlockDeviceMappings: [
             {
+              DeviceName: '/dev/xvda',
               Ebs: {
                 Encrypted: true,
               },
