@@ -354,7 +354,7 @@ Basti automatically adjusts the target's Security Group to allow inbound traffic
 
 Basti uses the latest Amazon Linux 2 - Kernel 5.10 AMI available at the initialization time (`basti init` command) for the bastion instance.
 
-The bastion instance ebs volume is encrypted by default.
+The bastion instance EBS volume is encrypted by default.
 
 The bastion instance is being stopped when it's not used for some short period of time. These shutdowns are also used to _update the bastion instance's software packages and OS kernel_. By default, the updates happen once a day but not more often than the bastion instance is used.
 
