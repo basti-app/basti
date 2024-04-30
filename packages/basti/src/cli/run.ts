@@ -263,6 +263,5 @@ void yargs(hideBin(process.argv))
     ],
   ])
   .completion('completion', 'Generate completion script for your shell')
-  .recommendCommands()
   .wrap(process.stdout.columns)
   .parse();
