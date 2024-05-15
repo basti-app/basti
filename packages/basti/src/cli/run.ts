@@ -45,6 +45,11 @@ void yargs(hideBin(process.argv))
           type: 'string',
           description: 'ID of the RDS cluster to be initialized',
         })
+        .option('elasticache-serverless-cache', {
+          type: 'string',
+          description:
+            'ID of the Elasticache Redis serverless cache to be initialized',
+        })
         .option('elasticache-redis-cluster', {
           type: 'string',
           alias: 'elasticache-cluster',
@@ -83,6 +88,7 @@ void yargs(hideBin(process.argv))
           conflictingOptions(
             'rds-cluster',
             'rds-instance',
+            'elasticache-serverless-cache',
             'elasticache-redis-cluster',
             'elasticache-memcached-cluster',
             'custom-target-vpc'
@@ -121,6 +127,15 @@ void yargs(hideBin(process.argv))
         .option('rds-cluster', {
           type: 'string',
           description: 'ID of the RDS cluster to connect to',
+        })
+        .option('elasticache-serverless-cache', {
+          type: 'string',
+          description:
+            'ID of the Elasticache Redis serverless cache to connect to',
+        })
+        .option('elasticache-serverless-reader-endpoint', {
+          type: 'boolean',
+          description: 'Connect to reader endpoint of the cluster',
         })
         .option('elasticache-redis-cluster', {
           type: 'string',
@@ -168,6 +183,7 @@ void yargs(hideBin(process.argv))
             'elasticache-redis-node',
             'elasticache-memcached-cluster',
             'elasticache-memcached-node',
+            'elasticache-serverless-cache',
             ['custom-target-vpc', 'custom-target-host', 'custom-target-port']
           )
         )

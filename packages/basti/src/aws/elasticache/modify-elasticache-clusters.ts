@@ -2,6 +2,7 @@ import { DescribeSecurityGroupsCommand } from '@aws-sdk/client-ec2';
 import {
   ModifyReplicationGroupCommand,
   ModifyCacheClusterCommand,
+  ModifyServerlessCacheCommand,
 } from '@aws-sdk/client-elasticache';
 
 import { ec2Client } from '../ec2/ec2-client.js';
@@ -16,6 +17,10 @@ export interface ModifyElasticacheInput {
   identifier: string | undefined;
   securityGroupIds: string[];
   cachePreviousSecurityGroups: SecurityGroupMembership[];
+}
+export interface ModifyServerlessInput {
+  identifier: string | undefined;
+  securityGroupIds: string[];
 }
 
 export async function modifyElasticacheReplicationGroup({
@@ -37,6 +42,18 @@ export async function modifyElasticacheReplicationGroup({
       ReplicationGroupId: identifier,
       SecurityGroupIds: securityGroupIds,
       ApplyImmediately: true,
+    })
+  );
+}
+
+export async function modifyElasticacheServerlessCache({
+  identifier,
+  securityGroupIds,
+}: ModifyServerlessInput): Promise<void> {
+  await elasticacheClient.send(
+    new ModifyServerlessCacheCommand({
+      ServerlessCacheName: identifier,
+      SecurityGroupIds: securityGroupIds,
     })
   );
 }

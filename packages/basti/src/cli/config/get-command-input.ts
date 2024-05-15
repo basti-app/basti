@@ -7,6 +7,7 @@ import {
   isElasticacheRedisNodeTargetConfig,
   isElasticacheMemcachedClusterTargetConfig,
   isElasticacheMemcachedNodeTargetConfig,
+  isElasticacheRedisServerlessTargetConfig,
 } from './config-parser.js';
 
 import type { ConnectCommandInput } from '../commands/connect/connect.js';
@@ -74,6 +75,13 @@ export function getConnectCommandInputFromConfig(
       : isElasticacheRedisNodeTargetConfig(connectionTarget)
       ? {
           elasticacheRedisNodeId: connectionTarget.elasticacheRedisNode,
+          awsClientConfig,
+        }
+      : isElasticacheRedisServerlessTargetConfig(connectionTarget)
+      ? {
+          elasticacheRedisServerlessCacheId:
+            connectionTarget.elasticacheRedisServerlessCache,
+          readerEnpoint: connectionTarget.readerEnpoint,
           awsClientConfig,
         }
       : isElasticacheMemcachedClusterTargetConfig(connectionTarget)

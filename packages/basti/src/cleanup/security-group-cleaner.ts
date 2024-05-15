@@ -1,5 +1,6 @@
 import { parseMemcachedCacheClusterResponse } from '#src/aws/elasticache/parse-elasticache-memcached-response.js';
 import { getRawMemcachedClusters } from '#src/aws/elasticache/get-elasticache-memcached-clusters.js';
+import type { AwsElasticacheServerlessCache } from '#src/aws/elasticache/elasticache-types.js';
 
 import { AwsDependencyViolationError } from '../aws/common/aws-errors.js';
 import { deleteSecurityGroup } from '../aws/ec2/delete-security-group.js';
@@ -9,10 +10,14 @@ import { modifyDBCluster } from '../aws/rds/modify-db-cluster.js';
 import { modifyDbInstance } from '../aws/rds/modify-db-instance.js';
 import { retry } from '../common/retry.js';
 import { getRawReplicationGroups } from '../aws/elasticache/get-elasticache-replication-groups.js';
-import { getRawCacheClusters } from '../aws/elasticache/get-elasticache-cache-clusters.js';
+import {
+  getRawCacheClusters,
+  getRedisServerlessCaches,
+} from '../aws/elasticache/get-elasticache-cache-clusters.js';
 import {
   modifyElasticacheMemcachedCluster,
   modifyElasticacheReplicationGroup,
+  modifyElasticacheServerlessCache,
 } from '../aws/elasticache/modify-elasticache-clusters.js';
 
 import type {
@@ -92,11 +97,16 @@ export async function cleanupElasticacheSecurityGroups(
   const cacheClusters = await getRawCacheClusters();
   const replicationGroups = await getRawReplicationGroups();
   const memcachedClusters = await getRawMemcachedClusters();
+  const serverlessCaches = await getRedisServerlessCaches();
   for (const replicationGroup of replicationGroups) {
     await cleanReplicationGroup(replicationGroup, cacheClusters, groupIds);
   }
   for (const memcachedCluster of memcachedClusters) {
     await cleanElasticacheMemcachedCluster(memcachedCluster, groupIds);
+  }
+  for (const serverlessCache of serverlessCaches) {
+    if (serverlessCache[0])
+      await cleanElasticacheServerlessCache(serverlessCache[0], groupIds);
   }
 }
 
@@ -160,6 +170,22 @@ async function cleanElasticacheMemcachedCluster(
       identifier: memcachedCluster.CacheClusterId,
       securityGroupIds: cacheSecurityGroupsIds,
       cachePreviousSecurityGroups: memcachedCluster.SecurityGroups,
+    });
+  }
+}
+
+async function cleanElasticacheServerlessCache(
+  cache: AwsElasticacheServerlessCache,
+  groupIds: Set<string>
+): Promise<void> {
+  const cacheSecurityGroupsIds: string[] = filterOut(
+    cache.securityGroups,
+    groupIds
+  );
+  if (cacheSecurityGroupsIds.length !== cache.securityGroups.length) {
+    await modifyElasticacheServerlessCache({
+      identifier: cache.identifier,
+      securityGroupIds: cacheSecurityGroupsIds,
     });
   }
 }

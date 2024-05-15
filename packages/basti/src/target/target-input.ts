@@ -4,12 +4,14 @@ import type { AwsDbCluster, AwsDbInstance } from '../aws/rds/rds-types.js';
 import type {
   AwsElasticacheRedisGenericObject,
   AwsElasticacheMemcachedCluster,
+  AwsElasticacheServerlessCache,
 } from '../aws/elasticache/elasticache-types.js';
 export type InitTargetInput =
   | DbClusterTargetInput
   | DbInstanceTargetInput
   | ElasticacheRedisClusterTargetInput
   | ElasticacheMemcachedClusterTargetInput
+  | ElasticacheRedisServerlessTargetInput
   | CustomInitTargetInput;
 
 export type ConnectTargetInput = (
@@ -18,6 +20,7 @@ export type ConnectTargetInput = (
   | ElasticacheRedisClusterTargetInput
   | ElasticacheMemcachedClusterTargetInput
   | CustomConnectTargetInput
+  | ElasticacheRedisServerlessTargetInput
 ) & {
   awsClientConfig?: AwsClientConfiguration;
 };
@@ -31,6 +34,9 @@ export interface DbInstanceTargetInput {
 }
 export interface ElasticacheRedisClusterTargetInput {
   elasticacheRedisCluster: AwsElasticacheRedisGenericObject;
+}
+export interface ElasticacheRedisServerlessTargetInput {
+  elasticacheRedisServerlessCache: AwsElasticacheServerlessCache;
 }
 
 export interface ElasticacheMemcachedClusterTargetInput {

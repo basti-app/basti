@@ -1,10 +1,14 @@
 import inquirer from 'inquirer';
 
 import { getReplicationGroupsByClusterMode } from '#src/aws/elasticache/get-elasticache-replication-groups.js';
-import { getCacheClusters } from '#src/aws/elasticache/get-elasticache-cache-clusters.js';
+import {
+  getCacheClusters,
+  getRedisServerlessCaches,
+} from '#src/aws/elasticache/get-elasticache-cache-clusters.js';
 import type {
   AwsElasticacheRedisGenericObject,
   AwsElasticacheMemcachedCluster,
+  AwsElasticacheServerlessCache,
 } from '#src/aws/elasticache/elasticache-types.js';
 import { getDbClusters } from '#src/aws/rds/get-db-clusters.js';
 import { getDbInstances } from '#src/aws/rds/get-db-instances.js';
@@ -17,6 +21,7 @@ import type {
   DbInstanceTargetInput,
   ElasticacheRedisClusterTargetInput,
   ElasticacheMemcachedClusterTargetInput,
+  ElasticacheRedisServerlessTargetInput,
 } from '#src/target/target-input.js';
 import {
   getMemcachedClusters,
@@ -34,7 +39,8 @@ export type AwsTargetInput =
   | DbInstanceTargetInput
   | DbClusterTargetInput
   | ElasticacheRedisClusterTargetInput
-  | ElasticacheMemcachedClusterTargetInput;
+  | ElasticacheMemcachedClusterTargetInput
+  | ElasticacheRedisServerlessTargetInput;
 
 export async function promptForAwsTarget(
   commandType: string
@@ -46,6 +52,7 @@ export async function promptForAwsTarget(
     elasticacheRedisNodes,
     elasticacheMemcachedClusters,
     elasticacheMemcachedCacheData,
+    elasticacheRedisServerlessCaches,
   } = await getTargets();
 
   const { target } = await cli.prompt({
@@ -63,6 +70,7 @@ export async function promptForAwsTarget(
         elasticacheRedisNodes,
         elasticacheMemcachedClusters,
         elasticacheMemcachedCacheData,
+        elasticacheRedisServerlessCaches,
         commandType
       ),
       ...getCustomChoices(),
@@ -79,6 +87,7 @@ async function getTargets(): Promise<{
   elasticacheRedisNodes: AwsElasticacheRedisGenericObject[];
   elasticacheMemcachedClusters: AwsElasticacheMemcachedCluster[];
   elasticacheMemcachedCacheData: CacheCluster[];
+  elasticacheRedisServerlessCaches: AwsElasticacheServerlessCache[][];
 }> {
   const subCli = cli.createSubInstance({ indent: 2 });
 
@@ -116,6 +125,11 @@ async function getTargets(): Promise<{
     'Elasticache Memcached supplementary data',
     subCli
   );
+  const elasticacheRedisServerlessCaches = await getTargetResources(
+    async () => await getRedisServerlessCaches(),
+    'Elasticache Redis serverless caches',
+    subCli
+  );
   return {
     instances,
     clusters,
@@ -123,6 +137,7 @@ async function getTargets(): Promise<{
     elasticacheRedisNodes,
     elasticacheMemcachedClusters,
     elasticacheMemcachedCacheData,
+    elasticacheRedisServerlessCaches,
   };
 }
 

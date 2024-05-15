@@ -78,6 +78,16 @@ export type ElasticacheMemcachedClusterTargetConfig = z.infer<
   typeof ElasticacheMemcachedClusterTargetConfigParser
 >;
 
+const ElasticacheRedisServerlessTargetConfigParser = z
+  .object({
+    elasticacheRedisServerlessCache: z.string(),
+    readerEnpoint: z.boolean().optional(),
+  })
+  .merge(TargetConfigBaseParser);
+export type ElasticacheRedisServerlessTargetConfig = z.infer<
+  typeof ElasticacheRedisServerlessTargetConfigParser
+>;
+
 const ElasticacheMemcachedNodeTargetConfigParser = z
   .object({
     elasticacheMemcachedNode: z.string(),
@@ -101,6 +111,7 @@ const ConnectionTargetConfigParser = z.union([
   RdsClusterTargetConfigParser,
   ElasticacheRedisClusterTargetConfigParser,
   ElasticacheRedisNodeTargetConfigParser,
+  ElasticacheRedisServerlessTargetConfigParser,
   ElasticacheMemcachedClusterTargetConfigParser,
   ElasticacheMemcachedNodeTargetConfigParser,
   CustomTargetConfigParser,
@@ -131,6 +142,11 @@ export function isRdsClusterTargetConfig(
   target: ConnectionTargetConfig
 ): target is RdsClusterTargetConfig {
   return 'rdsCluster' in target;
+}
+export function isElasticacheRedisServerlessTargetConfig(
+  target: ConnectionTargetConfig
+): target is ElasticacheRedisServerlessTargetConfig {
+  return 'elasticacheServerlessCache' in target;
 }
 
 export function isElasticacheRedisClusterTargetConfig(

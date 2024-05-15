@@ -1,12 +1,21 @@
-import { DescribeCacheClustersCommand } from '@aws-sdk/client-elasticache';
+import {
+  DescribeCacheClustersCommand,
+  DescribeServerlessCachesCommand,
+} from '@aws-sdk/client-elasticache';
 
 import { AwsNotFoundError } from '../common/aws-errors.js';
 
-import { parseCacheNodeResponse } from './parse-elasticache-redis-response.js';
+import {
+  parseCacheNodeResponse,
+  parseServerlessCacheResponse,
+} from './parse-elasticache-redis-response.js';
 import { elasticacheClient } from './elasticache-client.js';
 
 import type { CacheCluster } from '@aws-sdk/client-elasticache';
-import type { AwsElasticacheRedisGenericObject } from './elasticache-types.js';
+import type {
+  AwsElasticacheRedisGenericObject,
+  AwsElasticacheServerlessCache,
+} from './elasticache-types.js';
 
 export interface getCacheClusterInput {
   identifier: string;
@@ -88,4 +97,32 @@ export async function getCacheCluster({
     }
     throw error;
   }
+}
+
+export async function getRedisServerlessCaches(): Promise<
+  AwsElasticacheServerlessCache[][]
+> {
+  const { ServerlessCaches } = await elasticacheClient.send(
+    new DescribeServerlessCachesCommand({})
+  );
+
+  if (!ServerlessCaches) {
+    throw new Error(`Invalid response from AWS.`);
+  }
+  return ServerlessCaches.map(cache => parseServerlessCacheResponse(cache));
+}
+
+export async function getRedisServerlessCache(
+  Id: string,
+  reader: boolean
+): Promise<AwsElasticacheServerlessCache> {
+  const { ServerlessCaches } = await elasticacheClient.send(
+    new DescribeServerlessCachesCommand({ ServerlessCacheName: Id })
+  );
+
+  if (!ServerlessCaches || !ServerlessCaches[0]) {
+    throw new Error(`Invalid response from AWS.`);
+  }
+  if (reader) return parseServerlessCacheResponse(ServerlessCaches[0])[1]!;
+  return parseServerlessCacheResponse(ServerlessCaches[0])[0]!;
 }

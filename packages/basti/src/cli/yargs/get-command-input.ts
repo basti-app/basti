@@ -19,6 +19,10 @@ export interface ElasticacheRedisClusterOptions {
 export interface ElasticacheRedisNodeOptions {
   elasticacheRedisNode: string;
 }
+export interface ElasticacheRedisServerlessOptions {
+  elasticacheRedisServerless: string;
+  readerEnpoint: boolean;
+}
 export interface ElasticacheMemcachedClusterOptions {
   elasticacheMemcachedCluster: string;
 }
@@ -41,6 +45,7 @@ export type InitOptions = Partial<RdsInstanceOptions> &
   Partial<RdsClusterOptions> &
   Partial<ElasticacheRedisClusterOptions> &
   Partial<ElasticacheMemcachedClusterOptions> &
+  Partial<ElasticacheRedisServerlessOptions> &
   Partial<CustomTargetVpcOptions> & {
     bastionSubnet?: string;
     bastionInstanceType?: string;
@@ -52,7 +57,9 @@ export type ConnectOptions = Partial<RdsInstanceOptions> &
   Partial<ElasticacheRedisNodeOptions> &
   Partial<ElasticacheMemcachedClusterOptions> &
   Partial<ElasticacheMemcachedNodeOptions> &
-  Partial<CustomTargetOptions> & {
+  Partial<ElasticacheRedisServerlessOptions> & {
+    readerEndpoint?: Boolean;
+  } & Partial<CustomTargetOptions> & {
     localPort?: number;
   };
 
@@ -71,6 +78,10 @@ export function getInitCommandInputFromOptions(
       : isRdsClusterOptions(options)
       ? {
           rdsClusterId: options.rdsCluster,
+        }
+      : isElasticacheRedisServerlessOptions(options)
+      ? {
+          elasticacheRedisServerlessCacheId: options.elasticacheRedisServerless,
         }
       : isElasticacheRedisClusterOptions(options)
       ? {
@@ -102,6 +113,11 @@ export function getConnectCommandInputFromOptions(
       : isRdsClusterOptions(options)
       ? {
           rdsClusterId: options.rdsCluster,
+        }
+      : isElasticacheRedisServerlessOptions(options)
+      ? {
+          elasticacheRedisServerlessCacheId: options.elasticacheRedisServerless,
+          readerEnpoint: options.readerEnpoint,
         }
       : isElasticacheRedisClusterOptions(options)
       ? {
@@ -159,6 +175,11 @@ function isElasticacheRedisNodeOptions(
   options: ConnectOptions | InitOptions
 ): options is ElasticacheRedisNodeOptions {
   return 'elasticacheRedisNode' in options;
+}
+function isElasticacheRedisServerlessOptions(
+  options: ConnectOptions | InitOptions
+): options is ElasticacheRedisServerlessOptions {
+  return 'elasticacheServerlessCache' in options;
 }
 
 function isElasticacheMemcachedClusterOptions(
