@@ -19,6 +19,15 @@ export interface AwsElasticacheMemcachedCluster {
   clusterId: string;
 }
 
+export interface AwsElasticacheServerlessCache {
+  identifier: string;
+  host: string;
+  port: number;
+  reader: boolean;
+  subnetGroupName: string[];
+  securityGroups: string[];
+}
+
 export interface AwsElasticacheSubnetGroup {
   name: string;
   vpcId: string;

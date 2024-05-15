@@ -42,6 +42,8 @@ const RESOURCE_TYPE_NAME: Record<ResourceType, string> = {
   [TargetTypes.ELASTICACHE_REDIS_NODE]: 'Elasticache Redis node',
   [TargetTypes.ELASTICACHE_MEMCACHED_CLUSTER]: 'Elasticache Memcached cluster',
   [TargetTypes.ELASTICACHE_MEMCACHED_NODE]: 'Elasticache Memcached node',
+  [TargetTypes.ELASTICACHE_REDIS_SERVERLESS]:
+    'Elasticache Redis serverless cache',
   [TargetTypes.CUSTOM]: 'Custom target',
 };
 

@@ -6,10 +6,12 @@ import type {
   NodeGroupMember,
   NodeGroup,
   CacheSubnetGroup,
+  ServerlessCache,
 } from '@aws-sdk/client-elasticache';
 import type {
   AwsElasticacheRedisGenericObject,
   AwsElasticacheSubnetGroup,
+  AwsElasticacheServerlessCache,
 } from './elasticache-types.js';
 
 export function parseElasticacheResponse(
@@ -155,3 +157,26 @@ const transformNodeGroupResponse: (
     nodeGroups: [],
     replicationGroupId: '',
   })).parse;
+
+export function parseServerlessCacheResponse(
+  response: ServerlessCache
+): AwsElasticacheServerlessCache[] {
+  return [
+    {
+      identifier: response.ServerlessCacheName!,
+      host: response.Endpoint!.Address!,
+      port: response.Endpoint!.Port!,
+      securityGroups: response.SecurityGroupIds!,
+      subnetGroupName: response.SubnetIds!,
+      reader: false,
+    },
+    {
+      identifier: response.ServerlessCacheName!,
+      host: response.ReaderEndpoint!.Address!,
+      port: response.ReaderEndpoint!.Port!,
+      securityGroups: response.SecurityGroupIds!,
+      subnetGroupName: response.SubnetIds!,
+      reader: true,
+    },
+  ];
+}

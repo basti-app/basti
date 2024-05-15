@@ -11,6 +11,7 @@ import {
 import type {
   AwsElasticacheRedisGenericObject,
   AwsElasticacheMemcachedCluster,
+  AwsElasticacheServerlessCache,
 } from '#src/aws/elasticache/elasticache-types.js';
 import type { ElasticacheRedisClusterTargetInput } from '#src/target/target-input.js';
 import { fmt } from '#src/common/fmt.js';
@@ -23,16 +24,19 @@ export function toElasticacheChoices(
   redisCacheClusters: AwsElasticacheRedisGenericObject[],
   memcachedClusters: AwsElasticacheMemcachedCluster[],
   memcachedRawClusters: CacheCluster[],
+  redisServerlessClusters: AwsElasticacheServerlessCache[][],
   commandType: string
 ): DistinctChoice[] {
   if (
     (redisClusters[0] === undefined || redisClusters[0].length === 0) &&
     (redisClusters[1] === undefined || redisClusters[1].length === 0) &&
-    memcachedClusters.length === 0
+    memcachedClusters.length === 0 &&
+    redisServerlessClusters.length === 0
   )
     return [];
   return [
     new inquirer.Separator('Elasticache targets:'),
+    ...toElasticacheServerlessChoises(redisServerlessClusters, commandType),
     ...toElasticacheClusterChoices(
       redisClusters,
       redisCacheClusters,
@@ -43,6 +47,45 @@ export function toElasticacheChoices(
       memcachedRawClusters,
       commandType
     ),
+  ];
+}
+
+export function toElasticacheServerlessChoises(
+  redisServerlessClusters: AwsElasticacheServerlessCache[][],
+  commandType: string
+): DistinctChoice[] {
+  if (redisServerlessClusters.length === 0) return [];
+  if (commandType === 'init')
+    return [
+      new inquirer.Separator('Serverless targets:'),
+      ...redisServerlessClusters.map(serverless => {
+        return {
+          name: '  ' + serverless[0]!.identifier,
+          value: {
+            elasticacheRedisServerlessCache: serverless[0],
+          },
+        };
+      }),
+    ];
+
+  return [
+    new inquirer.Separator('Serverless targets:'),
+    ...redisServerlessClusters.flatMap(serverless => [
+      {
+        name: '  ' + serverless[0]!.identifier.concat(' - Primary endpoint'),
+
+        value: {
+          elasticacheRedisServerlessCache: serverless[0],
+        },
+      },
+      {
+        name: '  ' + serverless[0]!.identifier.concat(' - Reader endpoint'),
+
+        value: {
+          elasticacheRedisServerlessCache: serverless[1],
+        },
+      },
+    ]),
   ];
 }
 
