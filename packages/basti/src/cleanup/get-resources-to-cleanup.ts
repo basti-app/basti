@@ -2,12 +2,12 @@ import { InstanceStateName } from '@aws-sdk/client-ec2';
 
 import { getEc2Instances } from '../aws/ec2/get-ec2-instances.js';
 import { getSecurityGroups } from '../aws/ec2/get-security-groups.js';
-import { getIamRoles } from '../aws/iam/get-iam-role.js';
-import { getInstanceProfiles } from '../aws/iam/get-instance-profiles.js';
+import { getIamRolesCurrentRegion } from '../aws/iam/get-iam-role.js';
+import { getInstanceProfilesCurrentRegion } from '../aws/iam/get-instance-profiles.js';
 import {
   BASTION_INSTANCE_ID_TAG_NAME,
-  BASTION_INSTANCE_PROFILE_PATH,
-  BASTION_INSTANCE_ROLE_PATH,
+  BASTION_INSTANCE_PROFILE_PATH_PREFIX,
+  BASTION_INSTANCE_ROLE_PATH_PREFIX,
   BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
 } from '../bastion/bastion.js';
 import { ManagedResourceTypes } from '../common/resource-type.js';
@@ -96,13 +96,15 @@ async function getBastionInstances(): Promise<string[]> {
 }
 
 async function getBastionRoles(): Promise<string[]> {
-  const iamRoles = await getIamRoles({ path: BASTION_INSTANCE_ROLE_PATH });
+  const iamRoles = await getIamRolesCurrentRegion({
+    pathPrefix: BASTION_INSTANCE_ROLE_PATH_PREFIX,
+  });
   return iamRoles.map(role => role.name);
 }
 
 async function getBastionInstanceProfiles(): Promise<string[]> {
-  const instanceProfiles = await getInstanceProfiles({
-    path: BASTION_INSTANCE_PROFILE_PATH,
+  const instanceProfiles = await getInstanceProfilesCurrentRegion({
+    pathPrefix: BASTION_INSTANCE_PROFILE_PATH_PREFIX,
   });
   return instanceProfiles.map(profile => profile.name);
 }

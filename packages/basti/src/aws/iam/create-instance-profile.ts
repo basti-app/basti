@@ -13,19 +13,22 @@ import { parseIamInstanceProfileResponse } from './parse-iam-response.js';
 import type { AwsTag } from '../tags/types.js';
 import type { AwsIamInstanceProfile } from './types.js';
 
-export interface CreateInstanceProfileInput {
+export interface CreateInstanceProfileCurrentRegionInput {
   name: string;
   roleNames: string[];
-  path: string;
+  pathPrefix: string;
   tags: AwsTag[];
 }
 
-export async function createIamInstanceProfile({
+export async function createIamInstanceProfileCurrentRegion({
   name,
   roleNames,
-  path,
+  pathPrefix,
   tags,
-}: CreateInstanceProfileInput): Promise<AwsIamInstanceProfile> {
+}: CreateInstanceProfileCurrentRegionInput): Promise<AwsIamInstanceProfile> {
+  const region = await iamClient.config.region();
+  const path = `${pathPrefix}/${region}/`;
+
   const { InstanceProfile } = await iamClient.send(
     new CreateInstanceProfileCommand({
       InstanceProfileName: name,

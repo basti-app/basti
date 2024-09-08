@@ -95,6 +95,14 @@ With [Basti](https://github.com/basti-app/basti), you can securely connect to RD
 
 ## 💻 Installation
 
+Using homebrew
+
+```sh
+brew install basti
+```
+
+Using npm
+
 ```sh
 npm install --global basti
 ```

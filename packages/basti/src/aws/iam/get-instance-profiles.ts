@@ -8,17 +8,20 @@ import { parseIamInstanceProfileResponse } from './parse-iam-response.js';
 
 import type { AwsIamInstanceProfile } from './types.js';
 
-export interface GetInstanceProfilesInput {
-  path: string;
+export interface GetInstanceProfilesCurrentRegionInput {
+  pathPrefix: string;
 }
 
 export interface GetInstanceProfileInput {
   name: string;
 }
 
-export async function getInstanceProfiles({
-  path,
-}: GetInstanceProfilesInput): Promise<AwsIamInstanceProfile[]> {
+export async function getInstanceProfilesCurrentRegion({
+  pathPrefix,
+}: GetInstanceProfilesCurrentRegionInput): Promise<AwsIamInstanceProfile[]> {
+  const region = await iamClient.config.region();
+  const path = `${pathPrefix}/${region}/`;
+
   const { InstanceProfiles } = await iamClient.send(
     new ListInstanceProfilesCommand({
       PathPrefix: path,

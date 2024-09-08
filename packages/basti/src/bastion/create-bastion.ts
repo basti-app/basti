@@ -20,7 +20,7 @@ import {
   BASTION_INSTANCE_ID_TAG_NAME,
   BASTION_INSTANCE_IN_USE_TAG_NAME,
   BASTION_INSTANCE_NAME_PREFIX,
-  BASTION_INSTANCE_PROFILE_PATH,
+  BASTION_INSTANCE_PROFILE_PATH_PREFIX,
   BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
   BASTION_INSTANCE_DEFAULT_INSTANCE_TYPE,
 } from './bastion.js';
@@ -199,7 +199,7 @@ async function createBastionInstance(
       imageId: bastionImageId,
       instanceType: instanceType ?? BASTION_INSTANCE_DEFAULT_INSTANCE_TYPE,
       roleNames: [bastionRole.name],
-      profilePath: BASTION_INSTANCE_PROFILE_PATH,
+      profilePathPrefix: BASTION_INSTANCE_PROFILE_PATH_PREFIX,
       subnetId,
       assignPublicIp: true,
       securityGroupIds: [bastionSecurityGroup.id],
