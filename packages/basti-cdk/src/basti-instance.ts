@@ -9,6 +9,7 @@ import {
   BASTION_INSTANCE_IN_USE_TAG_NAME,
   BASTION_INSTANCE_NAME_PREFIX,
   BASTION_INSTANCE_ROLE_NAME_PREFIX,
+  BASTION_INSTANCE_ROLE_PATH_PREFIX,
   BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
 } from './basti-constants';
 
@@ -108,6 +109,8 @@ export class BastiInstance extends Construct implements IBastiInstance {
   constructor(scope: Construct, id: string, props: BastiInstanceProps) {
     super(scope, id);
 
+    const region = Stack.of(this).region;
+
     this.vpc = props.vpc;
 
     this.bastiId = props.bastiId ?? generateShortId(id);
@@ -139,6 +142,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
     this.role = new aws_iam.Role(this, 'IamRoleBastionInstance', {
       assumedBy: new aws_iam.ServicePrincipal('ec2.amazonaws.com'),
       roleName: `${BASTION_INSTANCE_ROLE_NAME_PREFIX}-${this.bastiId}`,
+      path: `${BASTION_INSTANCE_ROLE_PATH_PREFIX}/${region}/`,
       inlinePolicies: {
         'session-manager-access': sessionManagerPolicy,
       },
