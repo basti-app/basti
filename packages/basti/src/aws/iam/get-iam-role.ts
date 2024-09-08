@@ -28,8 +28,8 @@ export async function getIamRolesCurrentRegion({
   pathPrefix,
 }: GetIamRolesCurrentRegionInput): Promise<AwsRole[]> {
   const region = await iamClient.config.region();
-  const path = `${pathPrefix}/${region}/`
-  
+  const path = `${pathPrefix}/${region}/`;
+
   const { Roles } = await iamClient.send(
     new ListRolesCommand({
       PathPrefix: path,

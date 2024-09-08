@@ -27,7 +27,7 @@ export async function createIamInstanceProfileCurrentRegion({
   tags,
 }: CreateInstanceProfileCurrentRegionInput): Promise<AwsIamInstanceProfile> {
   const region = await iamClient.config.region();
-  const path = `${pathPrefix}/${region}/`
+  const path = `${pathPrefix}/${region}/`;
 
   const { InstanceProfile } = await iamClient.send(
     new CreateInstanceProfileCommand({

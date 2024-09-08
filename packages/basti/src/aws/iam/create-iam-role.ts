@@ -34,7 +34,7 @@ export async function createIamRoleCurrentRegion({
   tags,
 }: CreateIamRoleCurrentRegionInput): Promise<AwsRole> {
   const region = await iamClient.config.region();
-  const path = `${pathPrefix}/${region}/`
+  const path = `${pathPrefix}/${region}/`;
 
   const { Role } = await iamClient.send(
     new CreateRoleCommand({

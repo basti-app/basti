@@ -96,7 +96,9 @@ async function getBastionInstances(): Promise<string[]> {
 }
 
 async function getBastionRoles(): Promise<string[]> {
-  const iamRoles = await getIamRolesCurrentRegion({ pathPrefix: BASTION_INSTANCE_ROLE_PATH_PREFIX });
+  const iamRoles = await getIamRolesCurrentRegion({
+    pathPrefix: BASTION_INSTANCE_ROLE_PATH_PREFIX,
+  });
   return iamRoles.map(role => role.name);
 }
 

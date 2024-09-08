@@ -20,8 +20,8 @@ export async function getInstanceProfilesCurrentRegion({
   pathPrefix,
 }: GetInstanceProfilesCurrentRegionInput): Promise<AwsIamInstanceProfile[]> {
   const region = await iamClient.config.region();
-  const path = `${pathPrefix}/${region}/`
-  
+  const path = `${pathPrefix}/${region}/`;
+
   const { InstanceProfiles } = await iamClient.send(
     new ListInstanceProfilesCommand({
       PathPrefix: path,
