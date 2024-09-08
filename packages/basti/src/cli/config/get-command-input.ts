@@ -18,7 +18,7 @@ export function getConnectCommandInputFromConfig(
 ): ConnectCommandInput {
   if (!config) {
     throw OperationError.fromErrorMessage({
-      operationName: 'Resoling connection from configuration file',
+      operationName: 'Resolving connection from configuration file',
       message: 'No configuration file found',
     });
   }
@@ -39,7 +39,7 @@ export function getConnectCommandInputFromConfig(
 
   if (!connectionTarget) {
     throw OperationError.fromErrorMessage({
-      operationName: 'Resoling connection from configuration file',
+      operationName: 'Resolving connection from configuration file',
       message: `No target with name "${
         connectionConfig.target as string
       }" found in configuration file`,
