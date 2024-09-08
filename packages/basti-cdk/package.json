@@ -44,9 +44,9 @@
     "@types/node": "^20.4.2",
     "aws-cdk-lib": "2.86.0",
     "constructs": "10.0.5",
-    "jsii": "^5.1.8",
-    "jsii-pacmak": "^1.85.0",
-    "jsii-release": "^0.2.735"
+    "jsii": "^5.5.2",
+    "jsii-pacmak": "^1.103.1",
+    "jsii-release": "^0.2.882"
   },
   "files": [
     "dist/js",
