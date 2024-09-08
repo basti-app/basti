@@ -6,6 +6,7 @@ export type AwsClientConstructor<T> = new (config: AwsClientConfiguration) => T;
 
 export interface RawAwsClient {
   send: (...args: any[]) => Promise<any>;
+  config: object;
 }
 
 export type AwsClientErrorHandler<TResponse> = (
@@ -41,4 +42,8 @@ export class AwsClient<T extends RawAwsClient> {
     this.errorHandler !== undefined
       ? await this.errorHandler(async () => await this.client.send(...args))
       : await this.client.send(...args);
+
+  get config(): T['config'] {
+    return this.client.config;
+  }
 }

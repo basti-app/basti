@@ -16,23 +16,26 @@ export interface InlinePolicyInput {
   document: string;
 }
 
-export interface CreateIamRoleInput {
+export interface CreateIamRoleCurrentRegionInput {
   name: string;
-  path: string;
+  pathPrefix: string;
   principalService: string;
   managedPolicies?: string[];
   inlinePolicies?: InlinePolicyInput[];
   tags?: AwsTag[];
 }
 
-export async function createIamRole({
+export async function createIamRoleCurrentRegion({
   name,
-  path,
+  pathPrefix,
   principalService,
   managedPolicies,
   inlinePolicies,
   tags,
-}: CreateIamRoleInput): Promise<AwsRole> {
+}: CreateIamRoleCurrentRegionInput): Promise<AwsRole> {
+  const region = await iamClient.config.region();
+  const path = `${pathPrefix}/${region}/`
+
   const { Role } = await iamClient.send(
     new CreateRoleCommand({
       RoleName: name,

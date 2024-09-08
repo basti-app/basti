@@ -12,8 +12,8 @@ import {
 
 import type { AwsRole, AwsRoleAttachedPolicy } from './types.js';
 
-export interface GetIamRoleInput {
-  path: string;
+export interface GetIamRolesCurrentRegionInput {
+  pathPrefix: string;
 }
 
 export interface GetIamRolePoliciesInput {
@@ -24,9 +24,12 @@ export interface GetIamRoleAttachedPoliciesInput {
   roleName: string;
 }
 
-export async function getIamRoles({
-  path,
-}: GetIamRoleInput): Promise<AwsRole[]> {
+export async function getIamRolesCurrentRegion({
+  pathPrefix,
+}: GetIamRolesCurrentRegionInput): Promise<AwsRole[]> {
+  const region = await iamClient.config.region();
+  const path = `${pathPrefix}/${region}/`
+  
   const { Roles } = await iamClient.send(
     new ListRolesCommand({
       PathPrefix: path,

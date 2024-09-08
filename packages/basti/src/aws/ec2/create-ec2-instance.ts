@@ -7,7 +7,7 @@ import { retry } from '#src/common/retry.js';
 
 import { handleWaiterError } from '../common/waiter-error.js';
 import { COMMON_WAITER_CONFIG } from '../common/waiter-config.js';
-import { createIamInstanceProfile } from '../iam/create-instance-profile.js';
+import { createIamInstanceProfileCurrentRegion } from '../iam/create-instance-profile.js';
 import { toTagSpecification } from '../tags/utils/to-tag-specification.js';
 
 import { AwsInstanceProfileNotFoundError } from './ec2-errors.js';
@@ -23,7 +23,7 @@ export interface CreateEc2InstanceInput {
   instanceType: string;
 
   roleNames: string[];
-  profilePath: string;
+  profilePathPrefix: string;
 
   subnetId: string;
   assignPublicIp: boolean;
@@ -42,7 +42,7 @@ export async function createEc2Instance({
   name,
   instanceType,
   roleNames,
-  profilePath,
+  profilePathPrefix,
   subnetId,
   assignPublicIp,
   securityGroupIds,
@@ -53,10 +53,10 @@ export async function createEc2Instance({
 }: CreateEc2InstanceInput): Promise<AwsEc2Instance> {
   const tagsWithName = [...tags, { key: 'Name', value: name }];
 
-  const instanceProfile = await createIamInstanceProfile({
+  const instanceProfile = await createIamInstanceProfileCurrentRegion({
     name,
     roleNames,
-    path: profilePath,
+    pathPrefix: profilePathPrefix,
     tags,
   });
 
