@@ -14,6 +14,7 @@ import { AwsInstanceProfileNotFoundError } from './ec2-errors.js';
 import { parseEc2InstanceResponse } from './parse-ec2-response.js';
 import { ec2Client } from './ec2-client.js';
 
+import type { _InstanceType } from '@aws-sdk/client-ec2';
 import type { AwsEc2Instance } from './types/aws-ec2-instance.js';
 import type { AwsTag } from '../tags/types.js';
 
@@ -74,7 +75,7 @@ export async function createEc2Instance({
           ],
 
           ImageId: imageId,
-          InstanceType: instanceType,
+          InstanceType: instanceType as _InstanceType,
 
           IamInstanceProfile: {
             Name: instanceProfile.name,

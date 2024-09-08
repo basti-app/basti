@@ -1,6 +1,4 @@
-import type { WaiterConfiguration } from '@aws-sdk/util-waiter';
-
-export const COMMON_WAITER_CONFIG: Omit<WaiterConfiguration<any>, 'client'> = {
+export const COMMON_WAITER_CONFIG = {
   minDelay: 2,
   maxDelay: 2,
   maxWaitTime: 600,
