@@ -2,7 +2,10 @@ import { getDbCluster } from '#src/aws/rds/get-db-clusters.js';
 import { getDbInstance } from '#src/aws/rds/get-db-instances.js';
 import { TargetTypes } from '#src/common/resource-type.js';
 import { getReplicationGroup } from '#src/aws/elasticache/get-elasticache-replication-groups.js';
-import { getCacheCluster } from '#src/aws/elasticache/get-elasticache-cache-clusters.js';
+import {
+  getCacheCluster,
+  getRedisServerlessCache,
+} from '#src/aws/elasticache/get-elasticache-cache-clusters.js';
 import {
   getMemcachedCluster,
   getMemcachedNode,
@@ -18,7 +21,8 @@ export type DehydratedAwsTargetInput =
   | { elasticacheRedisClusterId: string }
   | { elasticacheRedisNodeId: string }
   | { elasticacheMemcachedNodeId: string }
-  | { elasticacheMemcachedClusterId: string };
+  | { elasticacheMemcachedClusterId: string }
+  | { elasticacheRedisServerlessCacheId: string; readerEnpoint?: boolean };
 
 export async function hydrateAwsTarget(
   targetInput: DehydratedAwsTargetInput
@@ -78,6 +82,20 @@ export async function hydrateAwsTarget(
           await getMemcachedNode(targetInput.elasticacheMemcachedNodeId),
         TargetTypes.ELASTICACHE_MEMCACHED_NODE,
         targetInput.elasticacheMemcachedNodeId
+      ),
+    };
+  }
+  if ('elasticacheRedisServerlessCacheId' in targetInput) {
+    const reader = targetInput.readerEnpoint ?? false;
+    return {
+      elasticacheRedisServerlessCache: await orThrow(
+        async () =>
+          await getRedisServerlessCache(
+            targetInput.elasticacheRedisServerlessCacheId,
+            reader
+          ),
+        TargetTypes.ELASTICACHE_REDIS_SERVERLESS,
+        targetInput.elasticacheRedisServerlessCacheId
       ),
     };
   }
