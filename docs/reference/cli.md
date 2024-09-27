@@ -5,11 +5,11 @@ Basti CLI is a command line tool that allows you to connect to your private AWS 
 
 <!-- omit from toc -->
 ## Table of contents
+
 - [Commands](#commands)
   - [basti init](#basti-init)
   - [basti connect](#basti-connect)
   - [basti cleanup](#basti-cleanup)
-
 
 ## Commands
 
@@ -68,6 +68,13 @@ _String_, _Default: "t2.micro"_
 The EC2 instance type to be used for the bastion instance.
 
 <!-- omit from toc -->
+#### `--bastion-assign-public-ip <true|false>`
+
+_Boolean_, _Default: true_
+
+Whether to assign a public IP address to the bastion instance.
+
+<!-- omit from toc -->
 #### `--tag <tag-name>=<tag-value>`
 
 _String_, _Can be used multiple times_
@@ -119,7 +126,7 @@ Starts a port forwarding session to the connection target. The connection target
 If used without arguments, the interactive mode will prompt you for all the required options. Alternatively, you can pass all the required options as command line arguments or specify a `connection` defined in the [Basti configuration file](./configuration-file.md).
 
 <!-- omit from toc -->
-#### `connection` 
+#### `connection`
 
 _String_
 
@@ -219,7 +226,7 @@ The name of the AWS region to be used to interact with AWS. If not specified, th
 basti cleanup
 ```
 
-Removes all the resources created by Basti in your AWS account. The list of resources will be displayed and you will be prompted to confirm the cleanup. 
+Removes all the resources created by Basti in your AWS account. The list of resources will be displayed and you will be prompted to confirm the cleanup.
 
 <!-- omit from toc -->
 #### `--confirm`
