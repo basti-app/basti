@@ -19,6 +19,7 @@ export interface CreateBastionInput {
   vpcId: string;
   subnetId: string;
   instanceType: string | undefined;
+  assignPublicIp: boolean | undefined;
   tags: AwsTag[];
 }
 
@@ -26,6 +27,7 @@ export async function createBastion({
   vpcId,
   subnetId,
   instanceType,
+  assignPublicIp,
   tags,
 }: CreateBastionInput): Promise<Bastion> {
   const subCli = cli.createSubInstance({ indent: 2 });
@@ -36,6 +38,7 @@ export async function createBastion({
       vpcId,
       subnetId,
       instanceType,
+      assignPublicIp,
       tags,
       hooks: {
         onRetrievingImageId: () =>

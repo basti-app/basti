@@ -28,6 +28,7 @@ export async function handleInit(input: InitCommandInput): Promise<void> {
       vpcId: targetVpcId,
       subnetId: bastionSubnet,
       instanceType: advancedInput.instanceType,
+      assignPublicIp: advancedInput.assignPublicIp,
       tags: advancedInput.tags,
     }));
 

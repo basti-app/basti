@@ -25,7 +25,7 @@ async function promptForBastionSubnetId(vpcId: string): Promise<string> {
 
   if (subnets.length === 0) {
     throw new EarlyExitError(
-      'No subnets found in the VPC. Vpc must have at least one public subnet for the bastion to be set up'
+      'No subnets found in the VPC. Vpc must have at least one subnet for the bastion to be set up'
     );
   }
 
@@ -35,7 +35,8 @@ async function promptForBastionSubnetId(vpcId: string): Promise<string> {
     message:
       fmt.reset('Select ') +
       fmt.important('public') +
-      fmt.reset(' subnet for the bastion'),
+      fmt.reset(' subnet for the bastion.') +
+      fmt.gray('\n  (See docs for setting up bastion in a private subnet)'),
     choices: subnets.map(subnet => ({
       name: fmt.resourceName(subnet),
       value: subnet.id,

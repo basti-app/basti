@@ -67,6 +67,10 @@ void yargs(hideBin(process.argv))
           type: 'string',
           description: 'EC2 instance type for the bastion instance',
         })
+        .option('bastion-assign-public-ip', {
+          type: 'boolean',
+          description: 'Assign a public IP address to the bastion instance',
+        })
         .option('tag', {
           type: 'string',
           description:

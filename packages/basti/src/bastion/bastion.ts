@@ -28,3 +28,4 @@ export const BASTION_INSTANCE_UPDATING_TAG_NAME = 'basti:updating';
 export const BASTION_INSTANCE_UPDATED_TAG_NAME = 'basti:updated';
 
 export const BASTION_INSTANCE_DEFAULT_INSTANCE_TYPE = 't2.micro';
+export const BASTION_INSTANCE_DEFAULT_ASSIGN_PUBLIC_IP = true;

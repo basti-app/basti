@@ -23,6 +23,7 @@ import {
   BASTION_INSTANCE_PROFILE_PATH_PREFIX,
   BASTION_INSTANCE_SECURITY_GROUP_NAME_PREFIX,
   BASTION_INSTANCE_DEFAULT_INSTANCE_TYPE,
+  BASTION_INSTANCE_DEFAULT_ASSIGN_PUBLIC_IP,
 } from './bastion.js';
 
 import type { Bastion } from './bastion.js';
@@ -47,6 +48,7 @@ export interface CreateBastionInput {
   vpcId: string;
   subnetId: string;
   instanceType: string | undefined;
+  assignPublicIp: boolean | undefined;
   tags: AwsTag[];
   hooks?: CreateBastionHooks;
 }
@@ -55,6 +57,7 @@ export async function createBastion({
   vpcId,
   subnetId,
   instanceType,
+  assignPublicIp,
   tags,
   hooks,
 }: CreateBastionInput): Promise<Bastion> {
@@ -78,6 +81,7 @@ export async function createBastion({
     subnetId,
     bastionSecurityGroup,
     instanceType,
+    assignPublicIp,
     tags,
     hooks
   );
@@ -189,6 +193,7 @@ async function createBastionInstance(
   subnetId: string,
   bastionSecurityGroup: AwsSecurityGroup,
   instanceType: string | undefined,
+  assignPublicIp: boolean | undefined,
   tags: AwsTag[],
   hooks?: CreateBastionHooks
 ): Promise<AwsEc2Instance> {
@@ -201,7 +206,8 @@ async function createBastionInstance(
       roleNames: [bastionRole.name],
       profilePathPrefix: BASTION_INSTANCE_PROFILE_PATH_PREFIX,
       subnetId,
-      assignPublicIp: true,
+      assignPublicIp:
+        assignPublicIp ?? BASTION_INSTANCE_DEFAULT_ASSIGN_PUBLIC_IP,
       securityGroupIds: [bastionSecurityGroup.id],
       userData: BASTION_INSTANCE_CLOUD_INIT,
       requireIMDSv2: true,

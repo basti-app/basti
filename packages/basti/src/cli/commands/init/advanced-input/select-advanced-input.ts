@@ -7,6 +7,7 @@ import {
   isAdvancedInputComplete,
 } from '../init-command-input.js';
 
+import { selectAssignPublicIp } from './select-assign-public-ip.js';
 import { selectInstanceType } from './select-instance-type.js';
 import { selectTags } from './select-tags.js';
 
@@ -30,10 +31,12 @@ export async function selectAdvancedInput(
   }
 
   const instanceType = await selectInstanceType(input.instanceType);
+  const assignPublicIp = await selectAssignPublicIp(input.assignPublicIp);
   const tags = await selectTags(input.tags);
 
   return {
     instanceType,
+    assignPublicIp,
     tags,
   };
 }

@@ -44,6 +44,7 @@ export type InitOptions = Partial<RdsInstanceOptions> &
   Partial<CustomTargetVpcOptions> & {
     bastionSubnet?: string;
     bastionInstanceType?: string;
+    bastionAssignPublicIp?: boolean;
   } & TagOptions;
 
 export type ConnectOptions = Partial<RdsInstanceOptions> &
@@ -88,6 +89,7 @@ export function getInitCommandInputFromOptions(
     bastionSubnet: options.bastionSubnet,
     tags: getTagsFromOptions(options),
     instanceType: options.bastionInstanceType,
+    assignPublicIp: options.bastionAssignPublicIp,
   };
 }
 
