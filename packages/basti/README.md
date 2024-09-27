@@ -36,8 +36,8 @@
 <br/>
 
 <!-- The following toc is generated with the Markdown All in One VSCode extension (https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one) -->
-<!-- omit from toc -->
 
+<!-- omit from toc -->
 ## Table of contents
 
 - [💡 Why Basti?](#-why-basti)
@@ -53,6 +53,7 @@
 - [🎛️ Advanced initialization options](#️-advanced-initialization-options)
   - [Resource tags](#resource-tags)
   - [Bastion instance type](#bastion-instance-type)
+  - [Assign public IP address](#assign-public-ip-address)
 - [🦾 Automatic mode](#-automatic-mode)
 - [📝 Configuration file](#-configuration-file)
 - [💫 Infrastructure as code (IaC)](#-infrastructure-as-code-iac)
