@@ -10,6 +10,7 @@ export interface InitCommandRequiredInput {
 export interface InitCommandAdvancedInput {
   tags: AwsTag[];
   instanceType?: string;
+  assignPublicIp?: boolean;
 }
 
 export type InitCommandInput = InitCommandRequiredInput &
@@ -20,5 +21,9 @@ export function isRequiredInputComplete(input: InitCommandInput): boolean {
 }
 
 export function isAdvancedInputComplete(input: InitCommandInput): boolean {
-  return input.tags.length > 0 && input.instanceType !== undefined;
+  return (
+    input.tags.length > 0 &&
+    input.instanceType !== undefined &&
+    input.assignPublicIp !== undefined
+  );
 }

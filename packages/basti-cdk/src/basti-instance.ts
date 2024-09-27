@@ -53,6 +53,12 @@ export interface BastiInstanceProps {
    * @default Latest Amazon Linux 2 - Kernel 5.10
    */
   readonly machineImage?: aws_ec2.IMachineImage;
+
+  /**
+   * (Optional) Whether to assign a public IP address to the bastion instance.
+   * If not specified, falls back to the default behavior of the VPC.
+   */
+  readonly assignPublicIp?: boolean;
 }
 
 export interface IBastiInstance {
@@ -170,6 +176,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
       instanceName: `${BASTION_INSTANCE_NAME_PREFIX}-${this.bastiId}`,
       machineImage: props.machineImage ?? defaultMachineImage,
       instanceType: props.instanceType ?? defaultInstanceType,
+      associatePublicIpAddress: props.assignPublicIp,
       role: this.role,
       securityGroup: this.securityGroup,
       requireImdsv2: true,

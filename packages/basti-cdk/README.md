@@ -31,7 +31,9 @@
 
 <!-- The following toc is generated with the Markdown All in One VSCode extension (https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one) -->
 <!-- omit from toc -->
+
 ## Table of contents
+
 - [Why Basti?](#why-basti)
 - [How it works](#how-it-works)
 - [Installation](#installation)
@@ -103,54 +105,44 @@ import { BastiAccessSecurityGroup, BastiInstance } from 'basti-cdk';
 Use `BastiInstance` construct to create Basti EC2 instance.
 
 ```ts
-const bastiInstance = new BastiInstance(
-  stack,
-  'BastiInstance',
-  {
-    vpc,
-    
-    // Optional. Randomly generated if omitted.
-    // Used to name the EC2 instance and other resources.
-    // The resulting name will be "basti-instance-my-bastion"
-    bastiId: 'my-bastion'
-  }
-);
+const bastiInstance = new BastiInstance(stack, 'BastiInstance', {
+  vpc,
+
+  // Optional. Randomly generated if omitted.
+  // Used to name the EC2 instance and other resources.
+  // The resulting name will be "basti-instance-my-bastion"
+  bastiId: 'my-bastion',
+});
 ```
 
 ### Allow connection to target
 
-Use `BastiAccessSecurityGroup` construct to create a security group for your target. This security group will allow the Basti instance to connect to the target. 
+Use `BastiAccessSecurityGroup` construct to create a security group for your target. This security group will allow the Basti instance to connect to the target.
 
 ```ts
 // Create a security group for your target
 const bastiAccessSecurityGroup = new BastiAccessSecurityGroup(
   stack,
-  'BastiAccessSecurityGroup', 
+  'BastiAccessSecurityGroup',
   {
     vpc,
 
     // Optional. Randomly generated if omitted.
     // Used to name the security group and other resources.
     // The resulting name will be "basti-access-my-target"
-    bastiId: 'my-target'
+    bastiId: 'my-target',
   }
 );
 
 // Create the target
-const rdsInstance = new aws_rds.DatabaseInstance(
-  stack,
-  'RdsInstance',
-  {
-    // Unrelated properties are omitted for brevity
+const rdsInstance = new aws_rds.DatabaseInstance(stack, 'RdsInstance', {
+  // Unrelated properties are omitted for brevity
 
-    vpc,
-    port: 5432,
+  vpc,
+  port: 5432,
 
-    securityGroups: [
-      bastiAccessSecurityGroup
-    ]
-  }
-);
+  securityGroups: [bastiAccessSecurityGroup],
+});
 
 // Allow the Basti instance to connect to the target on the specified port
 bastiAccessSecurityGroup.allowBastiInstanceConnection(
@@ -176,15 +168,15 @@ When sharing a Basti instance across stacks, you can just pass it as a property 
 ```ts
 // Most likely, the VPC was created separately as well
 const vpc = aws_ec2.Vpc.fromLookup(stack, 'Vpc', {
-    vpcName: 'existing-vpc-id',
+  vpcName: 'existing-vpc-id',
 });
 
 const bastiInstance = BastiInstance.fromBastiId(
-    this,
-    'BastiInstance',
-    // The BastiID of the Basti instance you want to import
-    'existing-basti-id',
-    vpc
+  this,
+  'BastiInstance',
+  // The BastiID of the Basti instance you want to import
+  'existing-basti-id',
+  vpc
 );
 
 // bastiInstance can now be used to allow access to a connection target
