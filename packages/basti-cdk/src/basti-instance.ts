@@ -147,7 +147,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
 
     this.role = new aws_iam.Role(this, 'IamRoleBastionInstance', {
       assumedBy: new aws_iam.ServicePrincipal('ec2.amazonaws.com'),
-      roleName: `${BASTION_INSTANCE_ROLE_NAME_PREFIX}-${this.bastiId}`,
+      roleName: `${BASTION_INSTANCE_ROLE_NAME_PREFIX}-${this.bastiId}-v2`,
       path: `${BASTION_INSTANCE_ROLE_PATH_PREFIX}/${region}/`,
       inlinePolicies: {
         'session-manager-access': sessionManagerPolicy,

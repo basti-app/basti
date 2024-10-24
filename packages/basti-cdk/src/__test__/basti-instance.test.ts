@@ -31,7 +31,7 @@ describe('BastiInstanceTest', () => {
     });
 
     template.hasResourceProperties('AWS::IAM::Role', {
-      RoleName: 'basti-instance-d8b7dc8b',
+      RoleName: 'basti-instance-d8b7dc8b-v2',
       AssumeRolePolicyDocument: {
         Statement: [
           {
@@ -163,7 +163,7 @@ describe('BastiInstanceTest', () => {
     });
 
     template.hasResourceProperties('AWS::IAM::Role', {
-      RoleName: 'basti-instance-TEST_ID',
+      RoleName: 'basti-instance-TEST_ID-v2',
       AssumeRolePolicyDocument: {
         Statement: [
           {
