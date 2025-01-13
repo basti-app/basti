@@ -1,47 +1,67 @@
 ---
 sidebar_position: 1
+slug: /
 ---
 
-# Tutorial Intro
+# Introduction
 
-Let's discover **Docusaurus in less than 5 minutes**.
+Welcome to **Basti** _(from [Bastion Host](https://en.wikipedia.org/wiki/Bastion_host))_ - a powerful CLI tool that enables secure access to your DB instances and other AWS resources in private networks at virtually no cost.
 
-## Getting Started
+<div align="center">
+  <img alt="Demo" src="https://user-images.githubusercontent.com/45905756/211385579-3ac54ad5-7c90-4b68-9b22-239f4b26ad61.gif" />
+</div>
 
-Get started by **creating a new site**.
+## 🌟 Key Features
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+- **Zero Idle Costs** - Pay only for what you use, with costs as low as ≈ 0.01 USD per connection hour
+- **No SSH Keys** - Fully IAM-driven security model
+- **AWS Session Manager Integration** - Leverages AWS's secure and auditable connection management
+- **Team-Friendly** - Share configurations across your organization
+- **Infrastructure as Code Ready** - Perfect for CI/CD pipelines
+- **First-Class Support** for RDS, Aurora, and Elasticache
+- **Custom Target Support** - Connect to any TCP service in your VPC
 
-### What you'll need
+## 🚀 Quick Start
 
-- [Node.js](https://nodejs.org/en/download/) version 16.14 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
-
-## Generate a new site
-
-Generate a new Docusaurus site using the **classic template**.
-
-The classic template will automatically be added to your project after you run the command:
-
+1. **Install Basti**
 ```bash
-npm init docusaurus@latest my-website classic
+# Using homebrew
+brew install basti
+
+# Or using npm
+npm install --global basti
 ```
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
-
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
-
+2. **Initialize your target**
 ```bash
-cd my-website
-npm run start
+basti init
 ```
 
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
+3. **Connect to your resource**
+```bash
+basti connect
+```
 
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
+4. **Use your resource locally**
+```bash
+# Example for PostgreSQL
+psql -h localhost -p 5432
+```
 
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+## 🔍 Why Basti?
+
+Basti enhances AWS Session Manager by:
+- Automating bastion instance management
+- Providing convenient configuration storage
+- Improving session stability
+- Offering team-friendly sharing options
+
+## 📚 Next Steps
+
+Dive deeper into Basti's capabilities:
+
+- [Basic Usage Guide](./category/basic-usage)
+- [Advanced Features](./category/advanced-features)
+- [Security & IAM](./category/security)
+- [Team Usage](./category/team-usage)
+- [Reference Documentation](./category/reference)

@@ -6,8 +6,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Basti [Work in Progress]',
-  tagline: 'Basti docs will live here',
+  title: 'Basti',
+  tagline: 'Secure access to AWS resources in private networks at almost no cost',
   favicon: 'img/favicon.ico',
 
   url: 'https://www.basti.app',
@@ -32,16 +32,11 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
+          routeBasePath: '/',
           editUrl:
             'https://github.com/basti-app/basti/tree/main/packages/docs/',
         },
-        blog: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/basti-app/basti/tree/main/packages/docs/',
-        },
+        blog: false,
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
@@ -65,9 +60,14 @@ const config = {
             type: 'docSidebar',
             sidebarId: 'tutorialSidebar',
             position: 'left',
-            label: 'Tutorial',
+            label: 'Documentation',
           },
-          { to: '/blog', label: 'Blog', position: 'left' },
+          {
+            type: 'doc',
+            docId: 'basic-usage/getting-started',
+            position: 'left',
+            label: 'Getting Started',
+          },
           {
             href: 'https://github.com/basti-app/basti',
             label: 'GitHub',
@@ -82,8 +82,16 @@ const config = {
             title: 'Docs',
             items: [
               {
-                label: 'Tutorial',
-                to: '/docs/intro',
+                label: 'Getting Started',
+                to: '/basic-usage/getting-started',
+              },
+              {
+                label: 'Basic Usage',
+                to: '/basic-usage/initialize-target',
+              },
+              {
+                label: 'Advanced Features',
+                to: '/advanced-features/initialization-options',
               },
             ],
           },
@@ -100,17 +108,13 @@ const config = {
             title: 'More',
             items: [
               {
-                label: 'Blog',
-                to: '/blog',
-              },
-              {
                 label: 'GitHub',
                 href: 'https://github.com/basti-app/basti',
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Bohdan Petryshyn. Built with Docusaurus.`,
+        copyright: `Copyright ${new Date().getFullYear()} Basti. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,
