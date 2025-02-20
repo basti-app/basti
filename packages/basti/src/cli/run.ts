@@ -20,6 +20,9 @@ import {
   getConnectCommandInputFromOptions,
   getInitCommandInputFromOptions,
 } from './yargs/get-command-input.js';
+import { getInitCommandInputFromConfig } from './config/get-init-input.js';
+import { getTagFromOption } from './yargs/tags/get-tag-from-option.js';
+import { getTagsFromOptions } from './yargs/tags/get-tags-from-options.js';
 
 const pkg: {
   version: string;
@@ -37,6 +40,11 @@ void yargs(hideBin(process.argv))
     'Initialize a target to use with Basti',
     yargs =>
       yargs
+        .option('target', {
+          type: 'string',
+          description:
+            'Name of the target in the configuration file. Conflicts with other options',
+        })
         .option('rds-instance', {
           type: 'string',
           description: 'ID of the RDS instance to be initialized',
@@ -85,11 +93,39 @@ void yargs(hideBin(process.argv))
         .option(...YARGS_AWS_CLIENT_OPTIONS.AWS_REGION)
         .check(
           conflictingOptions(
+            'target',
             'rds-cluster',
             'rds-instance',
             'elasticache-redis-cluster',
             'elasticache-memcached-cluster',
-            'custom-target-vpc'
+            'custom-target-vpc',
+            'bastion-instance-type',
+            'bastion-assign-public-ip',
+            'bastion-subnet',
+            'tag',
+            'tags-file'
+          )
+        )
+        .check(
+          conflictingOptions(
+            'target',
+            'rds-instance',
+            YARGS_AWS_CLIENT_OPTIONS.AWS_PROFILE[0],
+            YARGS_AWS_CLIENT_OPTIONS.AWS_REGION[0],
+            'bastion-subnet',
+            'rds-cluster'
+          )
+        )
+        .check(
+          conflictingOptions(
+            'target',
+            YARGS_AWS_CLIENT_OPTIONS.AWS_PROFILE[0]
+          )
+        )
+        .check(
+          conflictingOptions(
+            'target',
+            YARGS_AWS_CLIENT_OPTIONS.AWS_REGION[0]
           )
         )
         .example([
@@ -100,12 +136,17 @@ void yargs(hideBin(process.argv))
           ],
         ]),
     withErrorHandling(async options => {
+      const config = await getConfig();
+
+      const commandInput =
+        options.target !== undefined
+          ? getInitCommandInputFromConfig(config, options.target, options)
+          : getInitCommandInputFromOptions(options);
+
       AwsClient.setGlobalConfiguration(getAwsClientOptions(options));
 
-      const commandOptions = getInitCommandInputFromOptions(options);
-
       const { handleInit } = await import('./commands/init/init.js');
-      await handleInit(commandOptions);
+      await handleInit(commandInput);
     })
   )
   .command(

@@ -11,10 +11,14 @@ import { handleOperation } from '../common/handle-operation.js';
 import { hydrateAwsTarget } from '../common/hydrate-aws-target.js';
 
 import type { DehydratedAwsTargetInput } from '../common/hydrate-aws-target.js';
+import { AwsClientConfiguration } from '#src/aws/common/aws-client.js';
 
 export type DehydratedInitTargetInput =
   | DehydratedAwsTargetInput
-  | { customTargetVpcId: string };
+  | { customTargetVpcId: string }
+   & {
+    awsClientConfig?: AwsClientConfiguration;
+  };
 
 export async function selectInitTarget(
   dehydratedInput?: DehydratedInitTargetInput

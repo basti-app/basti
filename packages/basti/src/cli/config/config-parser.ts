@@ -3,6 +3,7 @@ import { z } from 'zod';
 const TargetConfigBaseParser = z.object({
   awsProfile: z.string().optional(),
   awsRegion: z.string().optional(),
+  bastionSubnet: z.string().optional()
 });
 export type TargetConfigBase = z.infer<typeof TargetConfigBaseParser>;
 
