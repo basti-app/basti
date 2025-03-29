@@ -45,8 +45,10 @@ async function cleanupDbInstanceReferences(
 ): Promise<void> {
   const dbInstances = await getDbInstances();
 
-  const dbInstancesWithReferences = dbInstances.filter(instance =>
-    arrayContains(instance.securityGroupIds, securityGroupIds)
+  const dbInstancesWithReferences = dbInstances.filter(
+    instance =>
+      instance.clusterIdentifier === undefined &&
+      arrayContains(instance.securityGroupIds, securityGroupIds)
   );
   if (dbInstancesWithReferences.length === 0) {
     return;
