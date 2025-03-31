@@ -7,7 +7,7 @@ import { selectBastionSubnetId } from './select-bastion-subnet.js';
 import { selectInitTarget } from './select-init-target.js';
 import { selectAdvancedInput } from './advanced-input/select-advanced-input.js';
 
-import type { InitCommandInput } from './init-command-input.js';
+import type { InitCommandInput, InitCommandRequiredInput } from './init-command-input.js';
 
 export async function handleInit(input: InitCommandInput): Promise<void> {
   const target = await selectInitTarget(input.target);
