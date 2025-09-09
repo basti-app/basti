@@ -24,21 +24,22 @@
     "build": "npm run build-src && npm run build-deps",
     "build-src": "tsc",
     "build-src-watch": "tsc --watch",
-    "build-deps": "ts-node-esm scripts/build-deps.ts",
+    "build-deps": "tsx scripts/build-deps.ts",
     "check": "npm run check-types && npm run check-style",
     "check-prepublish": "npm run check-types && npm run check-style && npm run check-deps",
     "check-types": "tsc --noEmit",
     "check-style": "eslint src",
-    "check-deps": "ts-node-esm scripts/check-deps.ts",
+    "check-deps": "tsx scripts/check-deps.ts",
     "prepare-deps": "npm run check-deps || (npm run build-deps && npm run publish-deps)",
-    "publish-deps": "ts-node-esm scripts/publish-deps.ts",
+    "publish-deps": "tsx scripts/publish-deps.ts",
     "sync-readme": "bash scripts/sync-readme.sh",
     "release": "npm run prepare-deps && npm run check-prepublish && npm run build-src && npm publish"
   },
   "devDependencies": {
     "@types/inquirer": "8.2.1",
     "@types/yargs": "17.0.10",
-    "ts-node": "10.9.1"
+    "tsx": "^4.20.5",
+    "typescript": "5.9.2"
   },
   "dependencies": {
     "@aws-sdk/client-ec2": "3.645.0",

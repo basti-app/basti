@@ -395,7 +395,7 @@ as you make changes to the code. Please, feel free to open an issue if you want 
 ### Build
 
 Before proceeding to development, it's recommended to run the _full build_.
-This requires Docker to be installed on your machine and may take a couple of minutes.
+This requires Docker to be installed and running on your machine, and may take a couple of minutes.
 
 ```sh
 npm run build
