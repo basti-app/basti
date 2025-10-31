@@ -1,6 +1,6 @@
 {
   "name": "basti",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "description": "✨ Securely connect to RDS, Elasticache, and other AWS resources in VPCs with no idle cost",
   "author": "BohdanPetryshyn",
   "homepage": "https://github.com/basti-app/basti",
