@@ -3,3 +3,5 @@ dist
 .DS_Store
 .idea
 /.history
+result
+.direnv
