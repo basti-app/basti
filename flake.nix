@@ -10,10 +10,11 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        packageJson = builtins.fromJSON (builtins.readFile ./packages/basti/package.json);
 
         basti = pkgs.buildNpmPackage {
           pname = "basti";
-          version = "1.7.2";
+          version = packageJson.version;
 
           src = self;
 
