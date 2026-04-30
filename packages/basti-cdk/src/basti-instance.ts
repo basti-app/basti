@@ -48,9 +48,9 @@ export interface BastiInstanceProps {
   /**
    * (Optional) The machine image to use for the bastion instance.
    * The specified machine image must have SSM agent installed and configured.
-   * If not specified, the latest  Amazon Linux 2 - Kernel 5.10 AMI will be used.
+   * If not specified, the latest Amazon Linux 2023 AMI will be used.
    *
-   * @default Latest Amazon Linux 2 - Kernel 5.10
+   * @default Latest Amazon Linux 2023
    */
   readonly machineImage?: aws_ec2.IMachineImage;
 
@@ -122,7 +122,7 @@ export class BastiInstance extends Construct implements IBastiInstance {
     this.bastiId = props.bastiId ?? generateShortId(id);
 
     const defaultMachineImage = aws_ec2.MachineImage.fromSsmParameter(
-      '/aws/service/ami-amazon-linux-latest/amzn2-ami-kernel-5.10-hvm-x86_64-gp2'
+      '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64'
     );
 
     const defaultInstanceType = new aws_ec2.InstanceType('t2.micro');
