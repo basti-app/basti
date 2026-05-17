@@ -107,7 +107,7 @@ export async function createBastion({
 async function getBastionImageId(hooks?: CreateBastionHooks): Promise<string> {
   try {
     const parameterName =
-      '/aws/service/ami-amazon-linux-latest/amzn2-ami-kernel-5.10-hvm-x86_64-gp2';
+      '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64';
 
     hooks?.onRetrievingImageId?.();
 
