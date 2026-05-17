@@ -9,6 +9,12 @@ export const BASTION_INSTANCE_CLOUD_INIT = `
 repo_update: true
 repo_upgrade: all
 
+packages:
+  - cronie
+
+runcmd:
+  - systemctl enable --now crond
+
 write_files:
   - path: /opt/basti/stop-if-not-used.sh
     owner: root:root
