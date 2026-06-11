@@ -18,7 +18,7 @@
 
           src = self;
 
-          npmDepsHash = "sha256-zxXiutwNEyDNr7OPKb/0fKLXvHRFLdgCsGeBat7tpFk=";
+          npmDepsHash = "sha256-GEh/u5Fg8lVa7e56LG3baujj8JlsLyk2qYwvorniA2I=";
 
           npmWorkspace = "packages/basti";
 
