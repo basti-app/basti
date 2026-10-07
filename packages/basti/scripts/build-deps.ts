@@ -5,8 +5,18 @@ import cp from 'node:child_process';
 const TMP_DIR = path.resolve('.build-deps-tmp');
 const DEPS_DIR = path.resolve('deps');
 
+interface DepPackage {
+  version: string;
+  // Version (git tag) of aws/session-manager-plugin bundled in the package.
+  // Kept separately from the package version because AWS uses four-part
+  // versions (e.g. 1.2.295.0) which are not valid semver.
+  sessionManagerPluginVersion: string;
+  os: [NodeJS.Platform];
+  cpu: [NodeJS.Architecture];
+}
+
 type DepBuilder = (
-  version: string,
+  depPackage: DepPackage,
   os: NodeJS.Platform,
   cpu: NodeJS.Architecture,
   packageDir: string
@@ -34,19 +44,15 @@ for (const dep of deps) {
 
   const depPackage = JSON.parse(
     fs.readFileSync(path.join(depPackageDir, 'package.json')).toString()
-  );
+  ) as DepPackage;
   const {
     version: depVersion,
     os: [depOs],
     cpu: [depCpu],
-  } = depPackage as {
-    version: string;
-    os: [NodeJS.Platform];
-    cpu: [NodeJS.Architecture];
-  };
+  } = depPackage;
 
   console.log(`Building ${depName} ${depVersion} for ${depOs}-${depCpu}...`);
-  depBuilder(depVersion, depOs, depCpu, depPackageDir);
+  depBuilder(depPackage, depOs, depCpu, depPackageDir);
 }
 
 function createSessionManagerDependencyBuilder(): DepBuilder {
@@ -62,7 +68,7 @@ function createSessionManagerDependencyBuilder(): DepBuilder {
 
   let isBuilt = false;
 
-  return (version, os, cpu, packageDir) => {
+  return ({ sessionManagerPluginVersion: version }, os, cpu, packageDir) => {
     const repoDir = path.join(TMP_DIR, 'session-manager-plugin');
     if (!isBuilt) {
       console.log(`Cloning Session Manager ${version}...`);
@@ -82,6 +88,7 @@ function createSessionManagerDependencyBuilder(): DepBuilder {
         }
       );
       console.log('Building Session Manager...');
+      patchDockerfileForArchivedDebian(path.join(repoDir, 'Dockerfile'));
       cp.execFileSync(
         'docker',
         ['build', '-t', 'session-manager-plugin-image', repoDir],
@@ -141,4 +148,29 @@ function createSessionManagerDependencyBuilder(): DepBuilder {
     }
     fs.copyFileSync(sessionManagerBinaryPath, sessionManagerBinaryOutputPath);
   };
+}
+
+// The Session Manager Dockerfile is based on Debian buster which reached
+// end-of-life. Its apt repositories were moved to archive.debian.org, so the
+// apt commands in the original Dockerfile fail. This points apt to the archive
+// when the base image is buster and is a no-op for newer base images.
+function patchDockerfileForArchivedDebian(dockerfilePath: string): void {
+  const aptArchiveFix = [
+    'RUN if grep -qs buster /etc/apt/sources.list; then \\',
+    "      sed -i -e 's|deb.debian.org/debian|archive.debian.org/debian|' \\",
+    "             -e 's|security.debian.org/debian-security|archive.debian.org/debian-security|' \\",
+    "             -e '/buster-updates/d' /etc/apt/sources.list && \\",
+    `      echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99archive; \\`,
+    '    fi',
+  ].join('\n');
+
+  const dockerfile = fs.readFileSync(dockerfilePath).toString();
+  const lines = dockerfile.split('\n');
+  const fromIndex = lines.findIndex(line => line.startsWith('FROM '));
+  if (fromIndex === -1) {
+    throw new Error(`No FROM instruction found in ${dockerfilePath}`);
+  }
+
+  lines.splice(fromIndex + 1, 0, '', aptArchiveFix);
+  fs.writeFileSync(dockerfilePath, lines.join('\n'));
 }
