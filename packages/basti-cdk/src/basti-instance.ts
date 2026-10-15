@@ -56,7 +56,15 @@ export interface BastiInstanceProps {
 
   /**
    * (Optional) Whether to assign a public IP address to the bastion instance.
-   * If not specified, falls back to the default behavior of the VPC.
+   *
+   * Defaults to `true` when the selected subnets are public, because SSM
+   * Session Manager has no IPv6 support and a dual-stack subnet would
+   * otherwise leave the instance with a public IPv6 address only. When the
+   * selected subnets are not public, the VPC's own default is left in place;
+   * subnets imported with `Subnet.fromSubnetAttributes` are not recognised as
+   * public, so set this to `true` explicitly when using them.
+   *
+   * @default true for public subnets, the VPC default otherwise
    */
   readonly assignPublicIp?: boolean;
 }
@@ -130,6 +138,14 @@ export class BastiInstance extends Construct implements IBastiInstance {
     const defaultSubnetSelection = {
       subnetType: aws_ec2.SubnetType.PUBLIC,
     };
+    const subnetSelection = props.vpcSubnets ?? defaultSubnetSelection;
+    // SSM Session Manager has no IPv6 support, so a bastion in a public subnet
+    // needs a public IPv4 address even when the subnet is dual-stack and AWS
+    // would only auto-assign an IPv6 one. A private selection keeps the VPC's
+    // default, which is also the only value CDK accepts there.
+    const assignPublicIp =
+      props.assignPublicIp ??
+      (props.vpc.selectSubnets(subnetSelection).hasPublic ? true : undefined);
     const sessionManagerPolicy = new aws_iam.PolicyDocument({
       statements: [
         new aws_iam.PolicyStatement({
@@ -176,13 +192,13 @@ export class BastiInstance extends Construct implements IBastiInstance {
       instanceName: `${BASTION_INSTANCE_NAME_PREFIX}-${this.bastiId}`,
       machineImage: props.machineImage ?? defaultMachineImage,
       instanceType: props.instanceType ?? defaultInstanceType,
-      associatePublicIpAddress: props.assignPublicIp,
+      associatePublicIpAddress: assignPublicIp,
       role: this.role,
       securityGroup: this.securityGroup,
       requireImdsv2: true,
       userData: aws_ec2.UserData.custom(BASTION_INSTANCE_CLOUD_INIT),
       vpc: props.vpc,
-      vpcSubnets: props.vpcSubnets ?? defaultSubnetSelection,
+      vpcSubnets: subnetSelection,
       propagateTagsToVolumeOnCreation: true,
     });
     Tags.of(this.instance).add(BASTION_INSTANCE_ID_TAG_NAME, this.bastiId);

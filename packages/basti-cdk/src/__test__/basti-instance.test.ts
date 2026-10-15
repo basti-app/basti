@@ -1,4 +1,4 @@
-import { Template } from 'aws-cdk-lib/assertions';
+import { Match, Template } from 'aws-cdk-lib/assertions';
 import * as cdk from 'aws-cdk-lib';
 import { aws_ec2, aws_iam } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize } from 'aws-cdk-lib/aws-ec2';
@@ -326,5 +326,96 @@ describe('BastiInstanceTest', () => {
 
     // Check that the properties are set correctly.
     expect(importedBastiInstance.vpc.vpcId).toEqual(importedVpc.vpcId);
+  });
+
+  test('assigns a public IP by default on public subnets', () => {
+    const app = new cdk.App();
+    const bastiStack = new cdk.Stack(app, 'bastiStack');
+    const bastiVpc = new aws_ec2.Vpc(bastiStack, 'bastiVpc', {});
+
+    const bastiInstance = new BastiInstance(bastiStack, 'bastiInstance', {
+      vpc: bastiVpc,
+    });
+    expect(bastiInstance.vpc).toEqual(bastiVpc);
+
+    const template = Template.fromStack(bastiStack);
+    template.hasResourceProperties('AWS::EC2::Instance', {
+      NetworkInterfaces: Match.arrayWith([
+        Match.objectLike({
+          DeviceIndex: '0',
+          AssociatePublicIpAddress: true,
+        }),
+      ]),
+    });
+  });
+
+  test('keeps the VPC default when the selection is not public', () => {
+    const app = new cdk.App();
+    const bastiStack = new cdk.Stack(app, 'bastiStack');
+    const bastiVpc = new aws_ec2.Vpc(bastiStack, 'bastiVpc', {
+      natGateways: 0,
+      subnetConfiguration: [
+        {
+          name: 'Private',
+          subnetType: aws_ec2.SubnetType.PRIVATE_WITH_EGRESS,
+        },
+      ],
+    });
+
+    const bastiInstance = new BastiInstance(bastiStack, 'bastiInstance', {
+      vpc: bastiVpc,
+      vpcSubnets: { subnetType: aws_ec2.SubnetType.PRIVATE_WITH_EGRESS },
+    });
+    expect(bastiInstance.vpc).toEqual(bastiVpc);
+
+    const template = Template.fromStack(bastiStack);
+    const instances = template.findResources('AWS::EC2::Instance');
+    const [instance] = Object.values(instances);
+    expect(instance.Properties.NetworkInterfaces).toBeUndefined();
+    expect(instance.Properties.SubnetId).toBeDefined();
+  });
+
+  test('assigns a public IP when the public selection is named by subnet group', () => {
+    const app = new cdk.App();
+    const bastiStack = new cdk.Stack(app, 'bastiStack');
+    const bastiVpc = new aws_ec2.Vpc(bastiStack, 'bastiVpc', {});
+
+    const bastiInstance = new BastiInstance(bastiStack, 'bastiInstance', {
+      vpc: bastiVpc,
+      vpcSubnets: { subnetGroupName: 'Public' },
+    });
+    expect(bastiInstance.vpc).toEqual(bastiVpc);
+
+    const template = Template.fromStack(bastiStack);
+    template.hasResourceProperties('AWS::EC2::Instance', {
+      NetworkInterfaces: Match.arrayWith([
+        Match.objectLike({
+          DeviceIndex: '0',
+          AssociatePublicIpAddress: true,
+        }),
+      ]),
+    });
+  });
+
+  test('honours an explicit assignPublicIp on public subnets', () => {
+    const app = new cdk.App();
+    const bastiStack = new cdk.Stack(app, 'bastiStack');
+    const bastiVpc = new aws_ec2.Vpc(bastiStack, 'bastiVpc', {});
+
+    const bastiInstance = new BastiInstance(bastiStack, 'bastiInstance', {
+      vpc: bastiVpc,
+      assignPublicIp: false,
+    });
+    expect(bastiInstance.vpc).toEqual(bastiVpc);
+
+    const template = Template.fromStack(bastiStack);
+    template.hasResourceProperties('AWS::EC2::Instance', {
+      NetworkInterfaces: Match.arrayWith([
+        Match.objectLike({
+          DeviceIndex: '0',
+          AssociatePublicIpAddress: false,
+        }),
+      ]),
+    });
   });
 });
