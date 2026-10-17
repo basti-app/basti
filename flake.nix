@@ -18,7 +18,8 @@
 
           src = self;
 
-          npmDepsHash = "sha256-aw9uV4u/7V9VmGJnS5GXqBxFLBd8S5GqlgA/QEFeq/4=";
+          npmDeps = pkgs.importNpmLock { npmRoot = self; };
+          npmConfigHook = pkgs.importNpmLock.npmConfigHook;
 
           npmWorkspace = "packages/basti";
 
